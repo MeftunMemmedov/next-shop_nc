@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { hasLocale } from 'next-intl';
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { routing } from '@/i18n/routing';
+import ReduxProvider from '@/store/provider';
+import { ToastContainer } from 'react-toastify';
+import Header from '@/components/Layout/Header';
+import MobileHeader from '@/components/Layout/MobileHeader';
+import Footer from '@/components/Layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -26,7 +31,21 @@ const RootLayout = async ({
   // }
   return (
     <html lang={finalLocale}>
-      <body>{children}</body>
+      <head>
+        <link rel="stylesheet" href="/assets/css/flaticon.css" />
+        <link rel="stylesheet" href="/assets/css/template.css" />
+      </head>
+      <body>
+        <ReduxProvider>
+          <NextIntlClientProvider>
+            <ToastContainer />
+            <Header />
+            <MobileHeader />
+            {children}
+            <Footer />
+          </NextIntlClientProvider>
+        </ReduxProvider>
+      </body>
     </html>
   );
 };
