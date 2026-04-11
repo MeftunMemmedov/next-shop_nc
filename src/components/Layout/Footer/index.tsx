@@ -109,7 +109,7 @@ const Footer = () => {
           </p>
           <p className="m-0">
             Developed by{' '}
-            <a href="https://www.codeshift.az" className="developed-by">
+            <a href="" className="developed-by">
               MFTN
             </a>
           </p>

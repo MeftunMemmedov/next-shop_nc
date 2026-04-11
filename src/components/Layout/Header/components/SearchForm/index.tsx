@@ -1,7 +1,6 @@
 'use client';
 import { SearchIcon } from '@/assets/images/icons';
 import { useRouter } from '@/i18n/routing';
-import Image from 'next/image';
 import { SubmitEvent, useEffect, useState } from 'react';
 
 const SearchForm = () => {
@@ -47,13 +46,7 @@ const SearchForm = () => {
             role="button"
             onClick={() => setIsSearchVisible((prevState) => !prevState)}
           >
-            <Image
-              src={SearchIcon}
-              width={20}
-              height={20}
-              className={`${isSearchVisible ? 'opacity-0' : 'opacity-100'}`}
-              alt="search icon"
-            />
+            <SearchIcon />
 
             <i className="btn-icon btn-close-lg"></i>
           </a>
@@ -78,12 +71,7 @@ const SearchForm = () => {
               onChange={(e) => setSearchInput(e.target.value)}
             />
             <button className="btn-icon search-popup__submit" type="submit">
-              <Image
-                src={SearchIcon}
-                width={20}
-                height={20}
-                alt="search icon"
-              />
+              <SearchIcon />
             </button>
             <button
               className="btn-icon btn-close-lg search-popup__reset"

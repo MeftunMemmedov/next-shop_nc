@@ -4,7 +4,6 @@ import { PROJECT_NAME, routes } from '@/constants';
 import SearchForm from './components/SearchForm';
 import CartModal from '../CartModal';
 import { Link } from '@/i18n/routing';
-import Image from 'next/image';
 import LangSelect from '../LangSelect';
 
 const header_top_texts = [
@@ -124,12 +123,7 @@ const Header = () => {
                 className="header-tools__item"
                 href={false ? '/account/details' : '/login'}
               >
-                <Image
-                  width={20}
-                  height={20}
-                  src={true ? UserIcon : LoginIcon}
-                  alt="auth account icon"
-                />
+                {true ? <UserIcon /> : <LoginIcon />}
               </Link>
             </div>
 
@@ -139,7 +133,7 @@ const Header = () => {
               className="header-tools__item header-tools__cart"
               href="/wishlist"
             >
-              <Image src={WishlistIcon} width={20} height={20} alt="wishlist" />
+              <WishlistIcon />
               <span className="cart-amount d-block position-absolute">3</span>
             </Link>
           </div>

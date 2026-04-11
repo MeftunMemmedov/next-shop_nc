@@ -3,7 +3,6 @@ import { ShoppingIcon } from '@/assets/images/icons';
 import { getPriceDisplay, getProductPrice } from '@/helpers';
 import { useCart } from '@/hooks/useCart';
 import { Link } from '@/i18n/routing';
-import Image from 'next/image';
 import { useState } from 'react';
 
 const CartModal = () => {
@@ -27,7 +26,7 @@ const CartModal = () => {
         onClick={() => setIsCartModalVisible(true)}
         className="header-tools__item header-tools__cart btn"
       >
-        <Image src={ShoppingIcon} width={20} height={20} alt="shipping icon" />
+        <ShoppingIcon />
         <span
           className="cart-amount d-block position-absolute"
           suppressHydrationWarning

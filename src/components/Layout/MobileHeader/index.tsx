@@ -15,7 +15,6 @@ import { CONTACT_INFORMATION } from '@/data/contact';
 import CartModal from '../CartModal';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
-import Image from 'next/image';
 import { Category } from '@/types';
 
 const MobileHeader = () => {
@@ -73,7 +72,7 @@ const MobileHeader = () => {
           role="button"
           onClick={() => setMenu(!menu)}
         >
-          <Image src={MenuIcon} width={20} height={20} alt="menu" />
+          <MenuIcon />
           <span className="btn-close-lg position-absolute top-0 start-0 w-100"></span>
         </a>
 
@@ -109,13 +108,7 @@ const MobileHeader = () => {
                 className="btn-icon search-popup__submit pb-0 me-2"
                 type="submit"
               >
-                <Image
-                  src={SearchIcon}
-                  width={20}
-                  height={20}
-                  className="ms-auto"
-                  alt="search icon"
-                />
+                <SearchIcon className="ms-auto" />
               </button>
 
               <button
@@ -157,12 +150,8 @@ const MobileHeader = () => {
                     </Link>
                     {route.path === '/products' &&
                       !pathname.endsWith('/products') && (
-                        <Image
-                          src={NextIcon}
-                          width={20}
-                          height={20}
+                        <NextIcon
                           className="ms-auto"
-                          alt="next icon"
                           onClick={() => toggleMenu(2)}
                         />
                       )}
@@ -177,13 +166,7 @@ const MobileHeader = () => {
                           onClick={() => toggleMenu(2)}
                           className="navigation__link d-flex align-items-center border-bottom mb-3"
                         >
-                          <Image
-                            src={PrevIcon}
-                            width={20}
-                            height={20}
-                            className="me-2"
-                            alt="prev icon"
-                          />
+                          <PrevIcon className="me-2" />
                           Routes.1.title
                         </a>
 
@@ -198,12 +181,8 @@ const MobileHeader = () => {
                                   {item.title}
                                 </Link>
                                 {item.children?.length && (
-                                  <Image
-                                    src={NextIcon}
-                                    width={20}
-                                    height={20}
+                                  <NextIcon
                                     className="ms-auto"
-                                    alt="next icon"
                                     onClick={() => toggleMenu(2, index1)}
                                   />
                                 )}
@@ -218,13 +197,7 @@ const MobileHeader = () => {
                                     className="navigation__link d-flex align-items-center border-bottom mb-2"
                                     onClick={() => toggleMenu(2)}
                                   >
-                                    <Image
-                                      src={PrevIcon}
-                                      width={20}
-                                      height={20}
-                                      className="me-2"
-                                      alt="prev icon"
-                                    />
+                                    <PrevIcon className="me-2" />
                                     {item.title}
                                   </a>
 
@@ -262,13 +235,11 @@ const MobileHeader = () => {
             href={true ? '/account/details' : '/login'}
             className="customer-links container mt-4 mb-2 pb-1"
           >
-            <Image
-              src={true ? UserIcon : LoginIcon}
-              className="d-inline-block align-middle"
-              width={20}
-              height={20}
-              alt="auth icon"
-            />
+            {true ? (
+              <UserIcon className="d-inline-block align-middle" />
+            ) : (
+              <LoginIcon className="d-inline-block align-middle" />
+            )}
 
             <span className="d-inline-block ms-2 text-uppercase align-middle fw-medium py-2">
               {true ? 'account' : 'login'}
