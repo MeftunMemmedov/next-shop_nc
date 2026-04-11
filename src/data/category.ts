@@ -9,6 +9,7 @@ export const createRandomCategory = (level = 0): Category => {
   const title = faker.commerce.product();
 
   const category: Category = {
+    id: '',
     title: title,
     image: createFakeImage(80, 80),
     slug:
