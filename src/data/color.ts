@@ -1,4 +1,4 @@
-import { Color } from '@/types/models/color';
+import { Color } from '@/types/color';
 
 import { faker } from '.';
 

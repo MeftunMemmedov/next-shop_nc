@@ -1,4 +1,4 @@
-import { Size } from '@/types/models/size';
+import { Size } from '@/types/size';
 
 const sizes: Size[] = [
   {

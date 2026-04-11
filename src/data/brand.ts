@@ -1,4 +1,4 @@
-import { Brand } from '@/types/models/brand';
+import { Brand } from '@/types/brand';
 
 import { faker } from '.';
 
