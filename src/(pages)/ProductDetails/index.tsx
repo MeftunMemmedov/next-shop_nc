@@ -177,7 +177,7 @@ const ProductDetails = ({ slug }: { slug: string }) => {
         </div>
         <Tabs product={product} />
       </section>
-      <RelatedProductSlider slug={slug || ''} />
+      <RelatedProductSlider />
     </main>
   );
 };
