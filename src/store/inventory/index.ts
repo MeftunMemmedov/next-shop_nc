@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { initialStatus } from '@/constants/status';
 
-import * as SyncActions from './sync/actions';
+import * as SyncActions from './actions/sync/actions';
 
 import { CartItem, InventoryStateProps, Product } from '@/types';
 

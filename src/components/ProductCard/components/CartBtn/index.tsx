@@ -1,5 +1,5 @@
 'use client';
-import { useCart } from '@/hooks/useCart';
+import { useCart } from '@/hooks';
 import { Product } from '@/types';
 
 const CartBtn = ({ product }: { product: Product }) => {

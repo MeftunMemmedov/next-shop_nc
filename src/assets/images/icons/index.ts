@@ -1,4 +1,4 @@
-// export { default as ArrowDownIcon } from './arrow-down.svg';
+export { default as ArrowDownIcon } from './arrow-down.svg';
 export { default as CategoryIcon } from './category.svg';
 export { default as CartIcon } from './cart.svg';
 export { default as ConfirmIcon } from './confirm.svg';

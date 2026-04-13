@@ -5,6 +5,7 @@ import { SubmitEvent, useEffect, useState } from 'react';
 
 const SearchForm = () => {
   const router = useRouter();
+
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
 
   const [searchInput, setSearchInput] = useState<string>('');

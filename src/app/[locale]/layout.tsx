@@ -7,6 +7,12 @@ import { ToastContainer } from 'react-toastify';
 import Header from '@/components/Layout/Header';
 import MobileHeader from '@/components/Layout/MobileHeader';
 import Footer from '@/components/Layout/Footer';
+import { GlobalContextProvider } from '@/context/GlobalContext';
+import { NuqsAdapter } from 'nuqs/adapters/next';
+
+export const generateStaticParams = () => {
+  return routing.locales.map((locale) => ({ locale }));
+};
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -27,7 +33,7 @@ const RootLayout = async ({
   const finalLocale = isValidLocale ? locale : routing.defaultLocale;
 
   // if (!isValidLocale) {
-  //   redirect(`/${routing.defaultLocale}`);
+  //   notFound();
   // }
   return (
     <html lang={finalLocale}>
@@ -41,7 +47,9 @@ const RootLayout = async ({
             <ToastContainer />
             <Header />
             <MobileHeader />
-            {children}
+            <GlobalContextProvider>
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </GlobalContextProvider>
             <Footer />
           </NextIntlClientProvider>
         </ReduxProvider>

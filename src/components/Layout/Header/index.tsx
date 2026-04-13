@@ -1,5 +1,5 @@
 import { LOGO } from '@/assets/images';
-import { LoginIcon, UserIcon, WishlistIcon } from '@/assets/images/icons';
+import { LoginIcon, UserIcon } from '@/assets/images/icons';
 import { PROJECT_NAME, routes } from '@/constants';
 import SearchForm from './components/SearchForm';
 import CartModal from '../CartModal';
@@ -121,21 +121,13 @@ const Header = () => {
             <div className="header-tools__item hover-container">
               <Link
                 className="header-tools__item"
-                href={false ? '/account/details' : '/login'}
+                href={false ? '/account/details' : '/auth/signin'}
               >
-                {true ? <UserIcon /> : <LoginIcon />}
+                {false ? <UserIcon /> : <LoginIcon />}
               </Link>
             </div>
 
             <CartModal />
-
-            <Link
-              className="header-tools__item header-tools__cart"
-              href="/wishlist"
-            >
-              <WishlistIcon />
-              <span className="cart-amount d-block position-absolute">3</span>
-            </Link>
           </div>
         </div>
       </div>

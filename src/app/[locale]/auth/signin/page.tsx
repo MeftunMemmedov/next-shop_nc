@@ -1,5 +1,7 @@
+import Auth from '@/(pages)/Auth';
+
 const SignInPage = () => {
-  return <div>SignInPage</div>;
+  return <Auth type="signin" />;
 };
 
 export default SignInPage;

@@ -1,9 +1,4 @@
-import {
-  HeartActiveIcon,
-  HeartIcon,
-  RatingIcon,
-  RemoveIcon,
-} from '@/assets/images/icons';
+import { RatingIcon, RemoveIcon } from '@/assets/images/icons';
 
 import { Product } from '@/types';
 
@@ -11,6 +6,7 @@ import { getPriceDisplay } from '@/helpers';
 import CartBtn from './components/CartBtn';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import WishlistBtn from '../WishlistBtn';
 
 interface Props {
   product: Product;
@@ -72,11 +68,7 @@ const ProductCard = ({ product, onRemove }: Props) => {
             </div>
           </div>
 
-          <button
-            className={`pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 ${false ? 'active' : ''}`}
-          >
-            {true ? <HeartActiveIcon /> : <HeartIcon />}
-          </button>
+          <WishlistBtn product={product} />
         </div>
 
         {discount > 0 && (

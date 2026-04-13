@@ -11,3 +11,4 @@ export type * from './review';
 export type * from './slide';
 export type * from './auth';
 export type * from './store';
+export type * from './context';

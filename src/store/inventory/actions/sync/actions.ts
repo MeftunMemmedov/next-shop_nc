@@ -27,7 +27,7 @@ export const addToLocalCart = (
   state.local.cart.items = updatedItems;
   state.local.cart.count = updatedItems.length;
   state.local.cart.total = updatedItems.reduce((acc, item) => {
-    return acc + getProductPrice(item?.product) * item.quantity;
+    return acc + getProductPrice(item.product) * item.quantity;
   }, 0);
   localStorage.setItem('cart', JSON.stringify(updatedItems));
 };
@@ -44,7 +44,7 @@ export const removeFromLocalCart = (
   state.local.cart.items = updatedItems;
   state.local.cart.count = updatedItems.length;
   state.local.cart.total = updatedItems.reduce((acc, item) => {
-    return acc + getProductPrice(item?.product) * item.quantity;
+    return acc + getProductPrice(item.product) * item.quantity;
   }, 0);
   localStorage.setItem('cart', JSON.stringify(updatedItems));
 };
@@ -67,7 +67,7 @@ export const changeLocalCartItemQuantity = (
   state.local.cart.items = updatedCart;
   state.local.cart.count = updatedCart.length;
   state.local.cart.total = updatedCart.reduce((acc, item) => {
-    return acc + getProductPrice(item?.product) * item.quantity;
+    return acc + getProductPrice(item.product) * item.quantity;
   }, 0);
   localStorage.setItem('cart', JSON.stringify(updatedCart));
 };

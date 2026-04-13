@@ -11,7 +11,7 @@ import {
   removeFromLocalCart,
 } from '@/store/inventory';
 
-export const useCart = () => {
+const useCart = () => {
   const dispatch = useAppDispatch();
   const { local } = useAppSelector((store) => store.inventory);
 
@@ -38,7 +38,7 @@ export const useCart = () => {
 
   const handleClickLocalQuantity = (
     item: CartItem,
-    type: string,
+    type: '+' | '-',
     setQuantity?: Dispatch<SetStateAction<string>>
   ) => {
     const newQuantity = type === '+' ? item.quantity + 1 : item.quantity - 1;
@@ -65,3 +65,5 @@ export const useCart = () => {
     handleClickQuantity: handleClickLocalQuantity,
   };
 };
+
+export default useCart;

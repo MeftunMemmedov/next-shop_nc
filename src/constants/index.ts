@@ -35,3 +35,22 @@ export const languages = [
     name: 'English',
   },
 ];
+
+export const accountRoutes = [
+  {
+    title: 'Account Details',
+    path: '/account/details/',
+  },
+  {
+    title: 'Your Reviews',
+    path: '/account/user-reviews/',
+  },
+  {
+    title: 'Orders',
+    path: '/account/orders/',
+  },
+  {
+    title: 'Wishlist',
+    path: '/account/wishlist/',
+  },
+];

@@ -1,5 +1,7 @@
+import Auth from '@/(pages)/Auth';
+
 const SignUpPage = () => {
-  return <div>SignUpPage</div>;
+  return <Auth type="signup" />;
 };
 
 export default SignUpPage;

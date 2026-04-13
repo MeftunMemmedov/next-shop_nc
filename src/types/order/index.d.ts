@@ -4,13 +4,16 @@ export type Order = {
   id: number;
   payment_method: number;
   shipping_type: number;
-  status: number;
   shippingCost: number;
   total: number;
   items: OrderItem[];
-  status: number;
+  status: {
+    label: 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED';
+    value: string;
+  };
   date: string;
   address: string;
+  created_at: Date;
   history: {
     title: string;
     date: string;

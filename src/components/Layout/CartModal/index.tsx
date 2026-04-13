@@ -1,11 +1,14 @@
 'use client';
-import { ShoppingIcon } from '@/assets/images/icons';
+import { ShoppingIcon, WishlistIcon } from '@/assets/images/icons';
 import { getPriceDisplay, getProductPrice } from '@/helpers';
-import { useCart } from '@/hooks/useCart';
-import { Link } from '@/i18n/routing';
+import { useCart, useWishlist } from '@/hooks';
+import { Link, usePathname } from '@/i18n/routing';
+import Image from 'next/image';
 import { useState } from 'react';
 
 const CartModal = () => {
+  const pathname = usePathname();
+
   const [isCartModalVisible, setIsCartModalVisible] = useState<boolean>(false);
 
   const {
@@ -16,6 +19,9 @@ const CartModal = () => {
     handleClickQuantity,
   } = useCart();
 
+  const { count: wishlistCount } = useWishlist();
+
+  if (!cartItems) return null;
   return (
     <>
       <div
@@ -23,6 +29,7 @@ const CartModal = () => {
         onClick={() => setIsCartModalVisible(false)}
       ></div>
       <button
+        disabled={pathname.endsWith('/checkout') || pathname.endsWith('/cart')}
         onClick={() => setIsCartModalVisible(true)}
         className="header-tools__item header-tools__cart btn"
       >
@@ -34,6 +41,15 @@ const CartModal = () => {
           {cartCount}
         </span>
       </button>
+      <Link
+        className="header-tools__item header-tools__cart"
+        href="/account/wishlist"
+      >
+        <WishlistIcon />
+        <span className="cart-amount d-block position-absolute">
+          {wishlistCount}
+        </span>
+      </Link>
       <div
         className={`aside aside_right overflow-hidden cart-drawer ${isCartModalVisible ? 'aside_visible' : ''}`}
       >
@@ -55,17 +71,19 @@ const CartModal = () => {
           {cartCount === 0 ? (
             <h2 className="text-center">Cart is empty</h2>
           ) : (
-            cartItems?.map((item) => (
+            cartItems.map((item) => (
               <div
                 className="cart-drawer-item d-flex position-relative my-3"
                 key={`cart-modal-item-${item.product.slug}`}
               >
                 <div className="position-relative">
                   <Link href={`/products/${item.product.slug}`}>
-                    <img
+                    <Image
                       loading="lazy"
+                      width={100}
+                      height={100}
                       className="cart-drawer-item__img"
-                      src={item.product.images[0]}
+                      src={item.product.images[0].url}
                       alt={item.product.title}
                     />
                   </Link>
@@ -74,7 +92,7 @@ const CartModal = () => {
                 <div className="cart-drawer-item__info flex-grow-1 pe-2">
                   <h6 className="cart-drawer-item__title fw-normal">
                     <Link href={`/products/${item.product.slug}`}>
-                      {item?.product?.title}
+                      {item.product?.title}
                     </Link>
                   </h6>
 
@@ -90,6 +108,7 @@ const CartModal = () => {
                       />
 
                       <button
+                        disabled={item.quantity <= 1}
                         className="btn qty-control__reduce text-start"
                         onClick={() => handleClickQuantity(item, '-')}
                       >
