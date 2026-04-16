@@ -12,6 +12,7 @@ export const createRandomSlide = (): Slide => {
     image: createFakeImage(1920, 757),
     description: faker.lorem.sentence(20),
     url: '/',
+    path: '/',
   };
 };
 
