@@ -14,8 +14,17 @@ interface Props {
 }
 
 const ProductCard = ({ product, onRemove }: Props) => {
-  const { images, title, category, discount, price, is_new, slug, rating } =
-    product;
+  const {
+    images,
+    title,
+    description,
+    category,
+    discount,
+    price,
+    is_new,
+    slug,
+    rating,
+  } = product;
 
   return (
     <div className="product-card-wrapper">
@@ -23,10 +32,10 @@ const ProductCard = ({ product, onRemove }: Props) => {
         <div className="pc__img-wrapper">
           <Link href={`/products/${slug}`}>
             <Image
-              src={images[0].url}
+              src={images[0]}
               width={330}
               height={380}
-              alt={title}
+              alt={`${title}-${description}`}
               loading="lazy"
               className="pc__img"
             />

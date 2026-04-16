@@ -24,12 +24,8 @@ export const createRandomProduct = () // depth: number = 1
       .float({ min: 1, max: 5, fractionDigits: 1 })
       .toString(),
     is_new: faker.datatype.boolean(),
-    images: Array.from(
-      { length: faker.number.int({ min: 2, max: 5 }) },
-      () => ({
-        id: faker.number.int(),
-        url: createFakeImage(700, 700),
-      })
+    images: Array.from({ length: faker.number.int({ min: 2, max: 5 }) }, () =>
+      createFakeImage(700, 700)
     ),
     description: faker.commerce.productDescription(),
     quantity: faker.number.int({ min: 0, max: 50 }),

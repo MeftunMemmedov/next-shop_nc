@@ -6,10 +6,14 @@ import { Swiper, SwiperProps, SwiperRef, SwiperSlide } from 'swiper/react';
 
 import { NextIcon, PrevIcon } from '@/assets/images/icons';
 
-import { PRODUCTS } from '@/data/product';
 import ProductCard from '@/components/ProductCard';
+import { Product } from '@/types';
 
-const FeaturedProductSlider = () => {
+const FeaturedProductSlider = ({
+  featuredProducts,
+}: {
+  featuredProducts: Product[];
+}) => {
   const swiperRef = useRef<SwiperRef | null>(null);
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
 
@@ -59,6 +63,8 @@ const FeaturedProductSlider = () => {
     }
   };
 
+  if (!featuredProducts || featuredProducts.length === 0) return null;
+
   return (
     <section className="products-carousel container home-product-slider">
       <h2 className="section-title text-uppercase fs-25 fw-medium text-center mb-4">
@@ -83,12 +89,14 @@ const FeaturedProductSlider = () => {
         )}
         <div className="swiper-container">
           <Swiper
+            wrapperTag="ul"
+            wrapperClass="list-unstyled"
             className="home-featured-product-slider"
             ref={swiperRef}
             {...swiperSettings}
           >
-            {PRODUCTS.map((product, index) => (
-              <SwiperSlide key={`featured-product-slide-${index}`}>
+            {featuredProducts.map((product, index) => (
+              <SwiperSlide tag="li" key={`featured-product-slide-${index}`}>
                 <ProductCard product={product} />
               </SwiperSlide>
             ))}

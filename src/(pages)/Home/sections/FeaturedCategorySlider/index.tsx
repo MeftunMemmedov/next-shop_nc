@@ -1,11 +1,15 @@
 'use client';
-import { CATEGORIES } from '@/data/category';
 import { Link } from '@/i18n/routing';
+import { Category } from '@/types';
 import Image from 'next/image';
 import { Autoplay, FreeMode } from 'swiper/modules';
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react';
 
-const FeaturedCategorySlider = () => {
+const FeaturedCategorySlider = ({
+  featuredCategories,
+}: {
+  featuredCategories: Category[];
+}) => {
   const swiperSettings: SwiperProps = {
     freeMode: true,
     modules: [FreeMode, Autoplay],
@@ -38,7 +42,7 @@ const FeaturedCategorySlider = () => {
     },
   };
 
-  if (!CATEGORIES || CATEGORIES.length === 0) return null;
+  if (!featuredCategories || featuredCategories.length === 0) return null;
   return (
     <section>
       <div className="category-carousel container">
@@ -47,9 +51,13 @@ const FeaturedCategorySlider = () => {
         </h2>
         <div className="position-relative">
           <div className="swiper-container">
-            <Swiper {...swiperSettings}>
-              {CATEGORIES.map((category, index) => (
-                <SwiperSlide key={`featured-category-slide-${index}`}>
+            <Swiper
+              wrapperTag="ul"
+              wrapperClass="list-unstyled"
+              {...swiperSettings}
+            >
+              {featuredCategories.map((category, index) => (
+                <SwiperSlide tag="li" key={`featured-category-slide-${index}`}>
                   <Link
                     href={`/products?category=${category.slug}`}
                     className="shop-categories__item mb-3 d-flex flex-column align-items-center"

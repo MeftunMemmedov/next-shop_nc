@@ -12,3 +12,4 @@ export type * from './slide';
 export type * from './auth';
 export type * from './store';
 export type * from './context';
+export type * from './table';

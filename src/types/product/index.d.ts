@@ -27,3 +27,9 @@ export type ProductFilter = DefaultFilter & {
   price__gte?: number;
   price__lte?: number;
 };
+
+export type FilterParams = {
+  category: string;
+  price_gte: number;
+  price_lte: number;
+};

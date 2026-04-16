@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react';
 
-import { SLIDES } from '@/data/slides';
 import { Link } from '@/i18n/routing';
 import Image from 'next/image';
+import { Slide } from '@/types';
 
-const HeroSlider = () => {
+const HeroSlider = ({ slides }: { slides: Slide[] }) => {
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
 
   const sliderSettings: SwiperProps = {
@@ -23,13 +23,19 @@ const HeroSlider = () => {
     },
   };
 
-  if (!SLIDES || SLIDES.length === 0) return null;
+  if (!slides || slides.length === 0) return null;
   return (
     <section className="home-hero-slider-container swiper-container slideshow type4 slideshow-navigation-white-sm container">
-      <Swiper className="hero-slider h-100" {...sliderSettings}>
-        {SLIDES.map((slide, index) => (
+      <Swiper
+        wrapperTag="ul"
+        wrapperClass="list-unstyled"
+        className="hero-slider h-100"
+        {...sliderSettings}
+      >
+        {slides.map((slide, index) => (
           <SwiperSlide
-            key={`hero-slide-${index}`}
+            tag="li"
+            key={`hero-slide-${index}-${slide.id}`}
             style={{
               opacity: 1,
               transform: 'translate3d(0px, 0px, 0px)',
@@ -42,11 +48,12 @@ const HeroSlider = () => {
             >
               <div className="slideshow-bg">
                 <Image
-                  loading="lazy"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  priority={index === 0}
                   src={slide.image}
                   width={1920}
                   height={757}
-                  alt={slide.title}
+                  alt={`${slide.title} - ${slide.description}`}
                   className="slideshow-bg__img object-fit-cover"
                 />
                 <div className="slideshow-text container position-absolute start-50 top-50 translate-middle">

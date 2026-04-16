@@ -2,8 +2,15 @@ import { PRODUCTS } from '@/data/product';
 import Filters from './components/Filters';
 import ProductCard from '@/components/ProductCard';
 import ToolBar from './components/ToolBar';
+import { FilterParams } from '@/types';
 
-const Products = () => {
+const Products = async ({
+  searchParams,
+}: {
+  searchParams: Promise<FilterParams>;
+}) => {
+  const { category } = await searchParams;
+  console.log(category);
   return (
     <main>
       <div className="mb-4 pb-lg-3" />
