@@ -17,9 +17,7 @@ export const createRandomProduct = () // depth: number = 1
     title: title,
     category: createRandomCategory(),
     discount: faker.number.int({ min: 0, max: 50 }),
-    price: faker.number
-      .float({ min: 10, max: 100, fractionDigits: 2 })
-      .toString(),
+    price: faker.number.float({ min: 10, max: 100, fractionDigits: 2 }),
     rating: faker.number
       .float({ min: 1, max: 5, fractionDigits: 1 })
       .toString(),
