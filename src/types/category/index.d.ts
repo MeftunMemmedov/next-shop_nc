@@ -4,4 +4,5 @@ export type Category = {
   image: string;
   title: string;
   children?: Category[];
+  parent_slug: Category | null;
 };

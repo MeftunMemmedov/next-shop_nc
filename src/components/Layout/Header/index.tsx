@@ -2,9 +2,10 @@ import { LOGO } from '@/assets/images';
 import { LoginIcon, UserIcon } from '@/assets/images/icons';
 import { PROJECT_NAME, routes } from '@/constants';
 import SearchForm from './components/SearchForm';
-import CartModal from '../CartModal';
 import { Link } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
+import Dispatches from './components/Dispatches';
+import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
 
 const header_top_texts = [
   'DISCOUNTS ON SAMOVARS – THE MOST DELICIOUS WAY TO BREW TEA',
@@ -24,9 +25,11 @@ const header_top_texts = [
   'LIMITED-TIME TANDOOR DEAL – DON’T MISS OUT!',
 ];
 
-const Header = () => {
+const Header = async () => {
+  const categories = await getCategoryListwChildren();
   return (
     <header className="header header_sticky container">
+      <Dispatches categories={categories} />
       <div className="announcement-bar bg-dark text-light d-flex row">
         <div className="col-11">
           <div className="wrap-announcement-bar">
@@ -54,6 +57,7 @@ const Header = () => {
                 src={LOGO}
                 alt={PROJECT_NAME}
                 width={120}
+                height={30}
                 className="logo__image d-block"
               />
             </Link>
@@ -127,7 +131,7 @@ const Header = () => {
               </Link>
             </div>
 
-            <CartModal />
+            {/* <CartModal /> */}
           </div>
         </div>
       </div>

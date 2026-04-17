@@ -10,7 +10,7 @@ export type Product = {
   is_new: boolean;
   is_featured: boolean;
   view_count: number;
-  price: string;
+  price: number;
   discount: number;
   description: string;
   discount_start_date: string;
@@ -30,6 +30,9 @@ export type ProductFilter = DefaultFilter & {
 
 export type FilterParams = {
   category: string;
+  brand: string;
   price_gte: number;
   price_lte: number;
+  order: string;
+  search: string;
 };

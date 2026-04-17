@@ -9,7 +9,7 @@ const Home = async () => {
   // FEATURED CATEGORIES
   const featuredCategoryParams = new URLSearchParams({
     select: '*',
-    parent_id: 'is.null',
+    parent_slug: 'is.null',
   });
 
   const featuredCategories = await fetchDatalist<Category>(

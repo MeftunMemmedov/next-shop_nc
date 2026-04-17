@@ -74,15 +74,15 @@ const ImageGallery = ({ product }: Props) => {
       <div className="product-single__media vertical-thumbnail">
         <div className="product-single__image vertical-dot">
           <Swiper {...mainSliderSettings} className="h-100">
-            {product.images.map((item, index) => (
+            {product.images.map((img, index) => (
               <SwiperSlide
-                key={item.id}
+                key={`product-${product.slug}-${index}`}
                 className="product-single__image-item h-100"
               >
                 <img
                   className="product-image"
                   style={{ cursor: 'pointer', objectFit: 'contain' }}
-                  src={item.url}
+                  src={img}
                   alt={product.title}
                   loading="lazy"
                   onClick={() => openLightbox(index)}
@@ -103,12 +103,12 @@ const ImageGallery = ({ product }: Props) => {
         {product.images.length > 1 ? (
           <div className="product-single__thumbnail">
             <Swiper {...thumbSliderSettings}>
-              {product.images.map((item) => (
+              {product.images.map((img, index) => (
                 <SwiperSlide
-                  key={item.id}
+                  key={`product-thumb-${product.slug}-${index}`}
                   className="product-single__image-item"
                 >
-                  <img src={item.url} alt={product.title} />
+                  <img src={img} alt={product.title} />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -122,7 +122,7 @@ const ImageGallery = ({ product }: Props) => {
         open={open}
         index={slideIndex}
         close={() => setOpen(false)}
-        slides={product.images.map((item) => ({ src: item.url }))}
+        slides={product.images.map((item) => ({ src: item }))}
         controller={{ closeOnBackdropClick: true }}
         zoom={{
           ref: zoomRef,

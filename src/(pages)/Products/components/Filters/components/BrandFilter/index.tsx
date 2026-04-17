@@ -4,12 +4,20 @@ import { useState } from 'react';
 
 import { ArrowDownIcon } from '@/assets/images/icons';
 
-import { CATEGORIES } from '@/data/category';
+import { useAppSelector } from '@/store/hooks';
+import { useQueryState } from 'nuqs';
+import { Brand } from '@/types';
 
-const CategoryFilter = () => {
+const BrandFilter = ({ brands }: { brands: Brand[] }) => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
+  const { categories } = useAppSelector((store) => store.data);
 
-  if (!CATEGORIES || CATEGORIES.length === 0) return null;
+  const [brandQuery, setBrandQuery] = useQueryState('brand', {
+    shallow: false,
+    scroll: true,
+    history: 'push',
+  });
+  if (!categories || categories.length === 0) return null;
   return (
     <div className="accordion">
       <div className="accordion-item mb-4 pb-3">
@@ -18,7 +26,7 @@ const CategoryFilter = () => {
             className={`accordion-button p-0 border-0 fs-5 text-uppercase ${!isVisible ? 'collapsed' : ''}`}
             onClick={() => setIsVisible((prevState) => !prevState)}
           >
-            Category
+            Brand
             <ArrowDownIcon className="accordion-button__icon type2" />
           </button>
         </h5>
@@ -28,21 +36,16 @@ const CategoryFilter = () => {
         >
           <div className="accordion-body px-0 pb-0 pt-3">
             <ul className="list list-inline mb-0">
-              {CATEGORIES.map((category) => (
-                <li
-                  className="list-item"
-                  key={`category-${category.slug}-filter`}
-                >
-                  {/* ${categoryQuery === category.slug ? 'fw-medium' : ''} */}
-                  <a role="button" className={`menu-link py-1 d-flex gap-2`}>
-                    {/* <Image
-                      src={category.image}
-                      loading="lazy"
-                      width={20}
-                      height={20}
-                      alt={category.title}
-                    /> */}
-                    {category.title}
+              {brands.map((brand) => (
+                <li className="list-item" key={`category-${brand.slug}-filter`}>
+                  <a
+                    role="button"
+                    className={`menu-link py-1 d-flex gap-2  ${brandQuery === brand.slug ? 'fw-bold' : ''}`}
+                    onClick={() => {
+                      setBrandQuery(brand.slug);
+                    }}
+                  >
+                    {brand.title}
                   </a>
                 </li>
               ))}
@@ -54,4 +57,4 @@ const CategoryFilter = () => {
   );
 };
 
-export default CategoryFilter;
+export default BrandFilter;

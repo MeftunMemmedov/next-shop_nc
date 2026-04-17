@@ -1,4 +1,3 @@
-import { PRODUCTS } from '@/data/product';
 import { Link } from '@/i18n/routing';
 import { Product } from '@/types';
 import ImageGallery from './components/ImageGallery';
@@ -9,10 +8,13 @@ import Tabs from './components/Tabs';
 import RelatedProductSlider from './components/RelatedProductSlider';
 import WishlistBtn from '@/components/WishlistBtn';
 import { notFound } from 'next/navigation';
+import { fetchDatadetails } from '@/api/fetch/helpers';
 
-const ProductDetails = ({ slug }: { slug: string }) => {
-  const product: Product | null =
-    PRODUCTS.find((product) => product.slug === slug) || null;
+const ProductDetails = async ({ slug }: { slug: string }) => {
+  const product = await fetchDatadetails<Product>(
+    'shop_products',
+    `slug=eq.${slug}`
+  );
 
   if (!product) notFound();
   return (
@@ -126,23 +128,10 @@ const ProductDetails = ({ slug }: { slug: string }) => {
             {/* {product.discount > 0 && product.discount_end_date && (
               <DiscountTimer discountEnd={product.discount_end_date} />
             )} */}
-            {product.quantity > 0 ? (
-              <>
-                <CartForm product={product} />
-                <p className="mt-2">Quantity : {product.quantity}</p>
-              </>
-            ) : (
-              <div className="product-single__addtocart">
-                <button
-                  disabled
-                  className="btn btn-primary btn-addtocart btn-outofstock mb-4"
-                >
-                  Out of stock
-                </button>
-              </div>
-            )}
 
-            <div className="product-single__addtolinks">
+            <CartForm product={product} />
+
+            <div className="product-single__addtolinks mt-3">
               <ShareModal />
             </div>
             <div>

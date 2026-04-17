@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import InventoryReducer from './inventory';
+import DataReducer from './data';
 
 export const makeStore = () =>
   configureStore({
     reducer: {
       inventory: InventoryReducer,
+      data: DataReducer,
     },
   });
 

@@ -2,15 +2,19 @@
 import { FilterIcon } from '@/assets/images/icons';
 import { GlobalContext } from '@/context/GlobalContext';
 import { GlobalContextType } from '@/types';
+import { useQueryState } from 'nuqs';
 import { use } from 'react';
 
 const ToolBar = () => {
   const globalContext = use<GlobalContextType | undefined>(GlobalContext);
 
+  const [orderQuery, setOrderQuery] = useQueryState('order', {
+    shallow: false,
+  });
+
   if (!globalContext) return null;
 
   const { sidebarVisible, setSidebarVisible } = globalContext;
-
   const sortOptions = [
     {
       label: 'Default',
@@ -18,27 +22,19 @@ const ToolBar = () => {
     },
     {
       label: 'Alphabetically A-Z',
-      value: 'title',
+      value: 'title.asc',
     },
     {
       label: 'Alphabetically Z-A',
-      value: '-title',
+      value: 'title.desc',
     },
     {
       label: 'Price: Low to High',
-      value: 'price',
+      value: 'price.asc',
     },
     {
       label: 'Price: High to Low',
-      value: '-price',
-    },
-    {
-      label: 'New',
-      value: 'created_at',
-    },
-    {
-      label: 'Old',
-      value: '-created_at',
+      value: 'price.desc',
     },
   ];
 
@@ -47,10 +43,8 @@ const ToolBar = () => {
       <div className="shop-acs d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1">
         <select
           className="shop-acs__select form-select w-auto border-0 p-1 pe-4 order-1 order-md-0"
-          // value={ordering || ''}
-          // onChange={(e) =>
-          //   setQueryParams({ ...queryParams, ordering: e.target.value })
-          // }
+          value={orderQuery || ''}
+          onChange={(e) => setOrderQuery(e.target.value || null)}
         >
           {sortOptions.map((option) => (
             <option key={`sort-option-${option.label}`} value={option.value}>

@@ -1,11 +1,10 @@
 'use client';
 import { use, useEffect } from 'react';
-import CategoryFilter from './CategoryFilter';
-import PriceFilter from './PriceFilter';
 import { GlobalContext } from '@/context/GlobalContext';
-import { GlobalContextType } from '@/types';
+import { Brand, GlobalContextType } from '@/types';
+import * as Filter from './components';
 
-const Filters = () => {
+const Filters = ({ brands }: { brands: Brand[] }) => {
   const globalContext = use<GlobalContextType | undefined>(GlobalContext);
   const sidebarVisible = globalContext?.sidebarVisible;
   useEffect(() => {
@@ -33,8 +32,9 @@ const Filters = () => {
 
       <div className="pt-4 pt-lg-0" />
 
-      <CategoryFilter />
-      <PriceFilter />
+      <Filter.CategoryFilter />
+      <Filter.BrandFilter brands={brands} />
+      <Filter.PriceFilter />
     </div>
   );
 };

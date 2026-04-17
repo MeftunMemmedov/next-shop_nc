@@ -1,6 +1,9 @@
 'use client';
+import { getDataList } from '@/api/axios/helpers';
 import { SearchIcon } from '@/assets/images/icons';
-import { useRouter } from '@/i18n/routing';
+import { getPriceDisplay } from '@/helpers';
+import { Link, useRouter } from '@/i18n/routing';
+import { Product } from '@/types';
 import { SubmitEvent, useEffect, useState } from 'react';
 
 const SearchForm = () => {
@@ -9,11 +12,50 @@ const SearchForm = () => {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
 
   const [searchInput, setSearchInput] = useState<string>('');
+  const [debouncedVal, setDebouncedVal] = useState<string>('');
+  const [results, setResults] = useState<Product[]>([]);
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'success' | 'error' | 'finished'
+  >('idle');
+  const searchInputValue = searchInput.trim();
+  const debouncedValue = searchInput.trim();
 
+  const resetInput = () => {
+    setResults([]);
+    setStatus('idle');
+  };
   const handleSearchFormSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    router.push(`/products?search=${searchInput}&page=1`);
+    setIsSearchVisible(false);
+    router.push(`/products?search=${searchInputValue}`);
+    resetInput();
   };
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setDebouncedVal(searchInput);
+    }, 500);
+
+    return () => clearTimeout(timeOut);
+  }, [searchInput]);
+
+  useEffect(() => {
+    if (debouncedValue === '') return;
+    const getResults = async () => {
+      try {
+        setStatus('loading');
+        const res = await getDataList<Product>('shop_products', {
+          title: `ilike.%${debouncedValue}%`,
+          limit: 5,
+        });
+        setResults(res);
+        setStatus('success');
+      } catch {
+        setStatus('error');
+      }
+    };
+    getResults();
+  }, [debouncedVal]);
 
   useEffect(() => {
     if (isSearchVisible) {
@@ -61,15 +103,23 @@ const SearchForm = () => {
           onSubmit={handleSearchFormSubmit}
         >
           <p className="text-uppercase text-secondary fw-medium mb-4">
-            WTF ARE YOU LOOKIN FOR?
+            WHAT ARE YOU LOOKIN FOR?
           </p>
           <div className="position-relative">
             <input
               className="search-field__input search-popup__input w-100 fw-medium"
               type="text"
               name="search-keyword"
-              placeholder={'WTF are u lookin for bro'}
-              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={'SEARCH....'}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchInput(value);
+                if (value.trim() === '') {
+                  resetInput();
+                } else {
+                  setStatus('loading');
+                }
+              }}
             />
             <button className="btn-icon search-popup__submit" type="submit">
               <SearchIcon />
@@ -80,42 +130,54 @@ const SearchForm = () => {
             />
           </div>
           <div className="search-popup__results">
-            {/* <div className="sub-menu search-results">
-              {false ? (
+            <div className="sub-menu search-results">
+              {status === 'loading' ? (
                 <div>Loading...</div>
               ) : (
-                <ul className="d-flex flex-column gap-3 container">
-                  {searchResults?.results.map((result, index) => (
-                    <li key={`result-${result.slug}-${index}`}>
-                      <Link
-                        href={`/products/${result.slug}`}
-                        className="row search-result-card"
-                      >
-                        <div className="col-1 p-0 h-100">
-                          <img
-                            src={result.images[0].url}
-                            className="h-100 w-100"
-                            alt={result.title}
-                          />
-                        </div>
-                        <div className="col-8 d-flex flex-column">
-                          <h4>{result.title}</h4>
-                          <span>{result.category.title}</span>
-                        </div>
-                        <div className="col-3 d-flex justify-content-center align-items-center">
-                          <span>{getPriceDisplay(+result.price)}</span>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                results.length > 0 && (
+                  <ul className="d-flex flex-column gap-3 container">
+                    {results.map((result, index) => (
+                      <li key={`result-${result.slug}-${index}`}>
+                        <Link
+                          href={`/products/${result.slug}`}
+                          className="row search-result-card"
+                        >
+                          <div className="col-1 p-0 h-100">
+                            <img
+                              src={result.images[0]}
+                              className="h-100 w-100"
+                              alt={result.title}
+                            />
+                          </div>
+                          <div className="col-8 d-flex flex-column">
+                            <h4>{result.title}</h4>
+                            <span>{result.category.title}</span>
+                          </div>
+                          <div className="col-3 d-flex justify-content-center align-items-center">
+                            <span>{getPriceDisplay(result.price)}</span>
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )
               )}
-              {false && (
-                <div>
-                  <p className="text-center fs-4">Results not found</p>
+              {debouncedVal === '' && status === 'idle' && (
+                <div className="py-16 text-center text-gray-400">
+                  <p>Start typing to search movies</p>
                 </div>
               )}
-            </div> */}
+              {status === 'success' && results.length === 0 && (
+                <div className="py-10 text-center text-white">
+                  <p>No result found</p>
+                </div>
+              )}
+              {status === 'error' && (
+                <div className="py-10 text-center text-red-800">
+                  <p>An error occured. Please try again.</p>
+                </div>
+              )}
+            </div>
 
             <div className="search-result row row-cols-5" />
           </div>

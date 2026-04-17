@@ -7,6 +7,7 @@ import RangeSlider, {
 import 'react-range-slider-input/dist/style.css';
 
 import { ArrowDownIcon } from '@/assets/images/icons';
+import { parseAsInteger, useQueryStates } from 'nuqs';
 
 const PriceFilter = () => {
   const [isVisible, setisVisible] = useState<boolean>(true);
@@ -14,7 +15,25 @@ const PriceFilter = () => {
   const minPrice = 0;
   const maxPrice = 2000;
 
-  const [values, setValues] = useState<string[]>(['0', '2000']);
+  const [priceQuery, setPriceQuery] = useQueryStates(
+    {
+      price_gte: parseAsInteger.withDefault(0),
+      price_lte: parseAsInteger.withDefault(2000),
+    },
+    { shallow: false, scroll: true, history: 'push' }
+  );
+
+  const [values, setValues] = useState<number[]>([
+    priceQuery.price_gte,
+    priceQuery.price_lte,
+  ]);
+
+  const updateUrl = (v: number[]) => {
+    setPriceQuery({
+      price_gte: v[0],
+      price_lte: v[1],
+    });
+  };
 
   const rangeSliderOptions: ReactRangeSliderInputProps = {
     className: 'mb-3',
@@ -22,38 +41,18 @@ const PriceFilter = () => {
     max: maxPrice,
     value: [Number(values[0]), Number(values[1])],
     onInput: (val: number[]) => {
-      setValues([val[0].toString(), val[1].toString()]);
+      setValues([val[0], val[1]]);
     },
-    // onThumbDragEnd: () => {
-    //   const min = Math.min(Number(values[0]), Number(values[1]));
-    //   const max = Math.max(Number(values[0]), Number(values[1]));
-    //   setPriceQuery({
-    //     price__gte: min,
-    //     price__lte: max,
-    //   });
-    //   if (pageQuery && pageQuery > 1) {
-    //     setPageQuery(1);
-    //   }
-    // },
-    // onRangeDragEnd: () => {
-    //   const min = Math.min(Number(values[0]), Number(values[1]));
-    //   const max = Math.max(Number(values[0]), Number(values[1]));
-    //   setPriceQuery({
-    //     price__gte: min,
-    //     price__lte: max,
-    //   });
-    //   if (pageQuery && pageQuery > 1) {
-    //     setPageQuery(1);
-    //   }
-    // },
+    onThumbDragEnd: () => updateUrl(values),
+    onRangeDragEnd: () => updateUrl(values),
   };
 
   const handleInputChange =
     (index: 0 | 1) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       if (newValue === '' || /^\d+$/.test(newValue)) {
-        const newValues = [...values] as [string, string];
-        newValues[index] = newValue;
+        const newValues = [...values] as [number, number];
+        newValues[index] = +newValue;
         setValues(newValues);
       }
     };
@@ -62,8 +61,8 @@ const PriceFilter = () => {
     let numValue = Number(values[index]);
     numValue = Math.max(minPrice, Math.min(maxPrice, numValue));
 
-    const newValues = [...values] as [string, string];
-    newValues[index] = numValue.toString();
+    const newValues = [...values] as [number, number];
+    newValues[index] = +numValue;
 
     if (index === 0 && numValue > Number(newValues[1])) {
       newValues[0] = newValues[1];
