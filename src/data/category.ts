@@ -15,6 +15,7 @@ export const createRandomCategory = (level = 0): Category => {
     slug:
       faker.helpers.slugify(title) + faker.number.int({ min: 1, max: 1000 }),
     children: [],
+    parent_slug: null,
   };
 
   if (level < 3) {
