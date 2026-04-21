@@ -2,7 +2,7 @@ import Filters from './components/Filters';
 import ProductCard from '@/components/ProductCard';
 import ToolBar from './components/ToolBar';
 import { Brand, FilterParams, Product } from '@/types';
-import { fetchDatalist } from '@/api/fetch/helpers';
+import { fetchData } from '@/api/fetch/helpers';
 import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
 
 interface Props {
@@ -10,8 +10,10 @@ interface Props {
 }
 
 const Products = async ({ searchParams }: Props) => {
-  const brandFetch = await fetchDatalist<Brand>('shop_brands');
-  const categoryFetch = await getCategoryListwChildren();
+  const brandFetch = fetchData<Brand[]>('shop_brands', undefined, {
+    next: { revalidate: 3600 },
+  });
+  const categoryFetch = getCategoryListwChildren();
 
   const [brands, categories] = await Promise.all([brandFetch, categoryFetch]);
 
@@ -38,10 +40,15 @@ const Products = async ({ searchParams }: Props) => {
 
   const productParamsHaskeys = productParams.size > 0;
 
-  const products = await fetchDatalist<Product>(
+  const products = await fetchData<Product[]>(
     'shop_products',
-    productParamsHaskeys ? productParams : null,
-    { tags: ['products'] }
+    productParamsHaskeys ? productParams : undefined,
+    {
+      next: {
+        tags: ['products'],
+        // revalidate: 60,
+      },
+    }
   );
 
   return (

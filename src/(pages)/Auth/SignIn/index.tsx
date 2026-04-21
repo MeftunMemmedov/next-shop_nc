@@ -1,8 +1,44 @@
 'use client';
 import Spinner from '@/components/Spinner';
-import { Link } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/routing';
+import { startTransition, useActionState, useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginAction } from '../../../actions/auth/login';
+import { useForm } from 'react-hook-form';
+import { LoginInput, loginSchema } from '../../../schemas/login.schema';
 
 const SignIn = () => {
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(loginAction, null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = (data: LoginInput) => {
+    startTransition(() => {
+      formAction(data);
+    });
+  };
+
+  useEffect(() => {
+    if (state?.error) {
+      setError('root', { message: state.error });
+    }
+
+    if (state?.success) {
+      router.replace('/');
+    }
+  }, [state]);
   return (
     <>
       <div className="mb-4 pb-4"></div>
@@ -18,14 +54,14 @@ const SignIn = () => {
           <li className="nav-item">
             <Link
               href="/auth/signup"
-              className={`nav-link nav-link_underscore ${false ? 'disabled-link' : ''}`}
+              className={`nav-link nav-link_underscore ${isPending ? 'disabled-link' : ''}`}
             >
               Sign Up
             </Link>
           </li>
         </ul>
 
-        {false && (
+        {(isPending || isSubmitting) && (
           <div className="d-flex flex-column align-items-center py-2 mb-2">
             <Spinner size={20} />
           </div>
@@ -34,57 +70,50 @@ const SignIn = () => {
         <div className="tab-content pt-2">
           <div className="tab-pane fade show active">
             <div className="login-form">
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="col-md-12">
-                  {/* {errors?.data.detail && (
+                  {errors?.root && (
                     <div className={`alert alert-danger my-3`} role="alert">
-                      {errors?.data.detail}
+                      {errors.root.message}
                     </div>
-                  )} */}
+                  )}
                 </div>
 
                 <div className="form-floating mb-3">
-                  {/* <InputMask
-                    showMask
-                    mask="+994 (__) ___ __ __"
-                    type="text"
-                    id="phone"
-                    className={`form-control form-control_gray ${false ? 'is-invalid  invalid-input' : ''}`}
-                    name="phone"
-                    replacement={{ _: /\d/ }}
-                  /> */}
                   <input
-                    name="phone"
-                    type="tel"
-                    className={`form-control form-control_gray ${false ? 'is-invalid  invalid-input' : ''}`}
-                    placeholder="Phone"
+                    {...register('email')}
+                    className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
+                    placeholder="Email"
+                    disabled={isPending}
                   />
 
-                  {/* <span className="country-code">+994</span> */}
-                  <label>Phone</label>
+                  <label>Email</label>
 
-                  {/* {errors?.data.phone && (
-                    <div className="invalid-feedback">{errors.data.phone}</div>
-                  )} */}
+                  {errors?.email && (
+                    <div className="invalid-feedback">
+                      {errors.email.message}
+                    </div>
+                  )}
                 </div>
 
                 <div className="pb-3"></div>
 
                 <div className="form-floating mb-3">
                   <input
-                    name="password"
+                    {...register('password')}
                     type="password"
-                    className={`form-control form-control_gray ${false ? 'is-invalid  invalid-input' : ''}`}
+                    className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder={'Password'}
+                    disabled={isPending}
                   />
 
                   <label>Password</label>
 
-                  {/* {errors?.data.password && (
+                  {errors?.password && (
                     <div className="invalid-feedback">
-                      {errors.data.password}
+                      {errors.password.message}
                     </div>
-                  )} */}
+                  )}
                 </div>
 
                 <div className="d-flex align-items-center mb-3 pb-2">
@@ -105,12 +134,15 @@ const SignIn = () => {
                   </Link> */}
                 </div>
 
-                <button
-                  className="btn btn-primary w-100 text-uppercase"
-                  type="submit"
-                >
-                  Sign In
-                </button>
+                {!state?.success && (
+                  <button
+                    className="btn btn-primary w-100 text-uppercase"
+                    type="submit"
+                    disabled={isPending}
+                  >
+                    {isPending ? 'Processing...' : 'Sign In'}
+                  </button>
+                )}
 
                 <div className="customer-option mt-4 text-center">
                   <span className="text-secondary">No account yet?</span>

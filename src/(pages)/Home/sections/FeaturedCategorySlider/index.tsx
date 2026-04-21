@@ -59,7 +59,12 @@ const FeaturedCategorySlider = ({
               {featuredCategories.map((category, index) => (
                 <SwiperSlide tag="li" key={`featured-category-slide-${index}`}>
                   <Link
-                    href={`/products?category=${category.slug}`}
+                    href={{
+                      pathname: '/products',
+                      query: {
+                        category: category.slug,
+                      },
+                    }}
                     className="shop-categories__item mb-3 d-flex flex-column align-items-center"
                   >
                     <div className="shop-categories__item-img-box rounded-circle">

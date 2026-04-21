@@ -1,55 +1,23 @@
-import { baseURL } from '@/api';
+import { baseAuthURL, baseURL } from '@/api';
 import { TableName } from '@/types';
-import { getHeaders } from '..';
+import { fetchInstance } from '..';
 
-export const fetchDatalist = async <T>(
+export const fetchData = async <T>(
   table_name: TableName,
-  params?: URLSearchParams | null,
-  nextOptions: {
-    revalidate?: number | false;
-    tags?: string[];
-  } = { revalidate: false }
+  params?: Record<string, string> | URLSearchParams | null,
+  options: RequestInit = {}
 ) => {
-  const res = await fetch(
-    `${baseURL}${table_name}${params ? `?${params}` : ''}`,
-    {
-      method: 'GET',
-      headers: getHeaders(),
-      next: {
-        revalidate: nextOptions.revalidate,
-        tags: nextOptions.tags,
-      },
-      cache: nextOptions.revalidate === 0 ? 'no-store' : 'force-cache',
-    }
-  );
+  const url = `${baseURL}${table_name}${params ? `?${params instanceof URLSearchParams ? params.toString() : new URLSearchParams(params).toString()}` : ''}`;
 
-  if (!res.ok) throw new Error('Fetch Failed');
-
-  return res.json() as Promise<T[]>;
+  return (await fetchInstance<T>(url, {
+    ...options,
+  })) as T;
 };
 
-export const fetchDatadetails = async <T>(
-  table_name: TableName,
-  params?: string,
-  nextOptions: {
-    revalidate?: number | false;
-    tags?: string[];
-  } = { revalidate: false }
+export const authFetch = async <T>(
+  action: string,
+  options: RequestInit = {}
 ) => {
-  const res = await fetch(
-    `${baseURL}${table_name}${params ? `?${params}` : ''}`,
-    {
-      method: 'GET',
-      headers: { ...getHeaders(), Accept: 'application/vnd.pgrst.object+json' },
-      next: {
-        revalidate: nextOptions.revalidate,
-        tags: nextOptions.tags,
-      },
-      cache: nextOptions.revalidate === 0 ? 'no-store' : 'force-cache',
-    }
-  );
-
-  if (!res.ok) throw new Error('Fetch Failed');
-
-  return res.json() as Promise<T>;
+  const url = `${baseAuthURL}${action}`;
+  return await fetchInstance<T>(url, options);
 };

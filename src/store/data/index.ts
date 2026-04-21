@@ -1,19 +1,18 @@
-import { initialStatus, Status } from '@/constants/status';
 import { Category } from '@/types';
 import { createSlice } from '@reduxjs/toolkit';
 
 type DataStateProps = {
   categories: Category[] | null;
-  status: {
-    category: Status;
-  };
+  user: {
+    id: string;
+    email: string;
+    username: string;
+  } | null;
 };
 
 const initialState: DataStateProps = {
   categories: null,
-  status: {
-    category: initialStatus,
-  },
+  user: null,
 };
 
 const slice = createSlice({
@@ -23,8 +22,11 @@ const slice = createSlice({
     setCategory: (state, { payload }) => {
       state.categories = payload;
     },
+    setUser: (state, { payload }) => {
+      state.user = payload;
+    },
   },
 });
 
-export const { setCategory } = slice.actions;
+export const { setCategory, setUser } = slice.actions;
 export default slice.reducer;

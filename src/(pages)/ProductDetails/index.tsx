@@ -8,12 +8,23 @@ import Tabs from './components/Tabs';
 import RelatedProductSlider from './components/RelatedProductSlider';
 import WishlistBtn from '@/components/WishlistBtn';
 import { notFound } from 'next/navigation';
-import { fetchDatadetails } from '@/api/fetch/helpers';
+import { fetchData } from '@/api/fetch/helpers';
 
 const ProductDetails = async ({ slug }: { slug: string }) => {
-  const product = await fetchDatadetails<Product>(
+  const product = await fetchData<Product>(
     'shop_products',
-    `slug=eq.${slug}`
+    {
+      slug: `eq.${slug}`,
+    },
+    {
+      headers: {
+        Accept: 'application/vnd.pgrst.object+json',
+      },
+      next: {
+        revalidate: 3000,
+        tags: ['product', `product-${slug}`],
+      },
+    }
   );
 
   if (!product) notFound();

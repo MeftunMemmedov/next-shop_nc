@@ -4,20 +4,27 @@ import { useState } from 'react';
 
 import { ArrowDownIcon } from '@/assets/images/icons';
 
-import { useAppSelector } from '@/store/hooks';
 import { useQueryState } from 'nuqs';
 import { Brand } from '@/types';
+import { useSearchParams } from 'next/navigation';
 
 const BrandFilter = ({ brands }: { brands: Brand[] }) => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const { categories } = useAppSelector((store) => store.data);
-
+  const searchParams = useSearchParams();
   const [brandQuery, setBrandQuery] = useQueryState('brand', {
     shallow: false,
-    scroll: true,
-    history: 'push',
+    history: 'replace',
   });
-  if (!categories || categories.length === 0) return null;
+
+  const isBrandFilterActive = (brand: Brand) =>
+    brandQuery === brand.slug || searchParams.get('brand') === brand.slug;
+
+  // useEffect(() => {
+  //   if (!searchParams.toString()) {
+  //     setBrandQuery(null);
+  //   }
+  // }, [searchParams]);
+  if (!brands || brands.length === 0) return null;
   return (
     <div className="accordion">
       <div className="accordion-item mb-4 pb-3">
@@ -40,7 +47,7 @@ const BrandFilter = ({ brands }: { brands: Brand[] }) => {
                 <li className="list-item" key={`category-${brand.slug}-filter`}>
                   <a
                     role="button"
-                    className={`menu-link py-1 d-flex gap-2  ${brandQuery === brand.slug ? 'fw-bold' : ''}`}
+                    className={`menu-link py-1 d-flex gap-2 ${isBrandFilterActive(brand) ? 'fw-bold' : ''}`}
                     onClick={() => {
                       setBrandQuery(brand.slug);
                     }}

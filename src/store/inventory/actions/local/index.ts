@@ -4,7 +4,6 @@ import { WritableDraft } from '@reduxjs/toolkit';
 
 type InventoryState = WritableDraft<InventoryStateProps>;
 
-// --CART
 // ----CLEAR
 export const clearCart = (state: InventoryState) => {
   state.local.cart.count = 0;

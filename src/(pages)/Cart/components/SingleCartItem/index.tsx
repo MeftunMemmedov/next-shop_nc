@@ -13,11 +13,10 @@ import { CartItem } from '@/types';
 
 import { getPriceDisplay, getProductPrice } from '@/helpers';
 
-import { useAppDispatch } from '@/store/hooks';
-import { changeLocalCartItemQuantity } from '@/store/inventory';
 import { useCart } from '@/hooks';
 import { Link } from '@/i18n/routing';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 interface Props {
   item: CartItem;
@@ -25,10 +24,10 @@ interface Props {
 }
 
 const SingleCartItem = ({ item, setLetCheckout }: Props) => {
-  const dispatch = useAppDispatch();
   const [inputFocused, setInputFocused] = useState<boolean>(false);
 
-  const { handleClickQuantity, toggleCart } = useCart();
+  const { handleClickQuantity, toggleCart, updateQuantity, isPending } =
+    useCart();
 
   const [quantity, setQuantity] = useState<string>(
     item.quantity.toString() || ''
@@ -41,39 +40,23 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
     }
   };
 
-  const updateQuantity = (newQuantity: string) => {
+  const updateQuantityByInput = (newQuantity: string) => {
     const quantity = Math.max(1, parseInt(newQuantity) || 1);
-    if (false) {
-      // dispatch(
-      //   updateUserCartItemQuantity({
-      //     product: item.product.slug,
-      //     quantity:
-      //       quantity >= item.product.quantity
-      //         ? item.product.quantity
-      //         : quantity,
-      //   })
-      // );
-    } else {
-      dispatch(
-        changeLocalCartItemQuantity({
-          product: item.product,
-          quantity: quantity,
-        })
-      );
-    }
+    updateQuantity(item.product, quantity, () => {
+      setQuantity('1');
+      toast.error(`An error occured while cart action`);
+    });
   };
 
-  const blocking = quantity === '' || inputFocused;
+  const blocking = quantity === '' || inputFocused || isPending;
 
   const handleBlur = () => {
     let corrected = quantity;
     if (quantity === '' || quantity === '0') {
       corrected = '1';
-    } else if (+quantity >= item.product.quantity) {
-      corrected = item.product.quantity.toString();
     }
     setQuantity(corrected);
-    updateQuantity(corrected);
+    updateQuantityByInput(corrected);
     setInputFocused(false);
   };
 
@@ -85,6 +68,13 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
     }
   }, [quantity, inputFocused]);
 
+  // useEffect(() => {
+  //   if (!actionState) return;
+  //   if (actionState?.status === 'failure' && quantity !== '1') {
+  //     setQuantity('1');
+  //   }
+  // }, [actionState]);
+
   return (
     <tr>
       <td>
@@ -92,7 +82,7 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
           <Link href={`/products/${item.product.slug}`}>
             <Image
               loading="lazy"
-              src={item.product.images[0].url}
+              src={item.product.images[0]}
               width={120}
               height={120}
               alt={item.product.title}
@@ -142,7 +132,7 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
           />
 
           <button
-            disabled={blocking}
+            disabled={blocking || +quantity === 1}
             className="qty-control__reduce btn bg-transparent"
             onClick={() => handleClickQuantity(item, '-', setQuantity)}
           >
@@ -150,7 +140,7 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
           </button>
 
           <button
-            disabled={blocking || +quantity >= item.product.quantity}
+            disabled={blocking}
             className="qty-control__increase  btn bg-transparent"
             onClick={() => handleClickQuantity(item, '+', setQuantity)}
           >
@@ -172,7 +162,7 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
 
       <td>
         <button
-          onClick={() => toggleCart(item.product)}
+          onClick={() => toggleCart(item.product, 0)}
           className="remove-cart btn"
         >
           <RemoveIcon />

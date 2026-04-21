@@ -1,16 +1,30 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import SingleCartItem from './components/SingleCartItem';
 import { useCart } from '@/hooks';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import { Link } from '@/i18n/routing';
 import { getPriceDisplay } from '@/helpers';
+import { revalidateCartData } from '@/actions/cart';
+import { useRouter } from 'next/navigation';
 
 const Cart = () => {
   const [letCheckout, setLetCheckout] = useState<boolean>(false);
-
-  const { items: cartItems, count: cartCount, total: cartTotal } = useCart();
+  const router = useRouter();
+  const {
+    items: cartItems,
+    count: cartCount,
+    total: cartTotal,
+    isPending,
+  } = useCart();
   const columns = ['Product', '', 'Price', 'Quantity', 'Total'];
+  const [, startTransition] = useTransition();
+  useEffect(() => {
+    startTransition(() => {
+      revalidateCartData();
+      router.refresh();
+    });
+  }, []);
   return (
     <main>
       <div className="mb-4 pb-5" />
@@ -85,7 +99,7 @@ const Cart = () => {
                       //     navigate('/login');
                       //   }
                       // }}
-                      disabled={!letCheckout}
+                      disabled={!letCheckout || isPending}
                       className="btn btn-primary btn-checkout d-flex justify-content-center align-items-center"
                     >
                       Checkout

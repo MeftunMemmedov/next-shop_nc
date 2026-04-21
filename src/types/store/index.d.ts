@@ -1,3 +1,5 @@
+import { User } from '../user';
+
 export type InventoryStateProps = {
   local: {
     cart: {
@@ -11,21 +13,17 @@ export type InventoryStateProps = {
     };
   };
   user: {
-    cart: {
-      items: CartItem[] | null;
-      count: number;
-      total: number;
-    };
-    wishlist: {
-      items: Product[] | null;
-      count: number;
+    info: User | null;
+    inventory: {
+      cart: {
+        items: CartItem[] | null;
+        count: number;
+        total: number;
+      };
+      wishlist: {
+        items: Product[] | null;
+        count: number;
+      };
     };
   };
-  status: {
-    cart: Status;
-    cartAction: Status;
-    wishlist: Status;
-    wishlistAction: Status;
-  };
-  errors: Record<string, string | null>;
 };

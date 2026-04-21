@@ -1,9 +1,8 @@
 'use client';
 import { createSlice } from '@reduxjs/toolkit';
 
-import { initialStatus } from '@/constants/status';
-
-import * as SyncActions from './actions/sync/actions';
+import * as LocalActions from './actions/local';
+import * as UserActions from './actions/user';
 
 import { CartItem, InventoryStateProps, Product } from '@/types';
 
@@ -36,25 +35,18 @@ const initialState: InventoryStateProps = {
     },
   },
   user: {
-    cart: {
-      items: null,
-      count: 0,
-      total: 0,
+    info: null,
+    inventory: {
+      cart: {
+        items: null,
+        count: 0,
+        total: 0,
+      },
+      wishlist: {
+        items: null,
+        count: 0,
+      },
     },
-    wishlist: {
-      items: null,
-      count: 0,
-    },
-  },
-  status: {
-    cart: initialStatus,
-    cartAction: initialStatus,
-    wishlist: initialStatus,
-    wishlistAction: initialStatus,
-  },
-  errors: {
-    cart: null,
-    wishlist: null,
   },
 };
 
@@ -63,25 +55,46 @@ export const slice = createSlice({
   initialState,
   //   -----//LOCAL ACTIONS//-----//
   reducers: {
-    // ------CART ACTIONS-------//
-    clearLocalCart: SyncActions.clearCart,
-    addToLocalCart: SyncActions.addToLocalCart,
-    removeFromLocalCart: SyncActions.removeFromLocalCart,
-    changeLocalCartItemQuantity: SyncActions.changeLocalCartItemQuantity,
+    // ------LOCAL CART ACTIONS-------//
+    setUserInfo: (state, { payload }) => {
+      state.user.info = payload;
+    },
+    clearLocalCart: LocalActions.clearCart,
+    addToLocalCart: LocalActions.addToLocalCart,
+    removeFromLocalCart: LocalActions.removeFromLocalCart,
+    changeLocalCartItemQuantity: LocalActions.changeLocalCartItemQuantity,
 
+    // ------USER CART ACTIONS-------//
+    setUserCart: (state, { payload }: { payload: CartItem[] }) => {
+      state.user.inventory.cart.items = payload;
+      state.user.inventory.cart.count = payload.length;
+      state.user.inventory.cart.total = payload.reduce((acc, item) => {
+        return acc + getProductPrice(item.product) * item.quantity;
+      }, 0);
+    },
+    addToUserCart: UserActions.addToUserCart,
+    removeFromUserCart: UserActions.removeFromUserCart,
+    changeUserCartItemQuantity: UserActions.changeUserCartItemQuantity,
     // ----WISHLIST ACTIONS----//
-    clearLocalWishlist: SyncActions.clearLocalWishlist,
-    addToLocalWishlist: SyncActions.addToLocalWishlist,
-    removeFromLocalWishlist: SyncActions.removeFromLocalWishlist,
+    clearLocalWishlist: LocalActions.clearLocalWishlist,
+    addToLocalWishlist: LocalActions.addToLocalWishlist,
+    removeFromLocalWishlist: LocalActions.removeFromLocalWishlist,
   },
 });
 
 export const {
+  setUserInfo,
   // CART
+  // --LOCAL
   clearLocalCart,
   addToLocalCart,
   removeFromLocalCart,
   changeLocalCartItemQuantity,
+  // --USER
+  setUserCart,
+  addToUserCart,
+  removeFromUserCart,
+  changeUserCartItemQuantity,
   // WISHLIST
   clearLocalWishlist,
   addToLocalWishlist,

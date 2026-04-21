@@ -6,6 +6,11 @@ import { Link } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
 import Dispatches from './components/Dispatches';
 import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
+import { getSession } from '@/api/fetch/helpers/auth';
+import { fetchData } from '@/api/fetch/helpers';
+import { CartItem } from '@/types';
+import { cookies } from 'next/headers';
+import CartModal from '../CartModal';
 
 const header_top_texts = [
   'DISCOUNTS ON SAMOVARS – THE MOST DELICIOUS WAY TO BREW TEA',
@@ -27,9 +32,35 @@ const header_top_texts = [
 
 const Header = async () => {
   const categories = await getCategoryListwChildren();
+
+  const userSession = await getSession();
+
+  const cookieStore = await cookies();
+  const access = cookieStore.get('access')?.value;
+  const cartData = userSession
+    ? await fetchData<CartItem[]>(
+        'shop_cart',
+        {
+          select: '*,product(*)',
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+          next: {
+            tags: ['cart'],
+          },
+        }
+      )
+    : null;
+
   return (
     <header className="header header_sticky container">
-      <Dispatches categories={categories} />
+      <Dispatches
+        categories={categories}
+        cartData={cartData}
+        user={userSession}
+      />
       <div className="announcement-bar bg-dark text-light d-flex row">
         <div className="col-11">
           <div className="wrap-announcement-bar">
@@ -79,13 +110,13 @@ const Header = async () => {
                         <div className="row">
                           <div className="col-9">
                             <div className="row">
-                              {/* {categories?.results.map((item) => (
+                              {categories?.map((item) => (
                                 <div
                                   className="col-xl-3 col-lg-4 col-2 pe-4 mb-3"
                                   key={`category--${item.slug}`}
                                 >
                                   <Link
-                                    to={`/products?category=${item.slug}`}
+                                    href={`/products?category=${item.slug}`}
                                     className="sub-menu__title text-dark"
                                   >
                                     {item.title}
@@ -98,7 +129,7 @@ const Header = async () => {
                                         key={`childcategory-${child.slug}`}
                                       >
                                         <Link
-                                          to={`/products?category=${child.slug}`}
+                                          href={`/products?category=${child.slug}`}
                                           className="menu-link menu-link_us-s"
                                         >
                                           {child.title}
@@ -107,7 +138,7 @@ const Header = async () => {
                                     ))}
                                   </ul>
                                 </div>
-                              ))} */}
+                              ))}
                             </div>
                           </div>
                         </div>
@@ -125,13 +156,13 @@ const Header = async () => {
             <div className="header-tools__item hover-container">
               <Link
                 className="header-tools__item"
-                href={false ? '/account/details' : '/auth/signin'}
+                href={userSession ? '/account/details' : '/auth/signin'}
               >
-                {false ? <UserIcon /> : <LoginIcon />}
+                {userSession ? <UserIcon /> : <LoginIcon />}
               </Link>
             </div>
 
-            {/* <CartModal /> */}
+            <CartModal />
           </div>
         </div>
       </div>

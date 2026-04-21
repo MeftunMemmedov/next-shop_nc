@@ -2,7 +2,8 @@
 import { LogoutIcon } from '@/assets/images/icons';
 import { Link, usePathname } from '@/i18n/routing';
 import { accountRoutes } from '@/constants';
-import { ReactNode } from 'react';
+import { ReactNode, useActionState } from 'react';
+import { logoutAction } from '../../actions';
 
 interface Props {
   children: ReactNode;
@@ -14,14 +15,7 @@ const AccountLayout = ({ children }: Props) => {
   const pageTitle =
     accountRoutes.find((route) => pathname === route.path)?.title || '';
 
-  const logOut = () => {
-    // const refresh = getRefreshToken();
-    // dispatch(logout(refresh));
-    // navigate('/');
-    // dispatch(clearWishlist());
-    // dispatch(clearCart());
-    // window.location.reload();
-  };
+  const [, formAction, isPending] = useActionState(logoutAction, {});
 
   return (
     <>
@@ -46,17 +40,17 @@ const AccountLayout = ({ children }: Props) => {
                 </li>
               ))}
 
-              {false && (
-                <li>
+              <li>
+                <form action={formAction}>
                   <button
                     className={`btn btn-transparent menu-link menu-link_us-s d-flex align-items-center gap-2 text-danger`}
-                    onClick={logOut}
+                    type="submit"
                   >
                     <LogoutIcon />
-                    <span>Logout</span>
+                    <span>{isPending ? 'Logging out' : 'Logout'}</span>
                   </button>
-                </li>
-              )}
+                </form>
+              </li>
             </ul>
           </div>
 

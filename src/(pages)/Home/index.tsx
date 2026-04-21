@@ -1,32 +1,48 @@
-import { fetchDatalist } from '@/api/fetch/helpers';
+import { fetchData } from '@/api/fetch/helpers';
 import * as Sections from './sections';
 import { Category, Product, Slide } from '@/types';
 
 const Home = async () => {
   // SLIDES
-  const slides = await fetchDatalist<Slide>('shop_slides');
-
-  // FEATURED CATEGORIES
-  const featuredCategoryParams = new URLSearchParams({
-    select: '*',
-    parent_slug: 'is.null',
+  const slidesFetch = await fetchData<Slide[]>('shop_slides', undefined, {
+    next: {
+      revalidate: 3600,
+    },
   });
 
-  const featuredCategories = await fetchDatalist<Category>(
+  // FEATURED CATEGORIES
+  const featuredCategoryParams = {
+    select: '*',
+    parent_slug: 'is.null',
+  };
+
+  const featuredCategoriesFetch = await fetchData<Category[]>(
     'shop_categories',
-    featuredCategoryParams
+    featuredCategoryParams,
+    {
+      cache: 'force-cache',
+    }
   );
 
   // FEATURED PRODUCTS
-  const featuredProductParams = new URLSearchParams({
+  const featuredProductParams = {
     select: '*',
     is_featured: 'eq.true',
-  });
+  };
 
-  const featuredProducts = await fetchDatalist<Product>(
+  const featuredProductsFetch = await fetchData<Product[]>(
     'shop_products',
-    featuredProductParams
+    featuredProductParams,
+    {
+      cache: 'force-cache',
+    }
   );
+
+  const [slides, featuredCategories, featuredProducts] = await Promise.all([
+    slidesFetch,
+    featuredCategoriesFetch,
+    featuredProductsFetch,
+  ]);
   return (
     <main>
       <Sections.HeroSlider slides={slides} />

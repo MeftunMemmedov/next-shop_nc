@@ -2,14 +2,31 @@
 
 import { setCategory } from '@/store/data';
 import { useAppDispatch } from '@/store/hooks';
-import { Category } from '@/types';
+import { setUserCart, setUserInfo } from '@/store/inventory';
+import { CartItem, Category, User } from '@/types';
 import { useEffect } from 'react';
 
-const Dispatches = ({ categories }: { categories: Category[] }) => {
+const Dispatches = ({
+  categories,
+  cartData,
+  user,
+}: {
+  categories: Category[];
+  cartData: CartItem[] | null;
+  user: User | null;
+}) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(setCategory(categories));
+    if (user) dispatch(setUserInfo(user));
+  }, [user]);
+
+  useEffect(() => {
+    if (cartData) dispatch(setUserCart(cartData));
+  }, [cartData]);
+
+  useEffect(() => {
+    if (categories) dispatch(setCategory(categories));
   }, [categories]);
   return null;
 };

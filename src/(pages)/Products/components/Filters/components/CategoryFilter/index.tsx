@@ -6,16 +6,30 @@ import { ArrowDownIcon } from '@/assets/images/icons';
 
 import { useAppSelector } from '@/store/hooks';
 import { useQueryState } from 'nuqs';
+import { useSearchParams } from 'next/navigation';
+import { Category } from '@/types';
 
 const CategoryFilter = () => {
+  const searchParams = useSearchParams();
+
   const [isVisible, setIsVisible] = useState<boolean>(true);
+
   const { categories } = useAppSelector((store) => store.data);
 
   const [categoryQuery, setCategoryQuery] = useQueryState('category', {
     shallow: false,
-    scroll: true,
-    history: 'push',
+    history: 'replace',
   });
+
+  const isCategoryFiterActive = (category: Category) =>
+    categoryQuery === category.slug ||
+    searchParams.get('category') === category.slug;
+
+  // useEffect(() => {
+  //   if (!searchParams.toString()) {
+  //     setCategoryQuery(null);
+  //   }
+  // }, [searchParams]);
   if (!categories || categories.length === 0) return null;
   return (
     <div className="accordion">
@@ -42,7 +56,7 @@ const CategoryFilter = () => {
                 >
                   <a
                     role="button"
-                    className={`menu-link py-1 d-flex gap-2  ${categoryQuery === category.slug ? 'fw-bold' : ''}`}
+                    className={`menu-link py-1 d-flex gap-2  ${isCategoryFiterActive(category) ? 'fw-bold' : ''}`}
                     onClick={() => {
                       setCategoryQuery(category.slug);
                     }}
@@ -64,7 +78,7 @@ const CategoryFilter = () => {
                       >
                         <a
                           role="button"
-                          className={`menu-link py-1 d-flex gap-2  ${categoryQuery === childCat.slug ? 'fw-bold' : ''}`}
+                          className={`menu-link py-1 d-flex gap-2  ${isCategoryFiterActive(childCat) ? 'fw-bold' : ''}`}
                           onClick={() => {
                             setCategoryQuery(childCat.slug);
                           }}

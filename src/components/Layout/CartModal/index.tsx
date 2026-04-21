@@ -15,12 +15,12 @@ const CartModal = () => {
     items: cartItems,
     count: cartCount,
     total,
-    toggleCart,
     handleClickQuantity,
+    toggleCart,
+    isPending,
   } = useCart();
 
   const { count: wishlistCount } = useWishlist();
-
   if (!cartItems) return null;
   return (
     <>
@@ -77,13 +77,16 @@ const CartModal = () => {
                 key={`cart-modal-item-${item.product.slug}`}
               >
                 <div className="position-relative">
-                  <Link href={`/products/${item.product.slug}`}>
+                  <Link
+                    href={`/products/${item.product.slug}`}
+                    onClick={() => setIsCartModalVisible(false)}
+                  >
                     <Image
                       loading="lazy"
                       width={100}
                       height={100}
                       className="cart-drawer-item__img"
-                      src={item.product.images[0].url}
+                      src={item.product.images[0]}
                       alt={item.product.title}
                     />
                   </Link>
@@ -105,10 +108,11 @@ const CartModal = () => {
                         readOnly
                         min={1}
                         className="qty-control__number border-0 text-center"
+                        disabled={isPending}
                       />
 
                       <button
-                        disabled={item.quantity <= 1}
+                        disabled={item.quantity <= 1 || isPending}
                         className="btn qty-control__reduce text-start"
                         onClick={() => handleClickQuantity(item, '-')}
                       >
@@ -117,10 +121,12 @@ const CartModal = () => {
 
                       <button
                         className="btn qty-control__increase text-end"
+                        disabled={isPending}
                         onClick={() => handleClickQuantity(item, '+')}
                       >
                         +
                       </button>
+                      {/* {isPending ? 'proccess' : ''} */}
                     </div>
 
                     <span className="d-flex flex-column">
@@ -141,7 +147,9 @@ const CartModal = () => {
 
                 <button
                   className="btn-close-xs position-absolute top-0 end-0"
-                  onClick={() => toggleCart(item.product)}
+                  onClick={() => {
+                    toggleCart(item.product, 0);
+                  }}
                 />
               </div>
             ))

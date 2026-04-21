@@ -1,5 +1,5 @@
 'use client';
-import { getDataList } from '@/api/axios/helpers';
+import { fetchData } from '@/api/fetch/helpers';
 import { SearchIcon } from '@/assets/images/icons';
 import { getPriceDisplay } from '@/helpers';
 import { Link, useRouter } from '@/i18n/routing';
@@ -44,10 +44,17 @@ const SearchForm = () => {
     const getResults = async () => {
       try {
         setStatus('loading');
-        const res = await getDataList<Product>('shop_products', {
-          title: `ilike.%${debouncedValue}%`,
-          limit: 5,
-        });
+
+        const res = await fetchData<Product[]>(
+          'shop_products',
+          {
+            title: `ilike.%${debouncedValue}%`,
+            limit: '5',
+          },
+          {
+            cache: 'no-store',
+          }
+        );
         setResults(res);
         setStatus('success');
       } catch {

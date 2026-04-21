@@ -5,10 +5,10 @@ import { routing } from '@/i18n/routing';
 import ReduxProvider from '@/store/provider';
 import { ToastContainer } from 'react-toastify';
 import Header from '@/components/Layout/Header';
-import MobileHeader from '@/components/Layout/MobileHeader';
 import Footer from '@/components/Layout/Footer';
 import { GlobalContextProvider } from '@/context/GlobalContext';
 import { NuqsAdapter } from 'nuqs/adapters/next';
+import { setRequestLocale } from 'next-intl/server';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -32,6 +32,7 @@ const RootLayout = async ({
 
   const finalLocale = isValidLocale ? locale : routing.defaultLocale;
 
+  setRequestLocale(locale);
   // if (!isValidLocale) {
   //   notFound();
   // }
@@ -46,7 +47,7 @@ const RootLayout = async ({
           <NextIntlClientProvider>
             <ToastContainer />
             <Header />
-            <MobileHeader />
+            {/* <MobileHeader /> */}
             <GlobalContextProvider>
               <NuqsAdapter>{children}</NuqsAdapter>
             </GlobalContextProvider>
