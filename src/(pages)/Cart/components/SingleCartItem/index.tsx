@@ -44,7 +44,7 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
     const quantity = Math.max(1, parseInt(newQuantity) || 1);
     updateQuantity(item.product, quantity, () => {
       setQuantity('1');
-      toast.error(`An error occured while cart action`);
+      toast.error(`An error occured while cart action.`);
     });
   };
 
