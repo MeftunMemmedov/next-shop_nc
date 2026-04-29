@@ -1,10 +1,13 @@
 import { LOGO } from '@/assets/images';
 import { PROJECT_NAME, routes } from '@/constants';
-import { CATEGORIES } from '@/data/category';
 import { CONTACT_INFORMATION } from '@/data/contact';
 import { Link } from '@/i18n/routing';
+import { Category } from '@/types';
 
-const Footer = () => {
+const Footer = ({ categories }: { categories: Category[] }) => {
+  const noFeaturedCategories = categories.filter(
+    (category) => !category.is_featured
+  );
   return (
     <footer className="footer footer_type_1">
       <div className="footer-middle container">
@@ -14,8 +17,8 @@ const Footer = () => {
               <Link href="/">
                 <img
                   src={LOGO}
-                  alt={PROJECT_NAME}
                   className="logo__image d-block"
+                  alt={PROJECT_NAME}
                 />
               </Link>
             </div>
@@ -78,27 +81,29 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="footer-column footer-menu mb-4 mb-lg-0">
-            <h6 className="sub-menu__title text-uppercase">Categories</h6>
+          {noFeaturedCategories.length > 0 && (
+            <div className="footer-column footer-menu mb-4 mb-lg-0">
+              <h6 className="sub-menu__title text-uppercase">Categories</h6>
 
-            <ul className="sub-menu__list list-unstyled">
-              {CATEGORIES?.slice(0, 4).map((category) => {
-                return (
-                  <li
-                    className="sub-menu__item"
-                    key={`footer-category-${category.slug}`}
-                  >
-                    <Link
-                      href={`/products?category=${category.slug}`}
-                      className="menu-link menu-link_us-s"
+              <ul className="sub-menu__list list-unstyled">
+                {noFeaturedCategories.slice(0, 5).map((category) => {
+                  return (
+                    <li
+                      className="sub-menu__item"
+                      key={`footer-category-${category.slug}`}
                     >
-                      {category.title}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                      <Link
+                        href={`/products?category=${category.slug}`}
+                        className="menu-link menu-link_us-s"
+                      >
+                        {category.title}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 

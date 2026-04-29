@@ -1,15 +1,20 @@
 'use client';
 import Spinner from '@/components/Spinner';
 import { Link, useRouter } from '@/i18n/routing';
-import { startTransition, useActionState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginAction } from '../../../actions/auth/login';
 import { useForm } from 'react-hook-form';
 import { LoginInput, loginSchema } from '../../../schemas/login.schema';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { clearLocalCart } from '@/store/inventory';
 
 const SignIn = () => {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(loginAction, null);
+  const dispatch = useAppDispatch();
+  const { items, count } = useAppSelector(
+    (store) => store.inventory.local.cart
+  );
 
   const {
     register,
@@ -24,21 +29,45 @@ const SignIn = () => {
     },
   });
 
-  const onSubmit = (data: LoginInput) => {
-    startTransition(() => {
-      formAction(data);
-    });
-  };
+  const [successMessage, setSuccessMessage] = useState<{
+    signin: string;
+    cartSync?: string;
+  }>({ signin: '', cartSync: '' });
 
-  useEffect(() => {
-    if (state?.error) {
-      setError('root', { message: state.error });
+  const onSubmit = handleSubmit(async (data: LoginInput) => {
+    const res = await loginAction({ items, count }, data);
+
+    const { status: signInStatus, message: signInMessage } = res.signin;
+
+    if (signInStatus === 'failure') {
+      setError('root', { message: signInMessage });
     }
 
-    if (state?.success) {
-      router.replace('/');
+    if (signInStatus === 'success') {
+      setSuccessMessage((prevStatus) => ({
+        ...prevStatus,
+        signin: signInMessage,
+      }));
+      setTimeout(() => {
+        dispatch(clearLocalCart());
+        router.push('/');
+      }, 1000);
     }
-  }, [state]);
+
+    const { status: cartSyncStatus, message: cartSyncMessage } = res.cartSync;
+
+    if (cartSyncStatus === 'failure') {
+      setError('root.cartSync', { message: cartSyncMessage });
+    }
+
+    if (cartSyncStatus === 'success') {
+      setSuccessMessage((prevStatus) => ({
+        ...prevStatus,
+        cartSync: cartSyncMessage,
+      }));
+    }
+  });
+
   return (
     <>
       <div className="mb-4 pb-4"></div>
@@ -54,14 +83,14 @@ const SignIn = () => {
           <li className="nav-item">
             <Link
               href="/auth/signup"
-              className={`nav-link nav-link_underscore ${isPending ? 'disabled-link' : ''}`}
+              className={`nav-link nav-link_underscore ${isSubmitting ? 'disabled-link' : ''}`}
             >
               Sign Up
             </Link>
           </li>
         </ul>
 
-        {(isPending || isSubmitting) && (
+        {isSubmitting && (
           <div className="d-flex flex-column align-items-center py-2 mb-2">
             <Spinner size={20} />
           </div>
@@ -70,11 +99,24 @@ const SignIn = () => {
         <div className="tab-content pt-2">
           <div className="tab-pane fade show active">
             <div className="login-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={onSubmit}>
                 <div className="col-md-12">
                   {errors?.root && (
-                    <div className={`alert alert-danger my-3`} role="alert">
-                      {errors.root.message}
+                    <div className="alert alert-danger my-3 " role="alert">
+                      <p className="m-0 text-dark">{errors.root.message}</p>
+                      {errors.root.cartSync && (
+                        <p className="m-0 mt-2">
+                          {errors.root.cartSync.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  {Object.values(successMessage).some((val) => val !== '') && (
+                    <div className="alert alert-success my-3" role="alert">
+                      <p className="m-0 text-dark">{successMessage.signin}</p>
+                      {successMessage.cartSync && (
+                        <p className="m-0 mt-2">{successMessage.cartSync}</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -84,7 +126,7 @@ const SignIn = () => {
                     {...register('email')}
                     className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Email"
-                    disabled={isPending}
+                    disabled={isSubmitting}
                   />
 
                   <label>Email</label>
@@ -104,7 +146,7 @@ const SignIn = () => {
                     type="password"
                     className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder={'Password'}
-                    disabled={isPending}
+                    disabled={isSubmitting}
                   />
 
                   <label>Password</label>
@@ -134,15 +176,13 @@ const SignIn = () => {
                   </Link> */}
                 </div>
 
-                {!state?.success && (
-                  <button
-                    className="btn btn-primary w-100 text-uppercase"
-                    type="submit"
-                    disabled={isPending}
-                  >
-                    {isPending ? 'Processing...' : 'Sign In'}
-                  </button>
-                )}
+                <button
+                  className="btn btn-primary w-100 text-uppercase"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Processing...' : 'Sign In'}
+                </button>
 
                 <div className="customer-option mt-4 text-center">
                   <span className="text-secondary">No account yet?</span>

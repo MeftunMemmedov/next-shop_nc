@@ -6,7 +6,10 @@ export const registerSchema = z
     password: z.string().min(6, ' Min 6 chars'),
     confirmPassword: z.string(),
     data: z.object({
-      user_name: z.string().min(3, 'Username is too short'),
+      user_name: z
+        .string()
+        .min(3, 'Username is too short')
+        .transform((val) => val.trim()),
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {

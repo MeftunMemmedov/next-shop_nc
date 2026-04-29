@@ -1,5 +1,7 @@
+import AccountDetails from '@/(pages)/Account/AccountDetails';
+
 const AccountDetailsPage = () => {
-  return <div>AccountDetailsPage</div>;
+  return <AccountDetails />;
 };
 
 export default AccountDetailsPage;

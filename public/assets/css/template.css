@@ -21406,6 +21406,8 @@ textarea.form-control.is-invalid {
   flex-direction: column;
   gap: 1.87rem;
   margin-bottom: 2.375rem;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .product-single__reviews-item {

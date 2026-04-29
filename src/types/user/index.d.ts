@@ -4,3 +4,5 @@ export type User = {
   user_name: string;
   user_id: string;
 };
+
+export type UserAuthState = { user: User; isAuth: boolean };

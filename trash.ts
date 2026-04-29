@@ -92,3 +92,44 @@
 
 // //   return res.json() as Promise<T>;
 // // };
+// const sync = async () => {
+//   if (!userInfo || !isAuth) return;
+//   await syncCartAction(
+//     localCartItems.map((item) => ({
+//       product: item.product.id,
+//       slug: item.product.slug,
+//       quantity: item.quantity,
+//     })),
+//     userInfo.user_id
+//   );
+//   dispatch(clearLocalCart());
+// };
+
+// const syncCart = async () => {
+//   if (!isAuth) return;
+
+//   const hasNewItems = localCartItems.some((localItem) => {
+//     return !items?.some(
+//       (item: CartItem) => item.product.slug === localItem.product.slug
+//     );
+//   });
+
+//   if (hasNewItems) {
+//     await sync();
+//   }
+// };
+
+// const hasSyncedRef = useRef(false);
+
+// useEffect(() => {
+//   if (!isAuth || !mounted || localCartCount === 0 || !userInfo) return;
+//   if (hasSyncedRef.current) return;
+
+//   hasSyncedRef.current = true;
+
+//   syncCart();
+// }, [mounted, localCartCount, isAuth, userInfo]);
+
+// useEffect(() => {
+//   console.log(items);
+// }, [items]);

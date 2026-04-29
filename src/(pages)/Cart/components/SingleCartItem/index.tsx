@@ -1,19 +1,12 @@
 'use client';
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from 'react';
 
 import { RemoveIcon } from '@/assets/images/icons';
 
-import { CartItem } from '@/types';
+import { CartItem, Product } from '@/types';
 
 import { getPriceDisplay, getProductPrice } from '@/helpers';
 
-import { useCart } from '@/hooks';
 import { Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
@@ -21,17 +14,35 @@ import { toast } from 'react-toastify';
 interface Props {
   item: CartItem;
   setLetCheckout: Dispatch<SetStateAction<boolean>>;
+  isPending: boolean | undefined;
+  toggleCart: (product: Product, quantity: number) => void;
+  handleClickQuantity: (
+    item: CartItem,
+    type: '+' | '-',
+    setQuantity?: Dispatch<SetStateAction<string>>
+  ) => void;
+  updateQuantity: (
+    product: Product,
+    quantity: number,
+    func: () => void
+  ) => void;
 }
 
-const SingleCartItem = ({ item, setLetCheckout }: Props) => {
+const SingleCartItem = ({
+  item,
+  setLetCheckout,
+  toggleCart,
+  updateQuantity,
+  handleClickQuantity,
+  isPending,
+}: Props) => {
   const [inputFocused, setInputFocused] = useState<boolean>(false);
-
-  const { handleClickQuantity, toggleCart, updateQuantity, isPending } =
-    useCart();
 
   const [quantity, setQuantity] = useState<string>(
     item.quantity.toString() || ''
   );
+
+  const prevQuantityVal = useRef<string>(item.quantity.toString());
 
   const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -50,30 +61,26 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
 
   const blocking = quantity === '' || inputFocused || isPending;
 
+  const handleFocus = () => {
+    setLetCheckout(true);
+    setInputFocused(true);
+    prevQuantityVal.current = quantity;
+  };
+
   const handleBlur = () => {
     let corrected = quantity;
     if (quantity === '' || quantity === '0') {
       corrected = '1';
     }
+
+    if (corrected !== prevQuantityVal.current) {
+      updateQuantityByInput(corrected);
+    }
+
+    setLetCheckout(false);
     setQuantity(corrected);
-    updateQuantityByInput(corrected);
     setInputFocused(false);
   };
-
-  useEffect(() => {
-    if (blocking) {
-      setLetCheckout(false);
-    } else {
-      setLetCheckout(true);
-    }
-  }, [quantity, inputFocused]);
-
-  // useEffect(() => {
-  //   if (!actionState) return;
-  //   if (actionState?.status === 'failure' && quantity !== '1') {
-  //     setQuantity('1');
-  //   }
-  // }, [actionState]);
 
   return (
     <tr>
@@ -125,7 +132,7 @@ const SingleCartItem = ({ item, setLetCheckout }: Props) => {
             name="quantity"
             value={quantity}
             onChange={handleQuantityChange}
-            onFocus={() => setInputFocused(true)}
+            onFocus={handleFocus}
             onBlur={handleBlur}
             min={1}
             className="qty-control__number text-center "

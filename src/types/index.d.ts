@@ -14,3 +14,5 @@ export type * from './store';
 export type * from './context';
 export type * from './table';
 export type * from './user';
+export type * from './comment';
+export type * from './actions';

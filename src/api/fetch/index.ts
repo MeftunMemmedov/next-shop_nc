@@ -1,11 +1,8 @@
 import { apikey } from '..';
 
-export const fetchInstance = async <T>(
-  url: string,
-  options: RequestInit = {}
-) => {
+export const fetchInstance = async (url: string, options: RequestInit = {}) => {
   const defaultHeaders = {
-    apikey: apikey || '',
+    apikey: apikey!,
     Authorization: `Bearer ${apikey}`,
     'Content-Type': 'application/json',
   };
@@ -17,17 +14,5 @@ export const fetchInstance = async <T>(
     },
   });
 
-  let data = null;
-
-  try {
-    data = await response.json();
-  } catch {
-    data = null;
-  }
-
-  if (!response.ok) {
-    throw new Error(data?.error_description || data?.msg || 'Request failed');
-  }
-
-  return data as Promise<T>;
+  return response;
 };

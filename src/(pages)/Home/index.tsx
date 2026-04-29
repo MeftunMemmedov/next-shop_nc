@@ -1,10 +1,10 @@
-import { fetchData } from '@/api/fetch/helpers';
 import * as Sections from './sections';
 import { Category, Product, Slide } from '@/types';
+import { getDatalist } from '@/api/fetch/helpers/get';
 
 const Home = async () => {
   // SLIDES
-  const slidesFetch = await fetchData<Slide[]>('shop_slides', undefined, {
+  const slidesFetch = await getDatalist<Slide>('shop_slides', undefined, {
     next: {
       revalidate: 3600,
     },
@@ -16,11 +16,13 @@ const Home = async () => {
     parent_slug: 'is.null',
   };
 
-  const featuredCategoriesFetch = await fetchData<Category[]>(
+  const featuredCategoriesFetch = await getDatalist<Category>(
     'shop_categories',
     featuredCategoryParams,
     {
-      cache: 'force-cache',
+      next: {
+        revalidate: 3600,
+      },
     }
   );
 
@@ -30,11 +32,13 @@ const Home = async () => {
     is_featured: 'eq.true',
   };
 
-  const featuredProductsFetch = await fetchData<Product[]>(
+  const featuredProductsFetch = await getDatalist<Product>(
     'shop_products',
     featuredProductParams,
     {
-      cache: 'force-cache',
+      next: {
+        revalidate: 3600,
+      },
     }
   );
 

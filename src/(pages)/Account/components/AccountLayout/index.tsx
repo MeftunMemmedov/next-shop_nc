@@ -1,9 +1,12 @@
 'use client';
 import { LogoutIcon } from '@/assets/images/icons';
-import { Link, usePathname } from '@/i18n/routing';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { accountRoutes } from '@/constants';
-import { ReactNode, useActionState } from 'react';
-import { logoutAction } from '../../actions';
+import { ReactNode, useActionState, useEffect } from 'react';
+import { logoutAction } from '@/actions/auth/logout';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { clearUser, clearUserCart } from '@/store/inventory';
+import { toast } from 'react-toastify';
 
 interface Props {
   children: ReactNode;
@@ -11,18 +14,39 @@ interface Props {
 
 const AccountLayout = ({ children }: Props) => {
   const pathname = usePathname();
+  const route = useRouter();
+
+  const dispatch = useAppDispatch();
+  const { info, isAuth } = useAppSelector((store) => store.inventory.user);
 
   const pageTitle =
     accountRoutes.find((route) => pathname === route.path)?.title || '';
 
-  const [, formAction, isPending] = useActionState(logoutAction, {});
+  const [state, formAction, isPending] = useActionState(logoutAction, null);
+
+  useEffect(() => {
+    if (state?.status === 'success') {
+      dispatch(clearUserCart());
+      dispatch(clearUser());
+      toast.success(state.message);
+      route.replace('/');
+    }
+  }, [state]);
 
   return (
     <>
       <div className="mb-4 pb-4"></div>
 
       <section className="my-account container">
-        <h2 className="page-title">{pageTitle}</h2>
+        <div className="d-flex align-items-center">
+          <h2 className="page-title me-4">{pageTitle}</h2>
+          {!pathname.endsWith('/account/details/') && (
+            <div className="d-flex align-items-center gap-3 fw-bold">
+              <span>{info?.user_name}</span>
+              <span>{info?.email}</span>
+            </div>
+          )}
+        </div>
 
         <div className="row">
           <div className="col-lg-3">
@@ -55,7 +79,7 @@ const AccountLayout = ({ children }: Props) => {
           </div>
 
           <div className="col-lg-9">
-            {true || pathname.endsWith('/wishlist/') ? (
+            {isAuth || pathname.endsWith('/wishlist/') ? (
               children
             ) : (
               <div className="text-center w-100 py-5 my-5">

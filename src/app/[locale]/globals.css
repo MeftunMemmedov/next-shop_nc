@@ -1933,9 +1933,9 @@ a.disabled-link {
   padding-left: unset;
 }
 
-.product-single__review-form {
+/* .product-single__review-form {
   padding-left: 7.1875rem;
-}
+} */
 
 @media (max-width: 768px) {
   .product-single__review-form {

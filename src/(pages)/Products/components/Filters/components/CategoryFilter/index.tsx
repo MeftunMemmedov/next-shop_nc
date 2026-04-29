@@ -2,19 +2,21 @@
 
 import { useState } from 'react';
 
-import { ArrowDownIcon } from '@/assets/images/icons';
+import { ArrowDownIcon, CategoryIcon } from '@/assets/images/icons';
 
-import { useAppSelector } from '@/store/hooks';
 import { useQueryState } from 'nuqs';
 import { useSearchParams } from 'next/navigation';
 import { Category } from '@/types';
+import Image from 'next/image';
 
-const CategoryFilter = () => {
+interface Props {
+  categories: Category[];
+}
+
+const CategoryFilter = ({ categories }: Props) => {
   const searchParams = useSearchParams();
 
   const [isVisible, setIsVisible] = useState<boolean>(true);
-
-  const { categories } = useAppSelector((store) => store.data);
 
   const [categoryQuery, setCategoryQuery] = useQueryState('category', {
     shallow: false,
@@ -61,13 +63,17 @@ const CategoryFilter = () => {
                       setCategoryQuery(category.slug);
                     }}
                   >
-                    {/* <Image
-                      src={category.image}
-                      loading="lazy"
-                      width={20}
-                      height={20}
-                      alt={category.title}
-                    /> */}
+                    {category.image ? (
+                      <Image
+                        src={category.image}
+                        loading="lazy"
+                        width={20}
+                        height={20}
+                        alt={category.title}
+                      />
+                    ) : (
+                      <CategoryIcon width="20" height="20" />
+                    )}
                     {category.title}
                   </a>
                   <ul>
@@ -83,13 +89,17 @@ const CategoryFilter = () => {
                             setCategoryQuery(childCat.slug);
                           }}
                         >
-                          {/* <Image
-                      src={category.image}
-                      loading="lazy"
-                      width={20}
-                      height={20}
-                      alt={category.title}
-                    /> */}
+                          {childCat.image ? (
+                            <Image
+                              src={childCat.image}
+                              loading="lazy"
+                              width={20}
+                              height={20}
+                              alt={childCat.title}
+                            />
+                          ) : (
+                            <CategoryIcon width="20" height="20" />
+                          )}
                           {childCat.title}
                         </a>
                       </li>

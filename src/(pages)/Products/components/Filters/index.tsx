@@ -1,12 +1,18 @@
 'use client';
 import { use, useEffect } from 'react';
 import { GlobalContext } from '@/context/GlobalContext';
-import { Brand, GlobalContextType } from '@/types';
+import { Brand, Category, GlobalContextType } from '@/types';
 import * as Filter from './components';
 
-const Filters = ({ brands }: { brands: Brand[] }) => {
+interface Props {
+  brands: Brand[];
+  categories: Category[];
+}
+
+const Filters = ({ brands, categories }: Props) => {
   const globalContext = use<GlobalContextType | undefined>(GlobalContext);
   const sidebarVisible = globalContext?.sidebarVisible;
+
   useEffect(() => {
     if (sidebarVisible) {
       document.body.classList.add('overflow-hidden');
@@ -32,7 +38,7 @@ const Filters = ({ brands }: { brands: Brand[] }) => {
 
       <div className="pt-4 pt-lg-0" />
 
-      <Filter.CategoryFilter />
+      <Filter.CategoryFilter categories={categories} />
       <Filter.BrandFilter brands={brands} />
       <Filter.PriceFilter />
     </div>

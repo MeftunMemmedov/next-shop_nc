@@ -1,6 +1,7 @@
 'use server';
-
-import { fetchData } from '@/api/fetch/helpers';
+import { deleteData, patchData, postData } from '@/api/fetch/helpers/mutate';
+import { initialActionState } from '@/constants/actionstatus';
+import { ActionState } from '@/types';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
@@ -20,15 +21,30 @@ export const toggle_Cart = async (
   const cookieStore = await cookies();
   const access = cookieStore.get('access')?.value;
 
+  const actionState: ActionState = initialActionState;
+
   try {
     if (intent === 'remove') {
-      await fetchData(
+      await deleteData(
         'shop_cart',
         {
-          product: `eq.${product}`,
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        },
+        { product: `eq.${product}` }
+      );
+    }
+
+    if (intent === 'add') {
+      await postData(
+        'shop_cart',
+        {
+          user_id,
+          product,
+          quantity,
         },
         {
-          method: 'DELETE',
           headers: {
             Authorization: `Bearer ${access}`,
           },
@@ -36,25 +52,14 @@ export const toggle_Cart = async (
       );
     }
 
-    if (intent === 'add') {
-      await fetchData('shop_cart', undefined, {
-        method: 'POST',
-        body: JSON.stringify({
-          user_id,
-          product,
-          quantity,
-        }),
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
-    }
-    return { status: 'success', message: 'Cart actin successful' };
+    actionState.status = 'success';
+    actionState.message = 'Cart toggling action succeed!';
+    return actionState;
   } catch {
-    return {
-      status: 'failure',
-      message: 'Error while cart action',
-    };
+    actionState.status = 'failure';
+    actionState.message =
+      'An error occured while toggling cart! Please try again';
+    return actionState;
   }
 };
 
@@ -64,31 +69,32 @@ export const update_cartItemQuantity = async (
 ) => {
   const product = formData.get('product');
   const quantity = parseInt(formData.get('quantity') as string);
+
   const cookieStore = await cookies();
   const access = cookieStore.get('access')?.value;
 
+  const actionState: ActionState = initialActionState;
+
   try {
-    await fetchData(
+    await patchData<{ quantity: number }>(
       'shop_cart',
+      { quantity: quantity },
       {
-        product: `eq.${product}`,
-      },
-      {
-        method: 'PATCH',
-        body: JSON.stringify({
-          quantity,
-        }),
         headers: {
           Authorization: `Bearer ${access}`,
         },
-      }
+      },
+      { product: `eq.${product}` }
     );
-    return { status: 'success', message: 'Updated quantity' };
+
+    actionState.status = 'success';
+    actionState.message = 'Quantity updated successfully';
+    return actionState;
   } catch {
-    return {
-      status: 'failure',
-      message: 'Error while updating quantity',
-    };
+    actionState.status = 'failure';
+    actionState.message =
+      'An error occured while updating quantity! Please try again!';
+    return actionState;
   }
 };
 
@@ -96,62 +102,6 @@ export const revalidateCartData = async () => {
   revalidateTag('cart', {});
 };
 
-// export const addto_Cart = async (_: any, formData: FormData) => {
-//   const user_id = formData.get('user_id');
-//   const product = formData.get('product');
-//   const quantity = formData.get('quantity');
-//   const no = formData.get('mode') === 'no';
-
-//   const cookieStore = await cookies();
-//   const access = cookieStore.get('access')?.value;
-//   try {
-//     if (no) {
-//       await fetchData('shop_cart', undefined, {
-//         method: 'POST',
-//         body: JSON.stringify({
-//           user_id,
-//           product,
-//           quantity,
-//         }),
-//         headers: {
-//           Authorization: `Bearer ${access}`,
-//         },
-//       });
-
-//       return { success: true, message: 'Added to cart' };
-//     }
-//   } catch (error) {
-//     return {
-//       failure: true,
-//       message: 'Error while adding to cart',
-//     };
-//   }
-// };
-
-// export const removefrom_Cart = async (_: any, formData: FormData) => {
-//   const product = formData.get('product');
-//   const exists = formData.get('mode') === 'exists';
-//   try {
-//     if (exists) {
-//       await fetchData(
-//         'shop_cart',
-//         {
-//           product: `eq.${product}`,
-//         },
-//         {
-//           method: 'DELETE',
-//           headers: {
-//             Authorization: `Bearer ${access}`,
-//           },
-//         }
-//       );
-
-//       return { success: true, message: 'Removed from cart by action' };
-//     }
-//   } catch (error) {
-//     return {
-//       failure: true,
-//       message: 'Error while removing from cart',
-//     };
-//   }
-// };
+export const action = async () => {
+  console.log('I AM FUCKING ACTIONNN');
+};

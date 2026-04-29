@@ -5,4 +5,5 @@ export type Category = {
   title: string;
   children?: Category[];
   parent_slug: Category | null;
+  is_featured: boolean;
 };

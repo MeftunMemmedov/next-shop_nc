@@ -1,30 +1,34 @@
 'use client';
-import { useEffect, useState, useTransition } from 'react';
+import { useState } from 'react';
 import SingleCartItem from './components/SingleCartItem';
 import { useCart } from '@/hooks';
 import CheckoutSteps from '@/components/CheckoutSteps';
-import { Link } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/routing';
 import { getPriceDisplay } from '@/helpers';
-import { revalidateCartData } from '@/actions/cart';
-import { useRouter } from 'next/navigation';
+import Spinner from '@/components/Spinner';
+import { useAppSelector } from '@/store/hooks';
 
 const Cart = () => {
-  const [letCheckout, setLetCheckout] = useState<boolean>(false);
   const router = useRouter();
+  const {
+    user: { isAuth },
+    status: {
+      cart: { loading: isCartLoading },
+    },
+  } = useAppSelector((store) => store.inventory);
   const {
     items: cartItems,
     count: cartCount,
     total: cartTotal,
+    handleClickQuantity,
+    toggleCart,
+    updateQuantity,
     isPending,
   } = useCart();
   const columns = ['Product', '', 'Price', 'Quantity', 'Total'];
-  const [, startTransition] = useTransition();
-  useEffect(() => {
-    startTransition(() => {
-      revalidateCartData();
-      router.refresh();
-    });
-  }, []);
+
+  const [letCheckout, setLetCheckout] = useState<boolean>(false);
+
   return (
     <main>
       <div className="mb-4 pb-5" />
@@ -34,81 +38,91 @@ const Cart = () => {
 
         <CheckoutSteps currentStep={1} />
 
-        {cartCount === 0 ? (
-          <div className="d-flex flex-column justify-content-center align-items-center mt-5">
-            <h2 className="text-center">Cart is Empty</h2>
-
-            <Link
-              href="/products"
-              className="btn btn-dark mt-2 fs-6 go-to-shop-btn position-relative"
-            >
-              Discover shop
-            </Link>
-          </div>
+        {isCartLoading ? (
+          <Spinner />
         ) : (
-          <div className="shopping-cart">
-            <div className="cart-table__wrapper">
-              <table className="cart-table">
-                <thead>
-                  <tr>
-                    {columns.map((item, index) => (
-                      <th key={index}>{item}</th>
-                    ))}
-                    <th />
-                  </tr>
-                </thead>
+          <>
+            {cartCount === 0 ? (
+              <div className="d-flex flex-column justify-content-center align-items-center mt-5">
+                <h2 className="text-center">Cart is Empty</h2>
 
-                <tbody>
-                  {cartItems?.map((item) => (
-                    <SingleCartItem
-                      item={item}
-                      key={`cart-item-${item.product.slug}`}
-                      setLetCheckout={setLetCheckout}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="shopping-cart__totals-wrapper">
-              <div className="sticky-content">
-                <div className="shopping-cart__totals">
-                  <h3>Totals</h3>
-                  <table className="cart-totals">
-                    <tbody>
-                      {/* <tr>
-                        <th>{tCommon('cart.sub_total')}</th>
-                        <td>{getPriceDisplay(cartTotal)}</td>
-                      </tr> */}
-
+                <Link
+                  href="/products"
+                  className="btn btn-dark mt-2 fs-6 go-to-shop-btn position-relative"
+                >
+                  Discover shop
+                </Link>
+              </div>
+            ) : (
+              <div className="shopping-cart">
+                <div className="cart-table__wrapper">
+                  <table className="cart-table">
+                    <thead>
                       <tr>
-                        <th>Total</th>
-                        <td>{getPriceDisplay(cartTotal)}</td>
+                        {columns.map((item, index) => (
+                          <th key={index}>{item}</th>
+                        ))}
+                        <th />
                       </tr>
+                    </thead>
+
+                    <tbody>
+                      {cartItems?.map((item) => (
+                        <SingleCartItem
+                          key={`cart-item-${item.product.slug}`}
+                          item={item}
+                          setLetCheckout={setLetCheckout}
+                          handleClickQuantity={handleClickQuantity}
+                          toggleCart={toggleCart}
+                          updateQuantity={updateQuantity}
+                          isPending={isPending}
+                        />
+                      ))}
                     </tbody>
                   </table>
                 </div>
 
-                <div className="mobile_fixed-btn_wrapper">
-                  <div className="button-wrapper container">
-                    <button
-                      // onClick={() => {
-                      //   if (isAuth) {
-                      //     navigate('/checkout');
-                      //   } else {
-                      //     navigate('/login');
-                      //   }
-                      // }}
-                      disabled={!letCheckout || isPending}
-                      className="btn btn-primary btn-checkout d-flex justify-content-center align-items-center"
-                    >
-                      Checkout
-                    </button>
+                <div className="shopping-cart__totals-wrapper">
+                  <div className="sticky-content">
+                    <div className="shopping-cart__totals">
+                      <h3>Totals</h3>
+                      <table className="cart-totals">
+                        <tbody>
+                          {/* <tr>
+                        <th>{tCommon('cart.sub_total')}</th>
+                        <td>{getPriceDisplay(cartTotal)}</td>
+                      </tr> */}
+
+                          <tr>
+                            <th>Total</th>
+                            <td>{getPriceDisplay(cartTotal)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="mobile_fixed-btn_wrapper">
+                      <div className="button-wrapper container">
+                        <button
+                          onClick={() => {
+                            if (isAuth) {
+                              router.push('/checkout');
+                            } else {
+                              router.push('/auth/signin');
+                            }
+                          }}
+                          disabled={letCheckout || isPending}
+                          className="btn btn-primary btn-checkout d-flex justify-content-center align-items-center"
+                        >
+                          Checkout
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </section>
     </main>

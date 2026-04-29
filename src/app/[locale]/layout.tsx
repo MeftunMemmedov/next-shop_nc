@@ -9,6 +9,9 @@ import Footer from '@/components/Layout/Footer';
 import { GlobalContextProvider } from '@/context/GlobalContext';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { setRequestLocale } from 'next-intl/server';
+import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
+import { getUser } from '@/api/fetch/helpers/auth/index';
+import { getUserCart } from '@/api/fetch/helpers/cart';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -32,6 +35,11 @@ const RootLayout = async ({
 
   const finalLocale = isValidLocale ? locale : routing.defaultLocale;
 
+  const categories = await getCategoryListwChildren();
+
+  const userSession = await getUser();
+  const userCart = userSession && (await getUserCart());
+
   setRequestLocale(locale);
   // if (!isValidLocale) {
   //   notFound();
@@ -43,15 +51,15 @@ const RootLayout = async ({
         <link rel="stylesheet" href="/assets/css/template.css" />
       </head>
       <body>
-        <ReduxProvider>
+        <ReduxProvider user={userSession} cart={userCart}>
           <NextIntlClientProvider>
             <ToastContainer />
-            <Header />
+            <Header categories={categories} user={userSession} />
             {/* <MobileHeader /> */}
             <GlobalContextProvider>
               <NuqsAdapter>{children}</NuqsAdapter>
             </GlobalContextProvider>
-            <Footer />
+            <Footer categories={categories} />
           </NextIntlClientProvider>
         </ReduxProvider>
       </body>

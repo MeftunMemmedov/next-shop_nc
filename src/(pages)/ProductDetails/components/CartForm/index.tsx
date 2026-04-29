@@ -1,25 +1,33 @@
 'use client';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { CartItem, Product } from '@/types';
 
 import { useCart } from '@/hooks';
 import { toast } from 'react-toastify';
+import { useAppSelector } from '@/store/hooks';
+import Spinner from '@/components/Spinner';
 
 interface Props {
   product: Product;
-  isAuth?: boolean;
 }
 
 const CartForm = ({ product }: Props) => {
-  const { items, inCart, toggleCart, updateQuantity, isPending, actionState } =
-    useCart();
+  const {
+    status: {
+      cart: { loading: isLoading },
+    },
+  } = useAppSelector((store) => store.inventory);
+  const { items, inCart, toggleCart, updateQuantity, isPending } = useCart();
 
-  const productInCart = (): CartItem | undefined =>
-    items?.find((item) => item.product.id === product.id) || undefined;
+  const productInCart: CartItem | undefined = items?.find(
+    (item) => item.product.id === product.id
+  );
+
+  // const [mounted, setMounted] = useState<boolean>(false);
 
   const [quantity, setQuantity] = useState<string>(
-    () => productInCart()?.quantity.toString() || '1'
+    () => productInCart?.quantity.toString() || '1'
   );
 
   const [inputFocused, setInputFocused] = useState<boolean>(false);
@@ -28,7 +36,7 @@ const CartForm = ({ product }: Props) => {
 
   const isProductInCart = inCart(product);
   const isQuantityChanged =
-    isProductInCart && productInCart()?.quantity !== +quantity;
+    isProductInCart && productInCart?.quantity !== +quantity;
 
   const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -52,24 +60,24 @@ const CartForm = ({ product }: Props) => {
   };
 
   const increaseQuantity = () => {
-    const current = parseInt(quantity) || 0;
+    const current = +quantity || 0;
     setQuantity((current + 1).toString());
   };
 
   const decreaseQuantity = () => {
-    const current = parseInt(quantity) || 0;
+    const current = +quantity || 0;
     if (current > MIN_QUANTITY) {
       setQuantity((current - 1).toString());
     }
   };
 
   const handleAddOrUpdateCart = () => {
-    const qty = parseInt(quantity) || MIN_QUANTITY;
+    const qty = +quantity || MIN_QUANTITY;
     toggleCart(product, qty);
   };
 
   const handleUpdateQuantity = () => {
-    const qty = parseInt(quantity) || MIN_QUANTITY;
+    const qty = +quantity || MIN_QUANTITY;
     if (isProductInCart && isQuantityChanged) {
       updateQuantity(product, qty, () => {
         setQuantity('1');
@@ -78,19 +86,7 @@ const CartForm = ({ product }: Props) => {
     }
   };
 
-  useEffect(() => {
-    if (actionState === null) return;
-    if (actionState?.status === 'failure') {
-      toggleCart(product, 1);
-    }
-  }, [actionState]);
-
-  // useEffect(() => {
-  //   if (quantityActionState === null) return;
-  //   if (quantityActionState?.status === 'failure') {
-  //     toggleCart(product, 1);
-  //   }
-  // }, [quantityActionState]);
+  if (isLoading) return <Spinner />;
   return (
     <div className="product-single__addtocart d-flex flex-sm-row flex-column align-items-start">
       <div className="qty-control position-relative">
@@ -104,7 +100,7 @@ const CartForm = ({ product }: Props) => {
           onChange={handleQuantityChange}
           onBlur={handleBlur}
           className="qty-control__number text-center"
-          disabled={isPending}
+          disabled={isPending || isLoading}
         />
 
         <button
@@ -112,7 +108,7 @@ const CartForm = ({ product }: Props) => {
           className="qty-control__reduce btn bg-transparent"
           onClick={decreaseQuantity}
           disabled={
-            parseInt(quantity) <= MIN_QUANTITY || inputFocused || isPending
+            +quantity <= MIN_QUANTITY || inputFocused || isPending || isLoading
           }
         >
           -
@@ -122,7 +118,7 @@ const CartForm = ({ product }: Props) => {
           type="button"
           className="qty-control__increase btn bg-transparent"
           onClick={increaseQuantity}
-          disabled={inputFocused || isPending}
+          disabled={inputFocused || isPending || isLoading}
         >
           +
         </button>

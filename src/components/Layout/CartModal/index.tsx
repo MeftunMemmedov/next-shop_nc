@@ -29,7 +29,9 @@ const CartModal = () => {
         onClick={() => setIsCartModalVisible(false)}
       ></div>
       <button
-        disabled={pathname.endsWith('/checkout') || pathname.endsWith('/cart')}
+        disabled={
+          pathname.endsWith('/checkout/') || pathname.endsWith('/cart/')
+        }
         onClick={() => setIsCartModalVisible(true)}
         className="header-tools__item header-tools__cart btn"
       >
@@ -175,8 +177,8 @@ const CartModal = () => {
 
           <Link
             onClick={() => setIsCartModalVisible(false)}
-            href={true ? '/checkout' : '/login'}
-            className="btn btn-primary mt-3 d-block"
+            href={true ? '/checkout' : '/auth/signin'}
+            className={`btn btn-primary mt-3 d-block ${isPending ? 'disabled-link' : ''}`}
           >
             Checkout
           </Link>

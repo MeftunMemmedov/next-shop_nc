@@ -1,4 +1,14 @@
 export type AuthActionState = {
-  success?: boolean;
-  error?: string;
+  status: 'success' | 'failure';
+  message: string;
 } | null;
+
+export type ActionState = {
+  status: 'success' | 'failure' | 'idle';
+  message: string;
+};
+
+export type SigninActionState = {
+  signin: ActionState;
+  cartSync: ActionState;
+};

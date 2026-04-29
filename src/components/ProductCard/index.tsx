@@ -1,4 +1,4 @@
-import { RatingIcon, RemoveIcon } from '@/assets/images/icons';
+import { RemoveIcon } from '@/assets/images/icons';
 
 import { Product } from '@/types';
 
@@ -23,7 +23,7 @@ const ProductCard = ({ product, onRemove }: Props) => {
     price,
     is_new,
     slug,
-    rating,
+    // rating,
   } = product;
 
   return (
@@ -71,10 +71,10 @@ const ProductCard = ({ product, onRemove }: Props) => {
                 {getPriceDisplay(product)}
               </span>
             </div>
-            <div className="d-flex align-items-center gap-1">
+            {/* <div className="d-flex align-items-center gap-1">
               <RatingIcon width="12" />
               {rating}
-            </div>
+            </div> */}
           </div>
 
           <WishlistBtn product={product} />

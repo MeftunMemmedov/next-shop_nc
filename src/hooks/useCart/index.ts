@@ -21,18 +21,19 @@ import {
 } from '@/store/inventory';
 import { toggle_Cart, update_cartItemQuantity } from '@/actions/cart';
 import { debounce } from '@/helpers/debounce';
+import { useRouter } from '@/i18n/routing';
 
-const useCart = (): {
+type CartHookType = {
   items: CartItem[] | null;
   count: number;
   total: number;
-  toggleCart: (product: Product, quantity: number) => void;
-  inCart: (product: Product) => boolean | undefined;
+  isPending?: boolean;
   actionState?: {
     status: string;
     message: string;
   } | null;
-  isPending?: boolean;
+  toggleCart: (product: Product, quantity: number) => void;
+  inCart: (product: Product) => boolean | undefined;
   handleClickQuantity: (
     item: CartItem,
     type: '+' | '-',
@@ -43,7 +44,9 @@ const useCart = (): {
     quantity: number,
     func: () => void
   ) => void;
-} => {
+};
+
+const useCart = (): CartHookType => {
   const dispatch = useAppDispatch();
   const { local, user } = useAppSelector((store) => store.inventory);
 
@@ -54,6 +57,8 @@ const useCart = (): {
     total: localCartTotal,
   } = local.cart;
 
+  const router = useRouter();
+
   const inLocalCart = (product: Product): boolean => {
     return localCartItems.some((item) => item.product.id === product.id);
   };
@@ -63,6 +68,10 @@ const useCart = (): {
       dispatch(removeFromLocalCart(product));
       toast.error(`${product.title} removed from cart`);
     } else {
+      if (localCartItems.length >= 2) {
+        router.push('/auth/signin');
+        return;
+      }
       dispatch(addToLocalCart({ product: product, quantity: quantity }));
       toast.success(`${product.title} added to cart`);
     }
@@ -98,7 +107,8 @@ const useCart = (): {
     count: userCartCount,
     total: userCartTotal,
   } = user.inventory.cart;
-  const { info: userInfo } = user;
+
+  const { isAuth, info: userInfo } = user;
 
   const [actionState, setActionState] = useState<{
     status: string;
@@ -123,10 +133,11 @@ const useCart = (): {
     }
 
     startTransition(async () => {
-      if (userInfo !== null) {
+      if (isAuth && userInfo) {
         const formData = new FormData();
         formData.append('product', product.id);
         formData.append('quantity', quantity.toString());
+        formData.append('slug', product.slug);
         formData.append('user_id', userInfo.user_id);
         formData.append('intent', inUserCart(product) ? 'remove' : 'add');
 
@@ -182,15 +193,17 @@ const useCart = (): {
     dispatch(changeUserCartItemQuantity({ product, quantity }));
 
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append('quantity', quantity.toString());
-      formData.append('product', product.id);
-      const res = await update_cartItemQuantity(null, formData);
-      if (func && res.status === 'failure') func();
+      if (isAuth) {
+        const formData = new FormData();
+        formData.append('quantity', quantity.toString());
+        formData.append('product', product.id);
+        const res = await update_cartItemQuantity(null, formData);
+        if (func && res.status === 'failure') func();
+      }
     });
   };
 
-  if (userInfo !== null) {
+  if (isAuth) {
     return {
       items: userCartItems,
       count: userCartCount,

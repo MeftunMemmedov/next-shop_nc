@@ -1,15 +1,21 @@
 'use server';
-
-import { AuthActionState } from '@/types/actions';
+import { ActionState } from '@/types';
 import { RegisterInput, registerSchema } from '../../schemas/register.schema';
-import { signUp } from '@/api/fetch/helpers/auth';
+import { signUp } from '@/api/fetch/helpers/auth/index';
+import { initialActionState } from '@/constants/actionstatus';
 
 export const registerAction = async (
-  _prevState: AuthActionState,
   data: RegisterInput
-) => {
+): Promise<ActionState> => {
+  const actionState: ActionState = initialActionState;
+
   const parsed = registerSchema.safeParse(data);
-  if (!parsed.success) return { error: 'Invalid data provided' };
+
+  if (!parsed.success) {
+    actionState.status = 'failure';
+    actionState.message = 'Validation Failed';
+    return actionState;
+  }
 
   const {
     email,
@@ -17,6 +23,7 @@ export const registerAction = async (
     confirmPassword,
     data: { user_name },
   } = parsed.data;
+
   try {
     await signUp({
       email,
@@ -26,26 +33,13 @@ export const registerAction = async (
         user_name,
       },
     });
-
-    return { success: true };
+    actionState.status = 'success';
+    actionState.message = 'You have signed up successfully!';
+    return actionState;
   } catch (error: unknown) {
     const err = error as Error;
-    console.error('Signup Error:', err);
-    return { error: err instanceof Error ? err.message : 'Login failed' };
+    actionState.status = 'failure';
+    actionState.message = err.message || 'Signing up failed! Please try again!';
+    return actionState;
   }
 };
-
-// -- Bu fonksiyon her yeni auth kaydında çalışır
-// create function public.handle_new_user()
-// returns trigger as $$
-// begin
-//   insert into public.shop_profiles (userId, email, userName, role)
-//   values (new.id, new.email, new.raw_user_meta_data->>'userName', 'user'); -- Varsayılan role 'user'
-//   return new;
-// end;
-// $$ language plpgsql security definer;
-
-// -- Tetikleyiciyi oluştur
-// create trigger on_auth_user_created
-//   after insert on auth.users
-//   for each row execute procedure public.handle_new_user();

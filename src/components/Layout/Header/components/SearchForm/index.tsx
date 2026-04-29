@@ -1,68 +1,57 @@
 'use client';
-import { fetchData } from '@/api/fetch/helpers';
 import { SearchIcon } from '@/assets/images/icons';
+import Spinner from '@/components/Spinner';
 import { getPriceDisplay } from '@/helpers';
+import { debounce } from '@/helpers/debounce';
 import { Link, useRouter } from '@/i18n/routing';
 import { Product } from '@/types';
-import { SubmitEvent, useEffect, useState } from 'react';
+// import { usePathname } from 'next/navigation';
+import { SubmitEvent, useEffect, useRef, useState } from 'react';
 
 const SearchForm = () => {
+  // const pathname = usePathname();
   const router = useRouter();
 
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
 
   const [searchInput, setSearchInput] = useState<string>('');
-  const [debouncedVal, setDebouncedVal] = useState<string>('');
   const [results, setResults] = useState<Product[]>([]);
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'success' | 'error' | 'finished'
   >('idle');
   const searchInputValue = searchInput.trim();
-  const debouncedValue = searchInput.trim();
 
-  const resetInput = () => {
+  const resetSearch = () => {
     setResults([]);
     setStatus('idle');
   };
+
+  const fetchResults = async (q: string) => {
+    if (!q) {
+      resetSearch();
+      return;
+    }
+    try {
+      setStatus('loading');
+
+      const res = await fetch(`/api/products?search=${q}`);
+      const searchResults = await res.json();
+
+      setResults(searchResults);
+      setStatus('success');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  const debounceRef = useRef(debounce((q: string) => fetchResults(q), 500));
+
   const handleSearchFormSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     setIsSearchVisible(false);
+    resetSearch();
     router.push(`/products?search=${searchInputValue}`);
-    resetInput();
   };
-
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      setDebouncedVal(searchInput);
-    }, 500);
-
-    return () => clearTimeout(timeOut);
-  }, [searchInput]);
-
-  useEffect(() => {
-    if (debouncedValue === '') return;
-    const getResults = async () => {
-      try {
-        setStatus('loading');
-
-        const res = await fetchData<Product[]>(
-          'shop_products',
-          {
-            title: `ilike.%${debouncedValue}%`,
-            limit: '5',
-          },
-          {
-            cache: 'no-store',
-          }
-        );
-        setResults(res);
-        setStatus('success');
-      } catch {
-        setStatus('error');
-      }
-    };
-    getResults();
-  }, [debouncedVal]);
 
   useEffect(() => {
     if (isSearchVisible) {
@@ -70,7 +59,14 @@ const SearchForm = () => {
     } else {
       document.body.classList.remove('overflow-hidden');
     }
+    return () => document.body.classList.remove('overflow-hidden');
   }, [isSearchVisible]);
+
+  // useEffect(() => {
+  //   setIsSearchVisible(false);
+  //   setSearchInput('');
+  //   resetSearch();
+  // }, [pathname]);
 
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
@@ -119,13 +115,9 @@ const SearchForm = () => {
               name="search-keyword"
               placeholder={'SEARCH....'}
               onChange={(e) => {
-                const value = e.target.value;
+                const value = e.target.value.trim();
                 setSearchInput(value);
-                if (value.trim() === '') {
-                  resetInput();
-                } else {
-                  setStatus('loading');
-                }
+                debounceRef.current(value);
               }}
             />
             <button className="btn-icon search-popup__submit" type="submit">
@@ -139,7 +131,7 @@ const SearchForm = () => {
           <div className="search-popup__results">
             <div className="sub-menu search-results">
               {status === 'loading' ? (
-                <div>Loading...</div>
+                <Spinner />
               ) : (
                 results.length > 0 && (
                   <ul className="d-flex flex-column gap-3 container">
@@ -169,18 +161,18 @@ const SearchForm = () => {
                   </ul>
                 )
               )}
-              {debouncedVal === '' && status === 'idle' && (
-                <div className="py-16 text-center text-gray-400">
+              {searchInputValue === '' && status === 'idle' && (
+                <div className="py-3 text-center">
                   <p>Start typing to search movies</p>
                 </div>
               )}
               {status === 'success' && results.length === 0 && (
-                <div className="py-10 text-center text-white">
+                <div className="py-3 text-center">
                   <p>No result found</p>
                 </div>
               )}
               {status === 'error' && (
-                <div className="py-10 text-center text-red-800">
+                <div className="py-3 text-center text-danger">
                   <p>An error occured. Please try again.</p>
                 </div>
               )}

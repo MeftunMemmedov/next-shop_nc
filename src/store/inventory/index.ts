@@ -1,12 +1,19 @@
-'use client';
 import { createSlice } from '@reduxjs/toolkit';
 
-import * as LocalActions from './actions/local';
 import * as UserActions from './actions/user';
+import * as LocalCartActions from './actions/local/cart';
+import * as LocalWishlistActions from './actions/local/wishlist';
+import * as UserCartActions from './actions/user/cart';
 
 import { CartItem, InventoryStateProps, Product } from '@/types';
 
 import { getProductPrice } from '@/helpers';
+import { initialStatus } from '@/constants/status';
+// import { getCart, getUserInfo } from './actions/async/thunks';
+// import {
+//   getCartActions,
+//   getUserInfoActions,
+// } from './actions/async/thunks/actions/cart';
 
 const localCartData =
   typeof window !== 'undefined' && localStorage.getItem('cart');
@@ -35,6 +42,7 @@ const initialState: InventoryStateProps = {
     },
   },
   user: {
+    isAuth: false,
     info: null,
     inventory: {
       cart: {
@@ -48,42 +56,52 @@ const initialState: InventoryStateProps = {
       },
     },
   },
+  status: {
+    user: initialStatus,
+    cart: initialStatus,
+  },
 };
 
 export const slice = createSlice({
   name: 'inventory',
   initialState,
-  //   -----//LOCAL ACTIONS//-----//
   reducers: {
+    initUser: UserActions.initUser,
+    clearUser: UserActions.clearUser,
+    updateUser: UserActions.updateUser,
+    // -------------------------------------------------------------------- //
+    // --------------------------------CART--------------------------------//
     // ------LOCAL CART ACTIONS-------//
-    setUserInfo: (state, { payload }) => {
-      state.user.info = payload;
-    },
-    clearLocalCart: LocalActions.clearCart,
-    addToLocalCart: LocalActions.addToLocalCart,
-    removeFromLocalCart: LocalActions.removeFromLocalCart,
-    changeLocalCartItemQuantity: LocalActions.changeLocalCartItemQuantity,
-
+    clearLocalCart: LocalCartActions.clearLocalCart,
+    addToLocalCart: LocalCartActions.addToLocalCart,
+    removeFromLocalCart: LocalCartActions.removeFromLocalCart,
+    changeLocalCartItemQuantity: LocalCartActions.changeLocalCartItemQuantity,
     // ------USER CART ACTIONS-------//
-    setUserCart: (state, { payload }: { payload: CartItem[] }) => {
-      state.user.inventory.cart.items = payload;
-      state.user.inventory.cart.count = payload.length;
-      state.user.inventory.cart.total = payload.reduce((acc, item) => {
-        return acc + getProductPrice(item.product) * item.quantity;
-      }, 0);
-    },
-    addToUserCart: UserActions.addToUserCart,
-    removeFromUserCart: UserActions.removeFromUserCart,
-    changeUserCartItemQuantity: UserActions.changeUserCartItemQuantity,
-    // ----WISHLIST ACTIONS----//
-    clearLocalWishlist: LocalActions.clearLocalWishlist,
-    addToLocalWishlist: LocalActions.addToLocalWishlist,
-    removeFromLocalWishlist: LocalActions.removeFromLocalWishlist,
+    initUserCart: UserCartActions.initUserCart,
+    clearUserCart: UserCartActions.clearUserCart,
+    addToUserCart: UserCartActions.addToUserCart,
+    removeFromUserCart: UserCartActions.removeFromUserCart,
+    changeUserCartItemQuantity: UserCartActions.changeUserCartItemQuantity,
+    // -------------------------------------------------------------------- //
+    // --------------------------------WISHLIST--------------------------------//
+    // ----LOCAL WISHLIST ACTIONS----//
+    clearLocalWishlist: LocalWishlistActions.clearLocalWishlist,
+    addToLocalWishlist: LocalWishlistActions.addToLocalWishlist,
+    removeFromLocalWishlist: LocalWishlistActions.removeFromLocalWishlist,
   },
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(getUserInfo.pending, getUserInfoActions.pending)
+  //     .addCase(getUserInfo.fulfilled, getUserInfoActions.fulfilled)
+  //     .addCase(getUserInfo.rejected, getUserInfoActions.rejected);
+  //   builder
+  //     .addCase(getCart.pending, getCartActions.pending)
+  //     .addCase(getCart.fulfilled, getCartActions.fulfilled)
+  //     .addCase(getCart.rejected, getCartActions.rejected);
+  // },
 });
 
 export const {
-  setUserInfo,
   // CART
   // --LOCAL
   clearLocalCart,
@@ -91,11 +109,17 @@ export const {
   removeFromLocalCart,
   changeLocalCartItemQuantity,
   // --USER
-  setUserCart,
+  initUser,
+  clearUser,
+  updateUser,
+  // ---USER CART
+  initUserCart,
+  clearUserCart,
   addToUserCart,
   removeFromUserCart,
   changeUserCartItemQuantity,
   // WISHLIST
+  // --LOCAL
   clearLocalWishlist,
   addToLocalWishlist,
   removeFromLocalWishlist,

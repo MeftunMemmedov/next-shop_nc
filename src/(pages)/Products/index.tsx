@@ -2,23 +2,23 @@ import Filters from './components/Filters';
 import ProductCard from '@/components/ProductCard';
 import ToolBar from './components/ToolBar';
 import { Brand, FilterParams, Product } from '@/types';
-import { fetchData } from '@/api/fetch/helpers';
 import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
+import { getDatalist } from '@/api/fetch/helpers/get';
 
 interface Props {
   searchParams: Promise<FilterParams>;
 }
 
 const Products = async ({ searchParams }: Props) => {
-  const brandFetch = fetchData<Brand[]>('shop_brands', undefined, {
+  const brandFetch = getDatalist<Brand>('shop_brands', undefined, {
     next: { revalidate: 3600 },
   });
   const categoryFetch = getCategoryListwChildren();
 
-  const [brands, categories] = await Promise.all([brandFetch, categoryFetch]);
-
   const { category, brand, price_gte, price_lte, order, search } =
     await searchParams;
+
+  const [brands, categories] = await Promise.all([brandFetch, categoryFetch]);
 
   const productParams = new URLSearchParams();
 
@@ -40,13 +40,12 @@ const Products = async ({ searchParams }: Props) => {
 
   const productParamsHaskeys = productParams.size > 0;
 
-  const products = await fetchData<Product[]>(
+  const products = await getDatalist<Product>(
     'shop_products',
     productParamsHaskeys ? productParams : undefined,
     {
       next: {
         tags: ['products'],
-        // revalidate: 60,
       },
     }
   );
@@ -55,7 +54,7 @@ const Products = async ({ searchParams }: Props) => {
     <main>
       <div className="mb-4 pb-lg-3" />
       <section className="shop-main container d-flex">
-        <Filters brands={brands} />
+        <Filters brands={brands} categories={categories} />
         <div className="shop-list flex-grow-1">
           <div className="d-flex justify-content-between mb-4 pb-md-2">
             <ToolBar />

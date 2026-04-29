@@ -1,63 +1,28 @@
-import { getProductPrice } from '@/helpers';
-import { CartItem, InventoryStateProps, Product } from '@/types';
-import { WritableDraft } from '@reduxjs/toolkit';
+import { InventoryState, UserAuthState } from '@/types';
 
-type InventoryState = WritableDraft<InventoryStateProps>;
-
-// ---ADD
-export const addToUserCart = (
-  state: InventoryStateProps,
-  action: {
-    type: string;
-    payload: CartItem;
-  }
-) => {
-  const { product, quantity } = action.payload;
-  const newItem = { product, quantity };
-
-  const updatedItems = [...state.user.inventory.cart.items!, newItem];
-
-  state.user.inventory.cart.items = updatedItems;
-  state.user.inventory.cart.count = updatedItems.length;
-  state.user.inventory.cart.total = updatedItems.reduce((acc, item) => {
-    return acc + getProductPrice(item.product) * item.quantity;
-  }, 0);
-};
-
-//---REMOVE
-export const removeFromUserCart = (
-  state: InventoryStateProps,
-  { payload }: { payload: Product }
-) => {
-  const updatedItems = state.user.inventory.cart.items!.filter(
-    (item) => item.product.slug !== payload.slug
-  );
-
-  state.user.inventory.cart.items = updatedItems;
-  state.user.inventory.cart.count = updatedItems.length;
-  state.user.inventory.cart.total = updatedItems.reduce((acc, item) => {
-    return acc + getProductPrice(item.product) * item.quantity;
-  }, 0);
-};
-
-// ---CHANGE QUANTITY
-export const changeUserCartItemQuantity = (
+export const initUser = (
   state: InventoryState,
-  { payload }: { payload: CartItem }
+  { payload }: { payload: UserAuthState }
 ) => {
-  const { product, quantity } = payload;
-  const updatedCart = state.user.inventory.cart.items!.map((item) => {
-    if (item.product.slug === product.slug) {
-      return {
-        ...item,
-        quantity,
-      };
-    }
-    return item;
-  });
-  state.user.inventory.cart.items = updatedCart;
-  state.user.inventory.cart.count = updatedCart.length;
-  state.user.inventory.cart.total = updatedCart.reduce((acc, item) => {
-    return acc + getProductPrice(item.product) * item.quantity;
-  }, 0);
+  state.user.info = payload.user;
+  state.user.isAuth = payload.isAuth;
+};
+
+export const clearUser = (state: InventoryState) => {
+  state.user.info = null;
+  state.user.isAuth = false;
+};
+
+export const updateUser = (
+  state: InventoryState,
+  { payload }: { payload: { email: string; user_name: string } }
+) => {
+  state.user.info =
+    state.user.info !== null
+      ? {
+          ...state.user.info,
+          user_name: payload.user_name,
+          email: payload.email,
+        }
+      : null;
 };

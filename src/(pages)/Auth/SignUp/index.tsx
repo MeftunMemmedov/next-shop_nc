@@ -1,6 +1,5 @@
 'use client';
-import { Link } from '@/i18n/routing';
-import { startTransition, useActionState, useEffect } from 'react';
+import { Link, useRouter } from '@/i18n/routing';
 import { registerAction } from '../../../actions/auth/register';
 import { useForm } from 'react-hook-form';
 import {
@@ -8,14 +7,15 @@ import {
   registerSchema,
 } from '../../../schemas/register.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 
 const SignUp = () => {
-  const [state, formAction, isPending] = useActionState(registerAction, null);
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isLoading, isSubmitting },
     setError,
     reset,
   } = useForm<RegisterInput>({
@@ -30,22 +30,23 @@ const SignUp = () => {
     },
   });
 
-  const onSubmit = (data: RegisterInput) => {
-    startTransition(() => {
-      formAction(data);
-    });
-  };
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
-  useEffect(() => {
-    if (state?.success) {
-      alert('Profile created! Please verify your email.');
+  const onSubmit = handleSubmit(async (data: RegisterInput) => {
+    const res = await registerAction(data);
+    const { status, message } = res;
+    if (status === 'failure') {
+      setError('root', { message });
+      return;
+    }
+    if (status === 'success') {
       reset();
+      setSuccessMessage(message);
+      setTimeout(() => {
+        router.push('/auth/signup');
+      }, 1000);
     }
-
-    if (state?.error) {
-      setError('root', { message: state.error });
-    }
-  }, [state]);
+  });
 
   return (
     <>
@@ -72,11 +73,16 @@ const SignUp = () => {
         <div className="tab-content pt-2">
           <div className="tab-pane fade show active">
             <div className="register-form">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={onSubmit}>
                 <div className="col-md-12">
                   {errors?.root && (
-                    <div className={`alert alert-danger my-3`} role="alert">
+                    <div className="alert alert-danger my-3" role="alert">
                       {errors.root.message}
+                    </div>
+                  )}
+                  {successMessage !== '' && (
+                    <div className="alert alert-success my-3" role="alert">
+                      {successMessage}
                     </div>
                   )}
                 </div>
@@ -86,7 +92,7 @@ const SignUp = () => {
                     {...register('email')}
                     className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Email"
-                    disabled={isPending}
+                    disabled={isSubmitting || isLoading}
                   />
 
                   <label>Email</label>
@@ -105,7 +111,7 @@ const SignUp = () => {
                     {...register('data.user_name')}
                     placeholder="User name"
                     className={`form-control form-control_gray ${errors.data?.user_name ? 'is-invalid  invalid-input' : ''}`}
-                    disabled={isPending}
+                    disabled={isSubmitting || isLoading}
                   />
                   <label>User name</label>
                   {errors?.data?.user_name && (
@@ -123,7 +129,7 @@ const SignUp = () => {
                     type="password"
                     className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Password"
-                    disabled={isPending}
+                    disabled={isSubmitting || isLoading}
                   />
 
                   <label>Password</label>
@@ -142,7 +148,7 @@ const SignUp = () => {
                     type="password"
                     className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Confirm password"
-                    disabled={isPending}
+                    disabled={isSubmitting || isLoading}
                   />
 
                   <label>Confirm Password</label>

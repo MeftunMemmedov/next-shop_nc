@@ -4,12 +4,7 @@ import { PROJECT_NAME, routes } from '@/constants';
 import SearchForm from './components/SearchForm';
 import { Link } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
-import Dispatches from './components/Dispatches';
-import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
-import { getSession } from '@/api/fetch/helpers/auth';
-import { fetchData } from '@/api/fetch/helpers';
-import { CartItem } from '@/types';
-import { cookies } from 'next/headers';
+import { Category, UserAuthState } from '@/types';
 import CartModal from '../CartModal';
 
 const header_top_texts = [
@@ -30,37 +25,14 @@ const header_top_texts = [
   'LIMITED-TIME TANDOOR DEAL – DON’T MISS OUT!',
 ];
 
-const Header = async () => {
-  const categories = await getCategoryListwChildren();
+interface Props {
+  categories: Category[];
+  user: UserAuthState | null;
+}
 
-  const userSession = await getSession();
-
-  const cookieStore = await cookies();
-  const access = cookieStore.get('access')?.value;
-  const cartData = userSession
-    ? await fetchData<CartItem[]>(
-        'shop_cart',
-        {
-          select: '*,product(*)',
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-          next: {
-            tags: ['cart'],
-          },
-        }
-      )
-    : null;
-
+const Header = async ({ categories, user }: Props) => {
   return (
     <header className="header header_sticky container">
-      <Dispatches
-        categories={categories}
-        cartData={cartData}
-        user={userSession}
-      />
       <div className="announcement-bar bg-dark text-light d-flex row">
         <div className="col-11">
           <div className="wrap-announcement-bar">
@@ -156,9 +128,9 @@ const Header = async () => {
             <div className="header-tools__item hover-container">
               <Link
                 className="header-tools__item"
-                href={userSession ? '/account/details' : '/auth/signin'}
+                href={user?.isAuth ? '/account/details' : '/auth/signin'}
               >
-                {userSession ? <UserIcon /> : <LoginIcon />}
+                {user?.isAuth ? <UserIcon /> : <LoginIcon />}
               </Link>
             </div>
 

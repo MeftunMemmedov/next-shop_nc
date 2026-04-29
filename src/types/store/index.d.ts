@@ -1,6 +1,8 @@
+import { Status } from '@/constants/status';
 import { User } from '../user';
+import { WritableDraft } from '@reduxjs/toolkit';
 
-export type InventoryStateProps = {
+type InventoryStateProps = {
   local: {
     cart: {
       items: CartItem[];
@@ -13,6 +15,7 @@ export type InventoryStateProps = {
     };
   };
   user: {
+    isAuth: boolean;
     info: User | null;
     inventory: {
       cart: {
@@ -26,4 +29,11 @@ export type InventoryStateProps = {
       };
     };
   };
+  status: {
+    user: Status;
+    cart: Status;
+  };
 };
+
+type CartPayload = { payload: CartItem };
+type InventoryState = WritableDraft<InventoryStateProps>;

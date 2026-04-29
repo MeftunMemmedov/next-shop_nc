@@ -1,31 +1,42 @@
 import { Link } from '@/i18n/routing';
-import { Product } from '@/types';
+import { Comment, Product } from '@/types';
 import ImageGallery from './components/ImageGallery';
 import { getPriceDisplay } from '@/helpers';
 import CartForm from './components/CartForm';
 import ShareModal from './components/ShareModal';
-import Tabs from './components/Tabs';
+import Comments from './components/Comments';
 import RelatedProductSlider from './components/RelatedProductSlider';
 import WishlistBtn from '@/components/WishlistBtn';
 import { notFound } from 'next/navigation';
-import { fetchData } from '@/api/fetch/helpers';
+import { getData, getDatalist } from '@/api/fetch/helpers/get';
 
 const ProductDetails = async ({ slug }: { slug: string }) => {
-  const product = await fetchData<Product>(
+  const productFetch = getData<Product>(
     'shop_products',
     {
       slug: `eq.${slug}`,
     },
     {
-      headers: {
-        Accept: 'application/vnd.pgrst.object+json',
-      },
       next: {
         revalidate: 3000,
         tags: ['product', `product-${slug}`],
       },
     }
   );
+  const commentsFetch = getDatalist<Comment>(
+    'shop_comments',
+    {
+      select: '*,product(*),user:user_id(*)',
+      product: `eq.${slug}`,
+    },
+    {
+      next: {
+        tags: [`comments-${slug}`],
+      },
+    }
+  );
+
+  const [product, comments] = await Promise.all([productFetch, commentsFetch]);
 
   if (!product) notFound();
   return (
@@ -138,7 +149,10 @@ const ProductDetails = async ({ slug }: { slug: string }) => {
             </div>
             {/* {product.discount > 0 && product.discount_end_date && (
               <DiscountTimer discountEnd={product.discount_end_date} />
-            )} */}
+              )} */}
+            <div>
+              <p>{product.description}</p>
+            </div>
 
             <CartForm product={product} />
 
@@ -175,7 +189,7 @@ const ProductDetails = async ({ slug }: { slug: string }) => {
             </div> */}
           </div>
         </div>
-        <Tabs product={product} />
+        <Comments slug={slug} comments={comments} />
       </section>
       <RelatedProductSlider />
     </main>
