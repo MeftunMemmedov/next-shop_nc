@@ -13,7 +13,7 @@ export const addCommentAction = async (
   const product = formData.get('product');
   const comment = formData.get('comment');
 
-  const actionState: ActionState = initialActionState;
+  const actionState: ActionState = { ...initialActionState };
 
   if (comment?.toString().trim() === '') {
     actionState.status = 'failure';

@@ -45,7 +45,6 @@ export const removeFromUserCart = (
   const updatedItems = state.user.inventory.cart.items!.filter(
     (item) => item.product.slug !== payload.slug
   );
-
   updateUserCart(state, updatedItems);
 };
 

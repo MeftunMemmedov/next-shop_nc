@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { Dispatch, SetStateAction, useRef, useTransition } from 'react';
 
 import { toast } from 'react-toastify';
 
@@ -19,7 +13,7 @@ import {
   removeFromLocalCart,
   removeFromUserCart,
 } from '@/store/inventory';
-import { toggle_Cart, update_cartItemQuantity } from '@/actions/cart';
+import { toggleCartAction, updateCartitemQuantity } from '@/actions/cart';
 import { debounce } from '@/helpers/debounce';
 import { useRouter } from '@/i18n/routing';
 
@@ -28,10 +22,6 @@ type CartHookType = {
   count: number;
   total: number;
   isPending?: boolean;
-  actionState?: {
-    status: string;
-    message: string;
-  } | null;
   toggleCart: (product: Product, quantity: number) => void;
   inCart: (product: Product) => boolean | undefined;
   handleClickQuantity: (
@@ -110,12 +100,7 @@ const useCart = (): CartHookType => {
 
   const { isAuth, info: userInfo } = user;
 
-  const [actionState, setActionState] = useState<{
-    status: string;
-    message: string;
-  } | null>(null);
-
-  const [isPending, startTransition] = useTransition();
+  const [isCartActionPending, startCartActionTransition] = useTransition();
 
   const inUserCart = (product: Product): boolean | undefined => {
     return (
@@ -126,13 +111,11 @@ const useCart = (): CartHookType => {
   const toggleUserCart = (product: Product, quantity: number = 1) => {
     if (inUserCart(product)) {
       dispatch(removeFromUserCart(product));
-      toast.error(`${product.title} removed from USER cart`);
     } else {
       dispatch(addToUserCart({ product: product, quantity: quantity }));
-      toast.success(`${product.title} added to USER cart`);
     }
 
-    startTransition(async () => {
+    startCartActionTransition(async () => {
       if (isAuth && userInfo) {
         const formData = new FormData();
         formData.append('product', product.id);
@@ -141,25 +124,28 @@ const useCart = (): CartHookType => {
         formData.append('user_id', userInfo.user_id);
         formData.append('intent', inUserCart(product) ? 'remove' : 'add');
 
-        const result = await toggle_Cart(null, formData);
-
-        setActionState((prevState) => ({
-          ...prevState,
-          status: result.status,
-          message: result.message,
-        }));
+        const res = await toggleCartAction(formData);
+        const { status, message } = res;
+        if (status === 'success')
+          toast.success(`${product.title} | ${message}`);
+        if (status === 'failure') {
+          toast.error(`${product.title} | ${message}`);
+          if (inUserCart(product)) {
+            dispatch(changeUserCartItemQuantity({ product, quantity: 1 }));
+          }
+        }
       }
     });
   };
 
   const debouncedUpdateRef = useRef(
     debounce(async (productId: string, quantity: number) => {
-      startTransition(async () => {
+      startCartActionTransition(async () => {
         const formData = new FormData();
         formData.append('quantity', quantity.toString());
         formData.append('product', productId);
 
-        await update_cartItemQuantity(null, formData);
+        await updateCartitemQuantity(formData);
       });
     }, 500)
   );
@@ -188,18 +174,20 @@ const useCart = (): CartHookType => {
   const updateQuantityAction = async (
     product: Product,
     quantity: number,
-    func?: () => void
+    onFailure?: () => void
   ) => {
     dispatch(changeUserCartItemQuantity({ product, quantity }));
 
-    startTransition(async () => {
-      if (isAuth) {
-        const formData = new FormData();
-        formData.append('quantity', quantity.toString());
-        formData.append('product', product.id);
-        const res = await update_cartItemQuantity(null, formData);
-        if (func && res.status === 'failure') func();
-      }
+    startCartActionTransition(async () => {
+      const formData = new FormData();
+      formData.append('quantity', quantity.toString());
+      formData.append('product', product.id);
+      const res = await updateCartitemQuantity(formData);
+      const { status, message } = res;
+      if (status === 'success') toast.success(`${product.title} | ${message}`);
+      if (status === 'failure') toast.error(`${product.title} | ${message}`);
+
+      if (onFailure && status === 'failure') onFailure();
     });
   };
 
@@ -212,8 +200,7 @@ const useCart = (): CartHookType => {
       toggleCart: toggleUserCart,
       handleClickQuantity: handleClickUserQuantity,
       updateQuantity: updateQuantityAction,
-      actionState,
-      isPending,
+      isPending: isCartActionPending,
     };
   }
   return {

@@ -11,7 +11,7 @@ export const editUserAction = async (
 ): Promise<ActionState> => {
   const parsed = editUserSchema.safeParse(data);
 
-  const actionState: ActionState = initialActionState;
+  const actionState: ActionState = { ...initialActionState };
 
   if (!parsed.success) {
     actionState.status = 'failure';

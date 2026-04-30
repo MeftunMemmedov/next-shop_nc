@@ -1,7 +1,7 @@
 'use client';
 import { SearchIcon } from '@/assets/images/icons';
 import Spinner from '@/components/Spinner';
-import { getPriceDisplay } from '@/helpers';
+import { blockScreenByTransparentOverlay, getPriceDisplay } from '@/helpers';
 import { debounce } from '@/helpers/debounce';
 import { Link, useRouter } from '@/i18n/routing';
 import { Product } from '@/types';
@@ -17,7 +17,7 @@ const SearchForm = () => {
   const [searchInput, setSearchInput] = useState<string>('');
   const [results, setResults] = useState<Product[]>([]);
   const [status, setStatus] = useState<
-    'idle' | 'loading' | 'success' | 'error' | 'finished'
+    'idle' | 'loading' | 'success' | 'error'
   >('idle');
   const searchInputValue = searchInput.trim();
 
@@ -53,20 +53,15 @@ const SearchForm = () => {
     router.push(`/products?search=${searchInputValue}`);
   };
 
-  useEffect(() => {
-    if (isSearchVisible) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-    return () => document.body.classList.remove('overflow-hidden');
-  }, [isSearchVisible]);
-
   // useEffect(() => {
   //   setIsSearchVisible(false);
   //   setSearchInput('');
   //   resetSearch();
   // }, [pathname]);
+
+  useEffect(() => {
+    blockScreenByTransparentOverlay(isSearchVisible);
+  }, [isSearchVisible]);
 
   useEffect(() => {
     const close = (event: KeyboardEvent) => {

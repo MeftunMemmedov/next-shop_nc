@@ -14,10 +14,10 @@ const Wishlist = () => {
         ) : items && items?.length > 0 ? (
           items?.map((item) => (
             <ProductCard
-              product={item}
-              key={`wishlist-item-${item.slug}`}
+              product={item.product}
+              key={`wishlist-item-${item.product.slug}`}
               onRemove={() => {
-                toggleWishlist(item);
+                toggleWishlist(item.product);
               }}
             />
           ))

@@ -6,6 +6,7 @@ export const loginSchema = z.object({
     .string()
     .min(6, 'Password must be minimum 6 characters')
     .transform((val) => val.trim()),
+  remember_me: z.boolean().optional(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

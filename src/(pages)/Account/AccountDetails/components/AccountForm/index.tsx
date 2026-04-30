@@ -15,7 +15,7 @@ const AccountForm = () => {
   const dispatch = useAppDispatch();
   const { info } = useAppSelector((store) => store.inventory.user);
 
-  const [disabledEdit, setDisabledEdit] = useState<boolean>(true);
+  const [isEditDisabled, setIsEditDisabled] = useState<boolean>(true);
   const [isAccountFormActive, setIsAccountFormActive] = useState<boolean>(true);
   const [successMessage, setSuccessMessage] = useState<string>('');
 
@@ -36,7 +36,7 @@ const AccountForm = () => {
   });
 
   const onSubmit = handleSubmit(async (data: EditUserInput) => {
-    if (!info) return;
+    if (!info || isEditDisabled) return;
     const { user_name, email } = info;
     const res = await editUserAction(data, { user_name, email });
 
@@ -51,6 +51,7 @@ const AccountForm = () => {
         updateUser({ user_name: data.data.user_name, email: data.email })
       );
       setSuccessMessage(message);
+      setIsEditDisabled(true);
     }
   });
 
@@ -97,7 +98,7 @@ const AccountForm = () => {
                       <input
                         {...register('data.user_name')}
                         className={`form-control form-control_gray ${errors?.data?.user_name ? 'is-invalid  invalid-input' : ''}`}
-                        disabled={disabledEdit}
+                        disabled={isEditDisabled || isSubmitting}
                       />
                       {errors?.data?.user_name && (
                         <div className="invalid-feedback">
@@ -112,7 +113,7 @@ const AccountForm = () => {
                       <input
                         {...register('email')}
                         className={`${errors.email ? 'border-danger' : ''} form-control form-control_gray`}
-                        disabled={disabledEdit}
+                        disabled={isEditDisabled || isSubmitting}
                       />
                       {errors.email && (
                         <p className="text-danger">{errors.email.message}</p>
@@ -120,27 +121,29 @@ const AccountForm = () => {
                     </div>
                   </div>
                 </div>
-                {!disabledEdit ? (
+                {!isEditDisabled ? (
                   <div className="mt-5 mb-5 d-flex justify-content-around">
                     <button
                       type="submit"
                       className="btn btn-primary w-50 text-center text-uppercase me-2"
+                      disabled={isEditDisabled || isSubmitting}
                     >
                       {isSubmitting ? <Spinner size={15} /> : 'Submit'}
                     </button>
                     <button
                       className="btn btn-primary w-50 text-uppercase"
-                      onClick={() => setDisabledEdit(true)}
+                      onClick={() => setIsEditDisabled(true)}
+                      disabled={isEditDisabled || isSubmitting}
                     >
                       Cancel
                     </button>
                   </div>
                 ) : null}
               </form>
-              {disabledEdit ? (
+              {isEditDisabled ? (
                 <div
                   className="mt-5 mb-5"
-                  onClick={() => setDisabledEdit(false)}
+                  onClick={() => setIsEditDisabled(false)}
                 >
                   <button className="btn btn-primary w-50 text-uppercase">
                     Edit

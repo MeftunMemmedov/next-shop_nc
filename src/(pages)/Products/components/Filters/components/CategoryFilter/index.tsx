@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ArrowDownIcon, CategoryIcon } from '@/assets/images/icons';
 
@@ -23,15 +23,25 @@ const CategoryFilter = ({ categories }: Props) => {
     history: 'replace',
   });
 
+  const categorySearchParam = searchParams.get('category');
   const isCategoryFiterActive = (category: Category) =>
-    categoryQuery === category.slug ||
-    searchParams.get('category') === category.slug;
+    categoryQuery === category.slug && categorySearchParam === category.slug;
 
-  // useEffect(() => {
-  //   if (!searchParams.toString()) {
-  //     setCategoryQuery(null);
-  //   }
-  // }, [searchParams]);
+  const toggleCategoryFilter = (category: Category) => {
+    if (categoryQuery === category.slug) {
+      setCategoryQuery(null);
+    } else {
+      setCategoryQuery(category.slug);
+    }
+  };
+
+  useEffect(() => {
+    if (categorySearchParam) {
+      setCategoryQuery(categorySearchParam);
+    } else {
+      setCategoryQuery(null);
+    }
+  }, []);
   if (!categories || categories.length === 0) return null;
   return (
     <div className="accordion">
@@ -59,9 +69,7 @@ const CategoryFilter = ({ categories }: Props) => {
                   <a
                     role="button"
                     className={`menu-link py-1 d-flex gap-2  ${isCategoryFiterActive(category) ? 'fw-bold' : ''}`}
-                    onClick={() => {
-                      setCategoryQuery(category.slug);
-                    }}
+                    onClick={() => toggleCategoryFilter(category)}
                   >
                     {category.image ? (
                       <Image
@@ -85,9 +93,7 @@ const CategoryFilter = ({ categories }: Props) => {
                         <a
                           role="button"
                           className={`menu-link py-1 d-flex gap-2  ${isCategoryFiterActive(childCat) ? 'fw-bold' : ''}`}
-                          onClick={() => {
-                            setCategoryQuery(childCat.slug);
-                          }}
+                          onClick={() => toggleCategoryFilter(childCat)}
                         >
                           {childCat.image ? (
                             <Image

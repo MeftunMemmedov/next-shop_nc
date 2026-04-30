@@ -1,10 +1,14 @@
 'use client';
 import { ShoppingIcon, WishlistIcon } from '@/assets/images/icons';
-import { getPriceDisplay, getProductPrice } from '@/helpers';
+import {
+  blockScreenByTransparentOverlay,
+  getPriceDisplay,
+  getProductPrice,
+} from '@/helpers';
 import { useCart, useWishlist } from '@/hooks';
 import { Link, usePathname } from '@/i18n/routing';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const CartModal = () => {
   const pathname = usePathname();
@@ -21,6 +25,10 @@ const CartModal = () => {
   } = useCart();
 
   const { count: wishlistCount } = useWishlist();
+
+  useEffect(() => {
+    blockScreenByTransparentOverlay(isCartModalVisible);
+  }, [isCartModalVisible]);
   if (!cartItems) return null;
   return (
     <>

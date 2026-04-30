@@ -11,4 +11,5 @@ export type ActionState = {
 export type SigninActionState = {
   signin: ActionState;
   cartSync: ActionState;
+  wishlistSync: ActionState;
 };

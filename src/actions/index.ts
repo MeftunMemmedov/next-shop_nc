@@ -27,7 +27,7 @@
 // };
 
 // export const regAction = async (data: RegisterInput) => {
-//   const actionState: ActionState = initialActionState;
+//   const actionState: ActionState = {...initialActionState};
 //   const parsed = registerSchema.safeParse(data);
 //   if (!parsed.success) {
 //     actionState.status = 'failure';

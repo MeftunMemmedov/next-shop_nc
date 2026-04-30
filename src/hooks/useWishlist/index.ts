@@ -1,13 +1,26 @@
 import { toast } from 'react-toastify';
 
-import { Product } from '@/types';
+import { Product, WishlistItem } from '@/types';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { addToLocalWishlist, removeFromLocalWishlist } from '@/store/inventory';
+import {
+  addToLocalWishlist,
+  addToUserWishlist,
+  removeFromLocalWishlist,
+  removeFromUserWishlist,
+} from '@/store/inventory';
+import { useTransition } from 'react';
+import { toggleWishlistAction } from '@/actions/wishlist';
 
-const useWishlist = () => {
+const useWishlist = (): {
+  items: WishlistItem[] | null;
+  count: number;
+  inWishlist: (product: Product) => boolean | undefined;
+  toggleWishlist: (product: Product) => void;
+  isPending?: boolean;
+} => {
   const dispatch = useAppDispatch();
-  const { local } = useAppSelector((store) => store.inventory);
+  const { user, local } = useAppSelector((store) => store.inventory);
 
   // -----------------------------LOCAL-----------------------------//
 
@@ -15,7 +28,9 @@ const useWishlist = () => {
     local.wishlist;
 
   const inLocalWishlist = (product: Product): boolean => {
-    return localWishlistItems.some((item) => item.slug === product.slug);
+    return localWishlistItems.some(
+      (item) => item.product.slug === product.slug
+    );
   };
 
   const toggleLocalWishlist = (product: Product) => {
@@ -23,16 +38,65 @@ const useWishlist = () => {
       dispatch(removeFromLocalWishlist(product));
       toast.error(`${product.title} removed from wishlist`);
     } else {
-      dispatch(addToLocalWishlist(product));
+      dispatch(addToLocalWishlist({ product }));
       toast.success(`${product.title} added to wishlist`);
     }
   };
 
-  return {
-    items: localWishlistItems,
-    count: localWishlistCount,
-    inWishlist: inLocalWishlist,
-    toggleWishlist: toggleLocalWishlist,
+  // -----------------------------USER-----------------------------//
+  const {
+    info,
+    isAuth,
+    inventory: {
+      wishlist: { items: userWishlistItems, count: userWishlistCount },
+    },
+  } = user;
+
+  const [isUserWishlistActionPending, startUserWishlistActionTransition] =
+    useTransition();
+
+  const inUserWishlist = (product: Product) =>
+    userWishlistItems?.some((item) => item.product.slug === product.slug);
+
+  const toggleUserWishlist = (product: Product) => {
+    if (inUserWishlist(product)) {
+      dispatch(removeFromUserWishlist(product));
+    } else {
+      dispatch(addToUserWishlist(product));
+    }
+
+    startUserWishlistActionTransition(async () => {
+      if (info) {
+        const formData = new FormData();
+        formData.append('product', product.id);
+        formData.append('user_id', info?.user_id);
+        formData.append('intent', inUserWishlist(product) ? 'remove' : 'add');
+        const res = await toggleWishlistAction(formData);
+        const { status, message } = res;
+        if (status === 'success') {
+          toast.success(`${product.title} | ${message}`);
+        }
+        if (status === 'failure') {
+          toast.error(message);
+        }
+      }
+    });
   };
+
+  if (isAuth)
+    return {
+      items: userWishlistItems,
+      count: userWishlistCount,
+      inWishlist: inUserWishlist,
+      toggleWishlist: toggleUserWishlist,
+      isPending: isUserWishlistActionPending,
+    };
+  else
+    return {
+      items: localWishlistItems,
+      count: localWishlistCount,
+      inWishlist: inLocalWishlist,
+      toggleWishlist: toggleLocalWishlist,
+    };
 };
 export default useWishlist;

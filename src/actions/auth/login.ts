@@ -4,20 +4,26 @@ import { cookies } from 'next/headers';
 import { SigninActionState } from '@/types/actions';
 import { signIn } from '@/api/fetch/helpers/auth/index';
 import { revalidatePath } from 'next/cache';
-import { CartItem } from '@/types';
+import { CartItem, WishlistItem } from '@/types';
 import { syncUserCart } from '@/api/fetch/helpers/cart';
 import { initialActionState } from '@/constants/actionstatus';
+import { syncUserWishlist } from '@/api/fetch/helpers/wishlist';
 
 export const loginAction = async (
   localCart: {
     count: number;
     items: CartItem[];
   },
+  localWishlist: {
+    count: number;
+    items: WishlistItem[];
+  },
   data: LoginInput
 ): Promise<SigninActionState> => {
   const actionState: SigninActionState = {
-    signin: initialActionState,
-    cartSync: initialActionState,
+    signin: { ...initialActionState },
+    cartSync: { ...initialActionState },
+    wishlistSync: { ...initialActionState },
   };
 
   const parsed = loginSchema.safeParse(data);
@@ -27,7 +33,7 @@ export const loginAction = async (
     return actionState;
   }
 
-  const { email, password } = parsed.data;
+  const { email, password, remember_me } = parsed.data;
   try {
     const res = await signIn({
       email,
@@ -53,7 +59,7 @@ export const loginAction = async (
 
     cookieStore.set('refresh', refresh_token, {
       path: '/',
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: remember_me ? 60 * 60 * 24 * 7 : undefined,
       secure: true,
       sameSite: 'lax',
       httpOnly: true,
@@ -64,11 +70,11 @@ export const loginAction = async (
       message: 'You have successfully signed in',
     };
 
-    const { count, items } = localCart;
+    const { count: cartCount, items: cartItems } = localCart;
 
-    if (count > 0) {
+    if (cartCount > 0) {
       try {
-        await syncUserCart(items, user_id, access_token);
+        await syncUserCart(cartItems, user_id, access_token);
 
         actionState.cartSync = {
           status: 'success',
@@ -78,6 +84,24 @@ export const loginAction = async (
         actionState.cartSync = {
           status: 'failure',
           message: 'User cart synchronization failed!',
+        };
+      }
+    }
+
+    const { count: wishlistCount, items: wishlistItems } = localWishlist;
+
+    if (wishlistCount > 0) {
+      try {
+        await syncUserWishlist(wishlistItems, user_id, access_token);
+
+        actionState.wishlistSync = {
+          status: 'success',
+          message: 'User wishlist synchronization successfully completed!',
+        };
+      } catch {
+        actionState.wishlistSync = {
+          status: 'failure',
+          message: 'User wishlist synchronization failed!',
         };
       }
     }

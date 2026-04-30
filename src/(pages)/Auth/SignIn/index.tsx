@@ -7,14 +7,16 @@ import { loginAction } from '../../../actions/auth/login';
 import { useForm } from 'react-hook-form';
 import { LoginInput, loginSchema } from '../../../schemas/login.schema';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearLocalCart } from '@/store/inventory';
+import { clearLocalCart, clearLocalWishlist } from '@/store/inventory';
 
 const SignIn = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { items, count } = useAppSelector(
-    (store) => store.inventory.local.cart
-  );
+
+  const {
+    cart: { items: localCartItems, count: localCartCount },
+    wishlist: { items: localWishlistItems, count: localWishlistCount },
+  } = useAppSelector((store) => store.inventory.local);
 
   const {
     register,
@@ -26,16 +28,22 @@ const SignIn = () => {
     defaultValues: {
       email: '',
       password: '',
+      remember_me: false,
     },
   });
 
   const [successMessage, setSuccessMessage] = useState<{
     signin: string;
     cartSync?: string;
-  }>({ signin: '', cartSync: '' });
+    wishlistSync?: string;
+  }>({ signin: '', cartSync: '', wishlistSync: '' });
 
   const onSubmit = handleSubmit(async (data: LoginInput) => {
-    const res = await loginAction({ items, count }, data);
+    const res = await loginAction(
+      { items: localCartItems, count: localCartCount },
+      { items: localWishlistItems, count: localWishlistCount },
+      data
+    );
 
     const { status: signInStatus, message: signInMessage } = res.signin;
 
@@ -50,6 +58,7 @@ const SignIn = () => {
       }));
       setTimeout(() => {
         dispatch(clearLocalCart());
+        dispatch(clearLocalWishlist());
         router.push('/');
       }, 1000);
     }
@@ -64,6 +73,20 @@ const SignIn = () => {
       setSuccessMessage((prevStatus) => ({
         ...prevStatus,
         cartSync: cartSyncMessage,
+      }));
+    }
+
+    const { status: wishlistSyncStatus, message: wishlistSyncMessage } =
+      res.wishlistSync;
+
+    if (wishlistSyncStatus === 'failure') {
+      setError('root.wishlistSync', { message: wishlistSyncMessage });
+    }
+
+    if (wishlistSyncStatus === 'success') {
+      setSuccessMessage((prevStatus) => ({
+        ...prevStatus,
+        wishlistSync: wishlistSyncMessage,
       }));
     }
   });
@@ -109,6 +132,11 @@ const SignIn = () => {
                           {errors.root.cartSync.message}
                         </p>
                       )}
+                      {errors.root.wishlistSync && (
+                        <p className="m-0 mt-2">
+                          {errors.root.wishlistSync.message}
+                        </p>
+                      )}
                     </div>
                   )}
                   {Object.values(successMessage).some((val) => val !== '') && (
@@ -116,6 +144,11 @@ const SignIn = () => {
                       <p className="m-0 text-dark">{successMessage.signin}</p>
                       {successMessage.cartSync && (
                         <p className="m-0 mt-2">{successMessage.cartSync}</p>
+                      )}
+                      {successMessage.wishlistSync && (
+                        <p className="m-0 mt-2">
+                          {successMessage.wishlistSync}
+                        </p>
                       )}
                     </div>
                   )}
@@ -161,7 +194,7 @@ const SignIn = () => {
                 <div className="d-flex align-items-center mb-3 pb-2">
                   <div className="form-check mb-0">
                     <input
-                      name="remember"
+                      {...register('remember_me')}
                       className="form-check-input form-check-input_fill"
                       type="checkbox"
                     />

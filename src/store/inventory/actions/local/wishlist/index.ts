@@ -1,9 +1,18 @@
-import { InventoryStateProps, Product } from '@/types';
+import { InventoryStateProps, Product, WishlistItem } from '@/types';
 import { WritableDraft } from '@reduxjs/toolkit';
 
 type InventoryState = WritableDraft<InventoryStateProps>;
 
-// --WISHLIST
+// ----HELPERS
+export const updateLocalWishlist = (
+  state: InventoryState,
+  data: WishlistItem[]
+) => {
+  state.local.wishlist.items = data;
+  state.local.wishlist.count = data.length;
+  localStorage.setItem('wishlist', JSON.stringify(data));
+};
+
 // ----CLEAR
 export const clearLocalWishlist = (state: InventoryState) => {
   state.local.wishlist.count = 0;
@@ -13,24 +22,21 @@ export const clearLocalWishlist = (state: InventoryState) => {
 // ----ADD
 export const addToLocalWishlist = (
   state: InventoryState,
-  { payload }: { payload: Product }
+  { payload }: { payload: WishlistItem }
 ) => {
   const updatedItems = [...state.local.wishlist.items, payload];
 
-  state.local.wishlist.items = updatedItems;
-  state.local.wishlist.count = updatedItems.length;
-  localStorage.setItem('wishlist', JSON.stringify(updatedItems));
+  updateLocalWishlist(state, updatedItems);
 };
 
 // ----REMOVE
 export const removeFromLocalWishlist = (
   state: InventoryState,
-  action: { payload: Product }
+  { payload }: { payload: Product }
 ) => {
   const updatedItems = state.local.wishlist.items.filter(
-    (item) => item.slug !== action.payload.slug
+    (item) => item.product.slug !== payload.slug
   );
-  state.local.wishlist.items = updatedItems;
-  state.local.wishlist.count = updatedItems.length;
-  localStorage.setItem('wishlist', JSON.stringify(updatedItems));
+
+  updateLocalWishlist(state, updatedItems);
 };

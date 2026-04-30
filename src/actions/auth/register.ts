@@ -7,7 +7,7 @@ import { initialActionState } from '@/constants/actionstatus';
 export const registerAction = async (
   data: RegisterInput
 ): Promise<ActionState> => {
-  const actionState: ActionState = initialActionState;
+  const actionState: ActionState = { ...initialActionState };
 
   const parsed = registerSchema.safeParse(data);
 

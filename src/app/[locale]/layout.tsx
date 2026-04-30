@@ -12,6 +12,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
 import { getUser } from '@/api/fetch/helpers/auth/index';
 import { getUserCart } from '@/api/fetch/helpers/cart';
+import { getUserWishlist } from '@/api/fetch/helpers/wishlist';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -39,7 +40,7 @@ const RootLayout = async ({
 
   const userSession = await getUser();
   const userCart = userSession && (await getUserCart());
-
+  const userWishlist = userSession && (await getUserWishlist());
   setRequestLocale(locale);
   // if (!isValidLocale) {
   //   notFound();
@@ -51,7 +52,11 @@ const RootLayout = async ({
         <link rel="stylesheet" href="/assets/css/template.css" />
       </head>
       <body>
-        <ReduxProvider user={userSession} cart={userCart}>
+        <ReduxProvider
+          user={userSession}
+          cart={userCart}
+          wishlist={userWishlist}
+        >
           <NextIntlClientProvider>
             <ToastContainer />
             <Header categories={categories} user={userSession} />

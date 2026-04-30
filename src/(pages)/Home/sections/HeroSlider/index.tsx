@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react';
-
 import { Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { Slide } from '@/types';

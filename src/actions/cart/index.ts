@@ -5,15 +5,7 @@ import { ActionState } from '@/types';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
-type CartActionState = {
-  status: 'success' | 'failure';
-  message: string;
-};
-
-export const toggle_Cart = async (
-  _prevState: CartActionState | null,
-  formData: FormData
-) => {
+export const toggleCartAction = async (formData: FormData) => {
   const user_id = formData.get('user_id');
   const product = formData.get('product');
   const quantity = formData.get('quantity');
@@ -21,7 +13,7 @@ export const toggle_Cart = async (
   const cookieStore = await cookies();
   const access = cookieStore.get('access')?.value;
 
-  const actionState: ActionState = initialActionState;
+  const actionState: ActionState = { ...initialActionState };
 
   try {
     if (intent === 'remove') {
@@ -34,6 +26,7 @@ export const toggle_Cart = async (
         },
         { product: `eq.${product}` }
       );
+      actionState.message = 'Product removed from cart successfully!';
     }
 
     if (intent === 'add') {
@@ -50,10 +43,10 @@ export const toggle_Cart = async (
           },
         }
       );
+      actionState.message = 'Product added to cart successfully!';
     }
 
     actionState.status = 'success';
-    actionState.message = 'Cart toggling action succeed!';
     return actionState;
   } catch {
     actionState.status = 'failure';
@@ -63,17 +56,14 @@ export const toggle_Cart = async (
   }
 };
 
-export const update_cartItemQuantity = async (
-  _prevState: CartActionState | null,
-  formData: FormData
-) => {
+export const updateCartitemQuantity = async (formData: FormData) => {
   const product = formData.get('product');
   const quantity = parseInt(formData.get('quantity') as string);
 
   const cookieStore = await cookies();
   const access = cookieStore.get('access')?.value;
 
-  const actionState: ActionState = initialActionState;
+  const actionState: ActionState = { ...initialActionState };
 
   try {
     await patchData<{ quantity: number }>(

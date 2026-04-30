@@ -1,6 +1,7 @@
 import { Status } from '@/constants/status';
 import { User } from '../user';
 import { WritableDraft } from '@reduxjs/toolkit';
+import { WishlistItem } from '../wishlist';
 
 type InventoryStateProps = {
   local: {
@@ -10,7 +11,7 @@ type InventoryStateProps = {
       total: number;
     };
     wishlist: {
-      items: Product[];
+      items: WishlistItem[];
       count: number;
     };
   };
@@ -24,7 +25,7 @@ type InventoryStateProps = {
         total: number;
       };
       wishlist: {
-        items: Product[] | null;
+        items: WishlistItem[] | null;
         count: number;
       };
     };
