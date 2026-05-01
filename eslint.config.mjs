@@ -11,7 +11,8 @@ const eslintConfig = defineConfig([
       'unused-imports': unusedImports,
     },
     rules: {
-      'no-unused-vars': 'off', // Handled by unused-imports
+      'react-hooks/set-state-in-effect': 'off',
+      'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
         'error',

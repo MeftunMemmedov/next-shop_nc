@@ -42,8 +42,8 @@ export const accountRoutes = [
     path: '/account/details/',
   },
   {
-    title: 'Your Reviews',
-    path: '/account/user-reviews/',
+    title: 'My Reviews',
+    path: '/account/my-reviews/',
   },
   {
     title: 'Orders',

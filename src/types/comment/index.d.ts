@@ -5,7 +5,7 @@ export type Comment = {
   id: string;
   product: Product;
   comment: string;
-  user: User;
+  user_id: string | User;
   created_at: Date;
 };
 

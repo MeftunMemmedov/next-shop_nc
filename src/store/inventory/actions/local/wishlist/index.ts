@@ -13,10 +13,26 @@ export const updateLocalWishlist = (
   localStorage.setItem('wishlist', JSON.stringify(data));
 };
 
+// ----INIT
+export const initLocalWishlist = (state: InventoryState) => {
+  try {
+    const localWishlistData = localStorage.getItem('wishlist');
+    const localWishlist = localWishlistData
+      ? (JSON.parse(localWishlistData) as WishlistItem[])
+      : [];
+
+    state.local.wishlist.items = localWishlist;
+    state.local.wishlist.count = localWishlist.length;
+  } catch {
+    console.log('REDUX ERROR WISHLIST');
+  }
+};
+
 // ----CLEAR
 export const clearLocalWishlist = (state: InventoryState) => {
   state.local.wishlist.count = 0;
   state.local.wishlist.items = [];
+  localStorage.setItem('wishlist', JSON.stringify([]));
 };
 
 // ----ADD

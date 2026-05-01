@@ -18,6 +18,7 @@ export const slice = createSlice({
     // -------------------------------------------------------------------- //
     // --------------------------------CART------------------------------- //
     // ------LOCAL CART ACTIONS-------//
+    initLocalCart: LocalCartActions.initLocalCart,
     clearLocalCart: LocalCartActions.clearLocalCart,
     addToLocalCart: LocalCartActions.addToLocalCart,
     removeFromLocalCart: LocalCartActions.removeFromLocalCart,
@@ -31,6 +32,7 @@ export const slice = createSlice({
     // -------------------------------------------------------------------- //
     // --------------------------------WISHLIST------------------------------- //
     // -------LOCAL WISHLIST ACTIONS-------//
+    initLocalWishlist: LocalWishlistActions.initLocalWishlist,
     clearLocalWishlist: LocalWishlistActions.clearLocalWishlist,
     addToLocalWishlist: LocalWishlistActions.addToLocalWishlist,
     removeFromLocalWishlist: LocalWishlistActions.removeFromLocalWishlist,
@@ -54,15 +56,12 @@ export const slice = createSlice({
 
 export const {
   // CART
-  // --LOCAL
+  // --LOCAL CART
+  initLocalCart,
   clearLocalCart,
   addToLocalCart,
   removeFromLocalCart,
   changeLocalCartItemQuantity,
-  // --USER
-  initUser,
-  clearUser,
-  updateUser,
   // ---USER CART
   initUserCart,
   clearUserCart,
@@ -70,14 +69,19 @@ export const {
   removeFromUserCart,
   changeUserCartItemQuantity,
   // WISHLIST
-  // --LOCAL
+  // --LOCAL WISHLIST
+  initLocalWishlist,
   clearLocalWishlist,
   addToLocalWishlist,
   removeFromLocalWishlist,
-  // --USER
+  // --USER WISHLIST
   initUserWishlist,
   clearUserWishlist,
   addToUserWishlist,
   removeFromUserWishlist,
+  // USER
+  initUser,
+  clearUser,
+  updateUser,
 } = slice.actions;
 export default slice.reducer;

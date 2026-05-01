@@ -17,7 +17,7 @@ const useWishlist = (): {
   count: number;
   inWishlist: (product: Product) => boolean | undefined;
   toggleWishlist: (product: Product) => void;
-  isPending?: boolean;
+  isPending: boolean;
 } => {
   const dispatch = useAppDispatch();
   const { user, local } = useAppSelector((store) => store.inventory);
@@ -66,11 +66,12 @@ const useWishlist = (): {
     }
 
     startUserWishlistActionTransition(async () => {
+      const currentLyInWishlist = !!inUserWishlist(product);
       if (info) {
         const formData = new FormData();
         formData.append('product', product.id);
         formData.append('user_id', info?.user_id);
-        formData.append('intent', inUserWishlist(product) ? 'remove' : 'add');
+        formData.append('intent', currentLyInWishlist ? 'remove' : 'add');
         const res = await toggleWishlistAction(formData);
         const { status, message } = res;
         if (status === 'success') {
@@ -97,6 +98,7 @@ const useWishlist = (): {
       count: localWishlistCount,
       inWishlist: inLocalWishlist,
       toggleWishlist: toggleLocalWishlist,
+      isPending: false,
     };
 };
 export default useWishlist;

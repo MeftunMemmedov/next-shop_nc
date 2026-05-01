@@ -2,7 +2,7 @@
 import { LogoutIcon } from '@/assets/images/icons';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { accountRoutes } from '@/constants';
-import { ReactNode, useActionState, useEffect } from 'react';
+import { ReactNode, useTransition } from 'react';
 import { logoutAction } from '@/actions/auth/logout';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearUser, clearUserCart } from '@/store/inventory';
@@ -22,16 +22,26 @@ const AccountLayout = ({ children }: Props) => {
   const pageTitle =
     accountRoutes.find((route) => pathname === route.path)?.title || '';
 
-  const [state, formAction, isPending] = useActionState(logoutAction, null);
+  const [isLogoutPending, startLogoutTransition] = useTransition();
 
-  useEffect(() => {
-    if (state?.status === 'success') {
-      dispatch(clearUserCart());
-      dispatch(clearUser());
-      toast.success(state.message);
-      route.replace('/');
-    }
-  }, [state]);
+  const handleLogout = () => {
+    startLogoutTransition(async () => {
+      const res = await logoutAction();
+
+      const { status, message } = res;
+      if (status === 'success') {
+        dispatch(clearUserCart());
+        dispatch(clearUser());
+        toast.success(message);
+        route.replace('/');
+      }
+
+      if (status === 'failure') {
+        toast.error(message);
+        return;
+      }
+    });
+  };
 
   return (
     <>
@@ -57,23 +67,19 @@ const AccountLayout = ({ children }: Props) => {
                     href={route.path}
                     className={`menu-link menu-link_us-s ${
                       pathname.endsWith(route.path) ? 'menu-link_active' : ''
-                    }`}
-                  >
+                    }`}>
                     {route.title}
                   </Link>
                 </li>
               ))}
 
               <li>
-                <form action={formAction}>
-                  <button
-                    className={`btn btn-transparent menu-link menu-link_us-s d-flex align-items-center gap-2 text-danger`}
-                    type="submit"
-                  >
-                    <LogoutIcon />
-                    <span>{isPending ? 'Logging out' : 'Logout'}</span>
-                  </button>
-                </form>
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-transparent menu-link menu-link_us-s d-flex align-items-center gap-2 text-danger">
+                  <LogoutIcon />
+                  <span>{isLogoutPending ? 'Logging out' : 'Logout'}</span>
+                </button>
               </li>
             </ul>
           </div>
@@ -88,8 +94,7 @@ const AccountLayout = ({ children }: Props) => {
                 </p>
                 <Link
                   href="/auth/signin"
-                  className={`btn btn-dark ${false ? 'disabled-link' : ''}`}
-                >
+                  className={`btn btn-dark ${false ? 'disabled-link' : ''}`}>
                   Sign in
                 </Link>
               </div>

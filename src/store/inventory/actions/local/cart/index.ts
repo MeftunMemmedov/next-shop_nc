@@ -19,6 +19,23 @@ export const clearLocalCart = (state: InventoryState) => {
   localStorage.setItem('cart', JSON.stringify([]));
 };
 
+// ----INIT
+export const initLocalCart = (state: InventoryState) => {
+  try {
+    const localCartData = localStorage.getItem('cart');
+    const localCart = localCartData
+      ? (JSON.parse(localCartData) as CartItem[])
+      : [];
+    state.local.cart.count = localCart.length;
+    state.local.cart.items = localCart;
+    state.local.cart.total = localCart.reduce((acc, item) => {
+      return acc + getProductPrice(item?.product) * item.quantity;
+    }, 0);
+  } catch {
+    console.error('REDUX ERROR CART STATE');
+  }
+};
+
 // ----ADD
 export const addToLocalCart = (
   state: InventoryState,
