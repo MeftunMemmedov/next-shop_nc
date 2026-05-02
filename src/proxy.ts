@@ -45,7 +45,10 @@ export const proxy = async (req: NextRequest) => {
   const protectedRoute = pathname.split('/')[2];
   const locale = req.cookies.get('NEXT_LOCALE')?.value || 'en';
 
-  if (!accessToken && protectedRoute === 'account') {
+  if (
+    !accessToken &&
+    (protectedRoute === 'account' || protectedRoute === 'checkout')
+  ) {
     return NextResponse.redirect(new URL(`/${locale}/auth/signin`, req.url));
   }
 
