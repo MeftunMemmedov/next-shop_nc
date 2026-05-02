@@ -15,7 +15,6 @@ export const proxy = async (req: NextRequest) => {
   if (!accessToken && refreshToken) {
     try {
       const refreshRes = await refreshAccess(refreshToken);
-      // console.log('AUTH PROXY, SUCCEED', refreshRes);
       const { access_token, refresh_token, expires_in } = refreshRes;
 
       const cookieOptions: Partial<ResponseCookie> = {
@@ -35,7 +34,6 @@ export const proxy = async (req: NextRequest) => {
       });
       accessToken = access_token;
     } catch {
-      // console.error('AUTH MIDDLEWARE FAILED', error);
       const redirect = NextResponse.redirect(new URL('/', req.url));
       redirect.cookies.delete('access');
       redirect.cookies.delete('refresh');

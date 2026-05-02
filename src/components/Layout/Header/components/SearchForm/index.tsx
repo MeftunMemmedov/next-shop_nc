@@ -5,11 +5,11 @@ import { blockScreenByTransparentOverlay, getPriceDisplay } from '@/helpers';
 import { debounce } from '@/helpers/debounce';
 import { Link, useRouter } from '@/i18n/routing';
 import { Product } from '@/types';
-// import { usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { SubmitEvent, useEffect, useRef, useState } from 'react';
 
 const SearchForm = () => {
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const router = useRouter();
 
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
@@ -53,11 +53,11 @@ const SearchForm = () => {
     router.push(`/products?search=${searchInputValue}`);
   };
 
-  // useEffect(() => {
-  //   setIsSearchVisible(false);
-  //   setSearchInput('');
-  //   resetSearch();
-  // }, [pathname]);
+  useEffect(() => {
+    setIsSearchVisible(false);
+    setSearchInput('');
+    resetSearch();
+  }, [pathname]);
 
   useEffect(() => {
     blockScreenByTransparentOverlay(isSearchVisible);
@@ -79,14 +79,12 @@ const SearchForm = () => {
   return (
     <>
       <div
-        className={`header-tools__item hover-container ${isSearchVisible ? 'js-content_visible' : ''}`}
-      >
+        className={`header-tools__item hover-container ${isSearchVisible ? 'js-content_visible' : ''}`}>
         <div className="position-relative">
           <a
             className="search-field__actor"
             role="button"
-            onClick={() => setIsSearchVisible((prevState) => !prevState)}
-          >
+            onClick={() => setIsSearchVisible((prevState) => !prevState)}>
             <SearchIcon />
 
             <i className="btn-icon btn-close-lg"></i>
@@ -94,12 +92,10 @@ const SearchForm = () => {
         </div>
       </div>
       <div
-        className={`search-popup js-hidden-content ${isSearchVisible ? 'visible' : ''}`}
-      >
+        className={`search-popup js-hidden-content ${isSearchVisible ? 'visible' : ''}`}>
         <form
           className="search-field container"
-          onSubmit={handleSearchFormSubmit}
-        >
+          onSubmit={handleSearchFormSubmit}>
           <p className="text-uppercase text-secondary fw-medium mb-4">
             WHAT ARE YOU LOOKIN FOR?
           </p>
@@ -134,8 +130,7 @@ const SearchForm = () => {
                       <li key={`result-${result.slug}-${index}`}>
                         <Link
                           href={`/products/${result.slug}`}
-                          className="row search-result-card"
-                        >
+                          className="row search-result-card">
                           <div className="col-1 p-0 h-100">
                             <img
                               src={result.images[0]}
