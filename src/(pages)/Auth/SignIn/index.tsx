@@ -106,8 +106,7 @@ const SignIn = () => {
           <li className="nav-item">
             <Link
               href="/auth/signup"
-              className={`nav-link nav-link_underscore ${isSubmitting ? 'disabled-link' : ''}`}
-            >
+              className={`nav-link nav-link_underscore ${isSubmitting ? 'disabled-link' : ''}`}>
               Sign Up
             </Link>
           </li>
@@ -195,11 +194,14 @@ const SignIn = () => {
                   <div className="form-check mb-0">
                     <input
                       {...register('remember_me')}
+                      id="remember_me"
                       className="form-check-input form-check-input_fill"
                       type="checkbox"
                     />
 
-                    <label className="form-check-label text-secondary">
+                    <label
+                      htmlFor="remember_me"
+                      className="form-check-label text-secondary">
                       Remember Me
                     </label>
                   </div>
@@ -212,8 +214,7 @@ const SignIn = () => {
                 <button
                   className="btn btn-primary w-100 text-uppercase"
                   type="submit"
-                  disabled={isSubmitting}
-                >
+                  disabled={isSubmitting}>
                   {isSubmitting ? 'Processing...' : 'Sign In'}
                 </button>
 

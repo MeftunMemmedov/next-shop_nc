@@ -1,5 +1,3 @@
-import { Size } from '../size';
-
 export type Order = {
   id: number;
   payment_method: number;
@@ -21,9 +19,13 @@ export type Order = {
 };
 
 export type OrderItem = {
-  product: Product;
-  size: Size;
-  price: number;
-  discount: number;
-  quantity: number;
+  id: string;
+  phone: string;
+  address: string;
+  user_name: string;
+  email: string;
+  note: string;
+  status: string;
+  items: { product: Product; quantity: number }[];
+  created_at: Date;
 };

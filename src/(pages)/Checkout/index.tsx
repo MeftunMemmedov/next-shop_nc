@@ -1,11 +1,75 @@
 'use client';
+import { clearUserCartAction } from '@/actions/cart';
+import { checkoutProductsAction } from '@/actions/checkout';
 import CheckoutSteps from '@/components/CheckoutSteps';
+import Spinner from '@/components/Spinner';
 import { getPriceDisplay, getProductPrice, getSubtotal } from '@/helpers';
-import { CartItem } from '@/types';
+import { useRouter } from '@/i18n/routing';
+import { CheckoutInput, checkoutSchema } from '@/schemas/checkout.schema';
+import { CartItem, User } from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-const Checkout = ({ cart }: { cart: CartItem[] | null }) => {
+const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
+  const router = useRouter();
   const detail_titles = ['Product', 'Subtotal'];
+  const [orderId] = useState(() => crypto.randomUUID());
   const cartProducts = cart?.map((cartItem) => cartItem.product);
+
+  const [successMessage, setSuccessMessage] = useState<string>('');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm<CheckoutInput>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      id: orderId,
+      user_id: user.user_id || '',
+      email: user.email || '',
+      user_name: user.user_name || '',
+      address: '',
+      phone: '',
+      note: '',
+    },
+  });
+
+  const orderItems = cart?.map((cartItem) => ({
+    product: cartItem.product.id,
+    quantity: cartItem.quantity,
+  }));
+
+  console.log(orderId);
+  const clearUserCart = async () => {
+    try {
+      await clearUserCartAction(orderItems!);
+    } catch {
+      return;
+    }
+  };
+
+  const onSubmit = handleSubmit(async (data: CheckoutInput) => {
+    const res = await checkoutProductsAction(data, orderItems!);
+
+    const { status, message } = res;
+
+    if (status === 'failure') {
+      setError('root', { message });
+      return;
+    }
+
+    if (status === 'success') {
+      setSuccessMessage(message);
+      clearUserCart();
+      setTimeout(() => {
+        router.push(`/order-complete?id=${orderId}`);
+      }, 1000);
+    }
+  });
+
   return (
     <>
       <div className="mb-4 pb-5" />
@@ -15,19 +79,24 @@ const Checkout = ({ cart }: { cart: CartItem[] | null }) => {
 
         <CheckoutSteps currentStep={2} />
 
-        {false ? (
+        {isSubmitting ? (
           <div className="d-flex justify-content-center align-items-center">
             <div className="spinner-border" role="status">
-              <span className="sr-only">Loading...</span>
+              <Spinner />
             </div>
           </div>
         ) : (
-          <form name="checkout-form">
-            {/* {errorMessages.non_field_errors && (
+          <form onSubmit={onSubmit}>
+            {errors.root && (
               <div className="border p-3 mt-1 bg-danger rounded text-light fw-bold">
-                {errorMessages.non_field_errors}
+                {errors.root.message}
               </div>
-            )} */}
+            )}
+            {successMessage !== '' && (
+              <div className="border p-3 mt-1 bg-success rounded text-light fw-bold">
+                {successMessage}
+              </div>
+            )}
             <div className="checkout-form">
               <div className="billing-info__wrapper">
                 <h4>Info</h4>
@@ -38,71 +107,97 @@ const Checkout = ({ cart }: { cart: CartItem[] | null }) => {
                       <div className="col-md-6">
                         <div className="form-floating my-3">
                           <input
-                            type="text"
-                            className={`form-control ${false ? 'border border-danger' : ''}`}
+                            {...register('user_name')}
+                            id="user_name"
+                            className={`form-control ${errors.user_name ? 'border border-danger' : ''}`}
                             placeholder={'User name'}
                           />
 
                           <label
-                            htmlFor="first_name"
-                            className={`${false ? 'text-danger' : ''}`}>
+                            htmlFor="user_name"
+                            className={`${errors.user_name ? 'text-danger' : ''}`}>
                             User name *
                           </label>
-                          {/* {errorMessages.first_name && (
-                        <p className="text-danger">
-                          {errorMessages.first_name}
-                        </p>
-                      )} */}
+                          {errors.user_name && (
+                            <p className="text-danger">
+                              {errors.user_name.message}
+                            </p>
+                          )}
                         </div>
                       </div>
 
                       <div className="col-md-6">
                         <div className="form-floating my-3">
                           <input
-                            type="tel"
-                            className={`form-control ${false ? 'border border-danger' : ''}`}
+                            {...register('phone')}
+                            id="phone"
+                            className={`form-control ${errors.phone ? 'border border-danger' : ''}`}
                             placeholder={'Phone'}
                           />
-                          <span className="country-code">+994</span>
                           <label
                             htmlFor="phone"
-                            className={`${false ? 'text-danger' : ''}`}>
+                            className={`${errors.phone ? 'text-danger' : ''}`}>
                             Phone *
                           </label>
 
-                          {/* {errorMessages.phone && (
-                        <p className="text-danger">{errorMessages.phone}</p>
-                      )} */}
+                          {errors.phone && (
+                            <p className="text-danger">
+                              {errors.phone.message}
+                            </p>
+                          )}
                         </div>
                       </div>
 
                       <div className="col-md-12">
                         <div className="form-floating my-3">
                           <input
-                            type="email"
-                            className={`form-control $false ? 'border border-danger' : ''}`}
+                            {...register('email')}
+                            id="email"
+                            className={`form-control ${errors.email ? 'border border-danger' : ''}`}
                             placeholder={'Email'}
                           />
                           <label
                             htmlFor="email"
-                            className={false ? 'text-danger' : ''}>
+                            className={errors.email ? 'text-danger' : ''}>
                             Email *
                           </label>
-                          {/* {errorMessages.email && (
-                        <p className="text-danger">{errorMessages.email}</p>
-                      )} */}
+                          {errors.email && (
+                            <p className="text-danger">
+                              {errors.email.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="col-md-12">
+                        <div className="form-floating my-3">
+                          <input
+                            {...register('address')}
+                            id="address"
+                            className={`form-control ${errors.address ? 'border border-danger' : ''}`}
+                            placeholder={'Address'}
+                          />
+                          <label
+                            htmlFor="address"
+                            className={errors.address ? 'text-danger' : ''}>
+                            Address *
+                          </label>
+                          {errors.address && (
+                            <p className="text-danger">
+                              {errors.address.message}
+                            </p>
+                          )}
                         </div>
                       </div>
 
                       <div className="col-md-12">
                         <div className="mt-3">
                           <textarea
+                            {...register('note')}
                             className="form-control form-control_gray"
                             placeholder={'Note'}
-                            name="note"
                             cols={30}
                             rows={8}
-                            defaultValue={''}
                           />
                         </div>
                       </div>

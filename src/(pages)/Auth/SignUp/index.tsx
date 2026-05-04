@@ -35,6 +35,7 @@ const SignUp = () => {
   const onSubmit = handleSubmit(async (data: RegisterInput) => {
     const res = await registerAction(data);
     const { status, message } = res;
+
     if (status === 'failure') {
       setError('root', { message });
       return;
@@ -57,8 +58,7 @@ const SignUp = () => {
           <li className="nav-item">
             <Link
               className={`nav-link nav-link_underscore ${false ? 'disabled-link' : ''}`}
-              href="/auth/signin"
-            >
+              href="/auth/signin">
               Sign In
             </Link>
           </li>
@@ -162,8 +162,7 @@ const SignUp = () => {
                 <div className="pb-3"></div>
                 <button
                   className="btn btn-primary w-100 text-uppercase"
-                  type="submit"
-                >
+                  type="submit">
                   Sign Up
                 </button>
               </form>

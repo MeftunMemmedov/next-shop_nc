@@ -34,35 +34,30 @@ const CartModal = () => {
     <>
       <div
         className={`page-overlay ${isCartModalVisible ? 'page-overlay_visible' : ''}`}
-        onClick={() => setIsCartModalVisible(false)}
-      ></div>
+        onClick={() => setIsCartModalVisible(false)}></div>
       <button
         disabled={
           pathname.endsWith('/checkout/') || pathname.endsWith('/cart/')
         }
         onClick={() => setIsCartModalVisible(true)}
-        className="header-tools__item header-tools__cart btn"
-      >
+        className="header-tools__item header-tools__cart btn">
         <ShoppingIcon />
         <span
           className="cart-amount d-block position-absolute"
-          suppressHydrationWarning
-        >
+          suppressHydrationWarning>
           {cartCount}
         </span>
       </button>
       <Link
         className="header-tools__item header-tools__cart"
-        href="/account/wishlist"
-      >
+        href="/account/wishlist">
         <WishlistIcon />
         <span className="cart-amount d-block position-absolute">
           {wishlistCount}
         </span>
       </Link>
       <div
-        className={`aside aside_right overflow-hidden cart-drawer ${isCartModalVisible ? 'aside_visible' : ''}`}
-      >
+        className={`aside aside_right overflow-hidden cart-drawer ${isCartModalVisible ? 'aside_visible' : ''}`}>
         <div className="aside-header d-flex align-items-center">
           <h3 className="text-uppercase fs-6 mb-0">
             Cart
@@ -79,18 +74,18 @@ const CartModal = () => {
 
         <div className="aside-content cart-drawer-items-list">
           {cartCount === 0 ? (
-            <h2 className="text-center">Cart is empty</h2>
+            <div className="py-5">
+              <h2 className="text-center">Cart is empty</h2>
+            </div>
           ) : (
             cartItems.map((item) => (
               <div
                 className="cart-drawer-item d-flex position-relative my-3"
-                key={`cart-modal-item-${item.product.slug}`}
-              >
+                key={`cart-modal-item-${item.product.slug}`}>
                 <div className="position-relative">
                   <Link
                     href={`/products/${item.product.slug}`}
-                    onClick={() => setIsCartModalVisible(false)}
-                  >
+                    onClick={() => setIsCartModalVisible(false)}>
                     <Image
                       loading="lazy"
                       width={100}
@@ -124,16 +119,14 @@ const CartModal = () => {
                       <button
                         disabled={item.quantity <= 1 || isPending}
                         className="btn qty-control__reduce text-start"
-                        onClick={() => handleClickQuantity(item, '-')}
-                      >
+                        onClick={() => handleClickQuantity(item, '-')}>
                         -
                       </button>
 
                       <button
                         className="btn qty-control__increase text-end"
                         disabled={isPending}
-                        onClick={() => handleClickQuantity(item, '+')}
-                      >
+                        onClick={() => handleClickQuantity(item, '+')}>
                         +
                       </button>
                       {/* {isPending ? 'proccess' : ''} */}
@@ -168,28 +161,30 @@ const CartModal = () => {
 
         <div className="cart-drawer-actions position-absolute start-0 bottom-0 w-100">
           <hr className="cart-drawer-divider" />
-          <div className="d-flex justify-content-between">
-            <h6 className="fs-base fw-medium">Subtotal:</h6>
-            <span className="cart-subtotal fw-medium">
-              {getPriceDisplay(total)}
-            </span>
-          </div>
 
-          <Link
-            onClick={() => setIsCartModalVisible(false)}
-            href="/cart"
-            className="btn btn-light mt-3 d-block"
-          >
-            View Cart
-          </Link>
+          {cartCount > 0 && (
+            <>
+              <div className="d-flex justify-content-between">
+                <h6 className="fs-base fw-medium">Subtotal:</h6>
+                <span className="cart-subtotal fw-medium">
+                  {getPriceDisplay(total)}
+                </span>
+              </div>
+              <Link
+                onClick={() => setIsCartModalVisible(false)}
+                href="/cart"
+                className="btn btn-light mt-3 d-block">
+                View Cart
+              </Link>
 
-          <Link
-            onClick={() => setIsCartModalVisible(false)}
-            href={true ? '/checkout' : '/auth/signin'}
-            className={`btn btn-primary mt-3 d-block ${isPending ? 'disabled-link' : ''}`}
-          >
-            Checkout
-          </Link>
+              <Link
+                onClick={() => setIsCartModalVisible(false)}
+                href={true ? '/checkout' : '/auth/signin'}
+                className={`btn btn-primary mt-3 d-block ${isPending ? 'disabled-link' : ''}`}>
+                Checkout
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </>

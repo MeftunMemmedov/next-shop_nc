@@ -65,6 +65,16 @@ export const loginAction = async (
       httpOnly: true,
     });
 
+    if (remember_me) {
+      cookieStore.set('remember', 'true', {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+        secure: true,
+        sameSite: 'lax',
+        httpOnly: true,
+      });
+    }
+
     actionState.signin = {
       status: 'success',
       message: 'You have successfully signed in',

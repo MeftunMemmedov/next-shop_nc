@@ -1,17 +1,17 @@
 import Spinner from '@/components/Spinner';
-import { ORDER_STATUS } from '@/constants/orderStatus';
-import { ORDERS } from '@/data/order';
-import { getPriceDisplay } from '@/helpers';
+import { getSubtotal } from '@/helpers';
 import { Link } from '@/i18n/routing';
+import { OrderItem } from '@/types';
 import { format } from 'date-fns';
 
-const Orders = () => {
+const Orders = ({ orders }: { orders: OrderItem[] }) => {
   const table_headings = ['Order №', 'Date', 'Status', 'Total', 'Actions'];
+
   return (
     <div className="page-content my-account__orders-list">
       {false ? (
         <Spinner size={60} />
-      ) : ORDERS && ORDERS.length > 0 ? (
+      ) : orders && orders.length > 0 ? (
         <>
           <table className="orders-table">
             <thead>
@@ -23,32 +23,24 @@ const Orders = () => {
             </thead>
 
             <tbody>
-              {ORDERS.map((order) => (
+              {orders.map((order) => (
                 <tr key={`order-${order.id}`}>
                   <td>
-                    <Link href={`/orders/${order.id}`}>#{order.id}</Link>
+                    <Link href={`/account/orders/${order.id}`}>
+                      #{order.id}
+                    </Link>
                   </td>
                   <td>{format(order.created_at, 'dd/MM/yyyy')}</td>
                   <td>
-                    <span
-                      className="badge"
-                      style={{
-                        backgroundColor: ORDER_STATUS.find(
-                          (status) => status.label === order.status.value
-                        )?.color,
-                      }}
-                    >
-                      {order.status.label}
-                    </span>
+                    <span className="badge">{order.status}</span>
                   </td>
                   <td>
-                    {`${getPriceDisplay(+order.total)} for ${order.items.length} items`}
+                    {`${getSubtotal(order.items.map((orderItems) => orderItems.product))} for ${order.items.length} items`}
                   </td>
                   <td>
                     <Link
-                      href={`/orders/${order.id}`}
-                      className="btn btn-primary"
-                    >
+                      href={`/account/orders/${order.id}`}
+                      className="btn btn-primary">
                       View
                     </Link>
                   </td>

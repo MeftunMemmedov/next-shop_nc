@@ -11,8 +11,9 @@ export const proxy = async (req: NextRequest) => {
 
   let accessToken = req.cookies.get('access')?.value;
   const refreshToken = req.cookies.get('refresh')?.value;
+  const remember_me = req.cookies.get('remember')?.value;
 
-  if (!accessToken && refreshToken) {
+  if (!accessToken && refreshToken && remember_me === 'true') {
     try {
       const refreshRes = await refreshAccess(refreshToken);
       const { access_token, refresh_token, expires_in } = refreshRes;
