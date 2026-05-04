@@ -42,7 +42,6 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
     quantity: cartItem.quantity,
   }));
 
-  console.log(orderId);
   const clearUserCart = async () => {
     try {
       await clearUserCartAction(orderItems!);
