@@ -3,9 +3,10 @@ import { CartItem, CartPayload, InventoryState, Product } from '@/types';
 
 // ----HELPERS
 const updateCart = (state: InventoryState, updatedCart: CartItem[]) => {
-  state.local.cart.items = updatedCart;
-  state.local.cart.count = updatedCart.length;
-  state.local.cart.total = updatedCart.reduce((acc, item) => {
+  const { cart } = state.local;
+
+  cart.count = updatedCart.length;
+  cart.total = updatedCart.reduce((acc, item) => {
     return acc + getProductPrice(item.product) * item.quantity;
   }, 0);
   localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -13,10 +14,10 @@ const updateCart = (state: InventoryState, updatedCart: CartItem[]) => {
 
 // ----CLEAR
 export const clearLocalCart = (state: InventoryState) => {
-  state.local.cart.count = 0;
-  state.local.cart.items = [];
-  state.local.cart.total = 0;
-  localStorage.setItem('cart', JSON.stringify([]));
+  const { cart } = state.local;
+
+  cart.items = [];
+  updateCart(state, cart.items);
 };
 
 // ----INIT
@@ -26,10 +27,13 @@ export const initLocalCart = (state: InventoryState) => {
     const localCart = localCartData
       ? (JSON.parse(localCartData) as CartItem[])
       : [];
-    state.local.cart.count = localCart.length;
-    state.local.cart.items = localCart;
-    state.local.cart.total = localCart.reduce((acc, item) => {
-      return acc + getProductPrice(item?.product) * item.quantity;
+
+    const { cart } = state.local;
+
+    cart.items = localCart;
+    cart.count = localCart.length;
+    cart.total = localCart.reduce((acc, item) => {
+      return acc + getProductPrice(item.product) * item.quantity;
     }, 0);
   } catch {
     console.error('REDUX ERROR CART STATE');
@@ -42,10 +46,13 @@ export const addToLocalCart = (
   { payload }: CartPayload
 ) => {
   const { product, quantity } = payload;
-  const newItem = { product, quantity };
-  const updatedItems: CartItem[] = [...state.local.cart.items, newItem];
 
-  updateCart(state, updatedItems);
+  const newItem = { product, quantity };
+
+  const { cart } = state.local;
+
+  cart.items.push(newItem);
+  updateCart(state, cart.items);
 };
 
 // ----REMOVE
@@ -53,11 +60,10 @@ export const removeFromLocalCart = (
   state: InventoryState,
   { payload }: { payload: Product }
 ) => {
-  const updatedItems = state.local.cart.items.filter(
-    (item) => item.product.slug !== payload.slug
-  );
+  const { cart } = state.local;
 
-  updateCart(state, updatedItems);
+  cart.items = cart.items.filter((item) => item.product.slug !== payload.slug);
+  updateCart(state, cart.items);
 };
 
 // ----CHANGE QUANTITY
@@ -65,8 +71,11 @@ export const changeLocalCartItemQuantity = (
   state: InventoryState,
   { payload }: CartPayload
 ) => {
+  const { cart } = state.local;
+
   const { product, quantity } = payload;
-  const updatedItems = state.local.cart.items.map((item) => {
+
+  cart.items = cart.items.map((item) => {
     if (item.product.slug === product.slug) {
       return {
         ...item,
@@ -75,5 +84,5 @@ export const changeLocalCartItemQuantity = (
     }
     return item;
   });
-  updateCart(state, updatedItems);
+  updateCart(state, cart.items);
 };

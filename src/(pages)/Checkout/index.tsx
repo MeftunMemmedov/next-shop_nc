@@ -13,16 +13,19 @@ import { useForm } from 'react-hook-form';
 
 const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
   const router = useRouter();
+
   const detail_titles = ['Product', 'Subtotal'];
-  const [orderId] = useState(() => crypto.randomUUID());
+
   const cartProducts = cart?.map((cartItem) => cartItem.product);
 
   const [successMessage, setSuccessMessage] = useState<string>('');
 
+  const [orderId] = useState(() => crypto.randomUUID());
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isLoading, isSubmitting },
     setError,
   } = useForm<CheckoutInput>({
     resolver: zodResolver(checkoutSchema),
@@ -49,6 +52,8 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
       return;
     }
   };
+
+  const loading = isLoading || isSubmitting;
 
   const onSubmit = handleSubmit(async (data: CheckoutInput) => {
     const res = await checkoutProductsAction(data, orderItems!);
@@ -78,11 +83,9 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
 
         <CheckoutSteps currentStep={2} />
 
-        {isSubmitting ? (
+        {loading ? (
           <div className="d-flex justify-content-center align-items-center">
-            <div className="spinner-border" role="status">
-              <Spinner />
-            </div>
+            <Spinner />
           </div>
         ) : (
           <form onSubmit={onSubmit}>
@@ -92,7 +95,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
               </div>
             )}
             {successMessage !== '' && (
-              <div className="border p-3 mt-1 bg-success rounded text-light fw-bold">
+              <div className="border p-3 mt-1 bg-success rounded text-dark fw-bold">
                 {successMessage}
               </div>
             )}
@@ -110,6 +113,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
                             id="user_name"
                             className={`form-control ${errors.user_name ? 'border border-danger' : ''}`}
                             placeholder={'User name'}
+                            disabled={loading}
                           />
 
                           <label
@@ -132,6 +136,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
                             id="phone"
                             className={`form-control ${errors.phone ? 'border border-danger' : ''}`}
                             placeholder={'Phone'}
+                            disabled={loading}
                           />
                           <label
                             htmlFor="phone"
@@ -154,6 +159,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
                             id="email"
                             className={`form-control ${errors.email ? 'border border-danger' : ''}`}
                             placeholder={'Email'}
+                            disabled={loading}
                           />
                           <label
                             htmlFor="email"
@@ -175,6 +181,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
                             id="address"
                             className={`form-control ${errors.address ? 'border border-danger' : ''}`}
                             placeholder={'Address'}
+                            disabled={loading}
                           />
                           <label
                             htmlFor="address"
@@ -197,6 +204,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
                             placeholder={'Note'}
                             cols={30}
                             rows={8}
+                            disabled={loading}
                           />
                         </div>
                       </div>
@@ -236,16 +244,6 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
 
                           <table className="checkout-totals">
                             <tbody>
-                              {/* <tr>
-                          <th>{tCommon('cart.sub_total')}</th>
-                          <td>{getPriceDisplay(total)}</td>
-                        </tr> */}
-
-                              {/* <tr>
-                          <th>{t('details.shipping')}</th>
-                          <td>{getPriceDisplay(shippingCost)}</td>
-                        </tr> */}
-
                               <tr>
                                 <th>Total</th>
                                 <td>
@@ -259,6 +257,7 @@ const Checkout = ({ cart, user }: { cart: CartItem[] | null; user: User }) => {
 
                         <button
                           type="submit"
+                          disabled={loading}
                           className="btn btn-primary btn-checkout d-flex justify-content-center align-items-center">
                           Checkout Order
                         </button>

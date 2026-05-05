@@ -2,7 +2,7 @@
 import { deleteData, patchData, postData } from '@/api/fetch/helpers/mutate';
 import { initialActionState } from '@/constants/actionstatus';
 import { ActionState } from '@/types';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 export const toggleCartAction = async (formData: FormData) => {
@@ -117,12 +117,4 @@ export const clearUserCartAction = async (cartItems: { product: string }[]) => {
     actionState.status = 'failure';
     return actionState;
   }
-};
-
-export const revalidateCartData = async () => {
-  revalidateTag('cart', {});
-};
-
-export const action = async () => {
-  console.log('I AM FUCKING ACTIONNN');
 };

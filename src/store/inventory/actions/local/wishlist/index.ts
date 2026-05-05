@@ -4,12 +4,10 @@ import { WritableDraft } from '@reduxjs/toolkit';
 type InventoryState = WritableDraft<InventoryStateProps>;
 
 // ----HELPERS
-export const updateLocalWishlist = (
-  state: InventoryState,
-  data: WishlistItem[]
-) => {
-  state.local.wishlist.items = data;
-  state.local.wishlist.count = data.length;
+const updateLocalWishlist = (state: InventoryState, data: WishlistItem[]) => {
+  const { wishlist } = state.local;
+
+  wishlist.count = data.length;
   localStorage.setItem('wishlist', JSON.stringify(data));
 };
 
@@ -21,8 +19,10 @@ export const initLocalWishlist = (state: InventoryState) => {
       ? (JSON.parse(localWishlistData) as WishlistItem[])
       : [];
 
-    state.local.wishlist.items = localWishlist;
-    state.local.wishlist.count = localWishlist.length;
+    const { wishlist } = state.local;
+
+    wishlist.items = localWishlist;
+    wishlist.count = localWishlist.length;
   } catch {
     console.log('REDUX ERROR WISHLIST');
   }
@@ -30,9 +30,10 @@ export const initLocalWishlist = (state: InventoryState) => {
 
 // ----CLEAR
 export const clearLocalWishlist = (state: InventoryState) => {
-  state.local.wishlist.count = 0;
-  state.local.wishlist.items = [];
-  localStorage.setItem('wishlist', JSON.stringify([]));
+  const { wishlist } = state.local;
+
+  wishlist.items = [];
+  updateLocalWishlist(state, wishlist.items);
 };
 
 // ----ADD
@@ -40,9 +41,10 @@ export const addToLocalWishlist = (
   state: InventoryState,
   { payload }: { payload: WishlistItem }
 ) => {
-  const updatedItems = [...state.local.wishlist.items, payload];
+  const { wishlist } = state.local;
 
-  updateLocalWishlist(state, updatedItems);
+  wishlist.items.push(payload);
+  updateLocalWishlist(state, wishlist.items);
 };
 
 // ----REMOVE
@@ -50,9 +52,10 @@ export const removeFromLocalWishlist = (
   state: InventoryState,
   { payload }: { payload: Product }
 ) => {
-  const updatedItems = state.local.wishlist.items.filter(
+  const { wishlist } = state.local;
+
+  wishlist.items = wishlist.items.filter(
     (item) => item.product.slug !== payload.slug
   );
-
-  updateLocalWishlist(state, updatedItems);
+  updateLocalWishlist(state, wishlist.items);
 };
