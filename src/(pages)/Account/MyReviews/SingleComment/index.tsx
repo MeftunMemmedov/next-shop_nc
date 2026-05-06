@@ -8,11 +8,9 @@ import { toast } from 'react-toastify';
 
 const SingleComment = ({
   review,
-  locale,
   user_id,
 }: {
   review: Comment;
-  locale: string;
   user_id: string | undefined;
 }) => {
   const [isEditDisabled, setIsEditDisabled] = useState<boolean>(true);
@@ -76,7 +74,7 @@ const SingleComment = ({
             disabled={isPending}
             readOnly={isEditDisabled}></textarea>
           <div className="d-flex justify-content-between">
-            <span>{formattedDate(review.created_at, locale)}</span>
+            <span>{formattedDate(review.created_at)}</span>
             <div className="d-flex">
               <button
                 type="button"

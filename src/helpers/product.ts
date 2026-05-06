@@ -1,4 +1,4 @@
-import { Product } from '@/types';
+import { CartItem, Product } from '@/types';
 
 export const getProductPrice = (product: Product) => {
   return +product.price - +product.discount;
@@ -20,5 +20,11 @@ export const getPriceDisplay = (
 export const getSubtotal = (items: Product[]) => {
   return items.reduce((acc, item) => {
     return acc + getProductPrice(item);
+  }, 0);
+};
+
+export const getTotal = (items: CartItem[]) => {
+  return items.reduce((acc, item) => {
+    return acc + getProductPrice(item.product) * item.quantity;
   }, 0);
 };

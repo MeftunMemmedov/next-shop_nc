@@ -9,6 +9,10 @@
   object-fit: contain !important;
 }
 
+.aspect-square {
+  aspect-ratio: 1/1 !important;
+}
+
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
   appearance: none;

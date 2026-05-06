@@ -5,6 +5,7 @@ import { blockScreenByTransparentOverlay, getPriceDisplay } from '@/helpers';
 import { debounce } from '@/helpers/debounce';
 import { Link, useRouter } from '@/i18n/routing';
 import { Product } from '@/types';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { SubmitEvent, useEffect, useRef, useState } from 'react';
 
@@ -132,7 +133,9 @@ const SearchForm = () => {
                           href={`/products/${result.slug}`}
                           className="row search-result-card">
                           <div className="col-1 p-0 h-100">
-                            <img
+                            <Image
+                              width={100}
+                              height={100}
                               src={result.images[0]}
                               className="h-100 w-100"
                               alt={result.title}

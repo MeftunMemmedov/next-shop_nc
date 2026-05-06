@@ -46,7 +46,7 @@ const FeaturedCategorySlider = ({
   return (
     <section>
       <div className="category-carousel container">
-        <h2 className="section-title text-uppercase fs-25 fw-medium text-center mb-4">
+        <h2 className="section-title text-uppercase fs-25 fw-semibold text-center mb-4">
           Featured Categories
         </h2>
         <div className="position-relative">
@@ -54,8 +54,7 @@ const FeaturedCategorySlider = ({
             <Swiper
               wrapperTag="ul"
               wrapperClass="list-unstyled"
-              {...swiperSettings}
-            >
+              {...swiperSettings}>
               {featuredCategories.map((category, index) => (
                 <SwiperSlide tag="li" key={`featured-category-slide-${index}`}>
                   <Link
@@ -65,8 +64,7 @@ const FeaturedCategorySlider = ({
                         category: category.slug,
                       },
                     }}
-                    className="shop-categories__item mb-3 d-flex flex-column align-items-center"
-                  >
+                    className="shop-categories__item mb-3 d-flex flex-column align-items-center">
                     <div className="shop-categories__item-img-box rounded-circle">
                       <Image
                         loading="lazy"

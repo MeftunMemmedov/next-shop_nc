@@ -6,6 +6,7 @@ import { Link } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
 import { Category, UserAuthState } from '@/types';
 import CartModal from '../CartModal';
+import Image from 'next/image';
 
 const header_top_texts = [
   'DISCOUNTS ON SAMOVARS – THE MOST DELICIOUS WAY TO BREW TEA',
@@ -40,8 +41,7 @@ const Header = async ({ categories, user }: Props) => {
               {header_top_texts.map((text, index) => (
                 <div
                   className="announcement-bar-item"
-                  key={`header-top-text-${index}`}
-                >
+                  key={`header-top-text-${index}`}>
                   <p>{text}</p>
                 </div>
               ))}
@@ -56,9 +56,9 @@ const Header = async ({ categories, user }: Props) => {
         <div className="header-desk header-desk_type_1">
           <div className="logo">
             <Link href="/">
-              <img
+              <Image
                 src={LOGO}
-                alt={PROJECT_NAME}
+                alt={PROJECT_NAME ?? ''}
                 width={120}
                 height={30}
                 className="logo__image d-block"
@@ -71,8 +71,7 @@ const Header = async ({ categories, user }: Props) => {
               {routes.slice(0, 4).map((route, index) => (
                 <li
                   className="navigation__item"
-                  key={`header-navlink-${index}`}
-                >
+                  key={`header-navlink-${index}`}>
                   <Link href={route.path} className="navigation__link">
                     {route.title}
                   </Link>
@@ -85,12 +84,10 @@ const Header = async ({ categories, user }: Props) => {
                               {categories?.map((item) => (
                                 <div
                                   className="col-xl-3 col-lg-4 col-2 pe-4 mb-3"
-                                  key={`category--${item.slug}`}
-                                >
+                                  key={`category--${item.slug}`}>
                                   <Link
                                     href={`/products?category=${item.slug}`}
-                                    className="sub-menu__title text-dark"
-                                  >
+                                    className="sub-menu__title text-dark">
                                     {item.title}
                                   </Link>
 
@@ -98,12 +95,10 @@ const Header = async ({ categories, user }: Props) => {
                                     {item.children?.map((child) => (
                                       <li
                                         className="sub-menu__item"
-                                        key={`childcategory-${child.slug}`}
-                                      >
+                                        key={`childcategory-${child.slug}`}>
                                         <Link
                                           href={`/products?category=${child.slug}`}
-                                          className="menu-link menu-link_us-s"
-                                        >
+                                          className="menu-link menu-link_us-s">
                                           {child.title}
                                         </Link>
                                       </li>
@@ -128,8 +123,7 @@ const Header = async ({ categories, user }: Props) => {
             <div className="header-tools__item hover-container">
               <Link
                 className="header-tools__item"
-                href={user?.isAuth ? '/account/details' : '/auth/signin'}
-              >
+                href={user?.isAuth ? '/account/details' : '/auth/signin'}>
                 {user?.isAuth ? <UserIcon /> : <LoginIcon />}
               </Link>
             </div>

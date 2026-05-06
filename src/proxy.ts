@@ -4,6 +4,15 @@ import { routing } from './i18n/routing';
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { refreshAccess } from './api/fetch/helpers/auth';
 
+const isTokenExpired = (token: string) => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+};
+
 const intlMiddleware = createMiddleware(routing);
 
 export const proxy = async (req: NextRequest) => {
@@ -13,11 +22,12 @@ export const proxy = async (req: NextRequest) => {
   const refreshToken = req.cookies.get('refresh')?.value;
   const remember_me = req.cookies.get('remember')?.value;
 
-  if (!accessToken && refreshToken && remember_me === 'true') {
+  const expired = accessToken ? isTokenExpired(accessToken) : true;
+
+  if (expired && refreshToken && remember_me === 'true') {
     try {
       const refreshRes = await refreshAccess(refreshToken);
       const { access_token, refresh_token, expires_in } = refreshRes;
-
       const cookieOptions: Partial<ResponseCookie> = {
         path: '/',
         httpOnly: true,

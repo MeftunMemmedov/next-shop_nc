@@ -1,8 +1,8 @@
 import { createFakeImage } from '@/data/image';
 import { Comment } from '@/types';
 import CommentForm from './components/CommentForm';
-import { getLocale } from 'next-intl/server';
 import { formattedDate } from '@/helpers';
+import Image from 'next/image';
 
 interface Props {
   comments: Comment[];
@@ -10,8 +10,6 @@ interface Props {
 }
 
 const Comments = async ({ comments, slug }: Props) => {
-  const locale = await getLocale();
-
   return (
     <div className="product-single__details-tab m-auto" id="tabs">
       <ul className="nav nav-tabs" id="myTab" role="tablist">
@@ -32,7 +30,13 @@ const Comments = async ({ comments, slug }: Props) => {
               comments.map((comment) => (
                 <div className="product-single__reviews-item" key={comment.id}>
                   <div className="customer-avatar">
-                    <img loading="lazy" src={createFakeImage(10, 10)} />
+                    <Image
+                      src={createFakeImage(10, 10)}
+                      loading="lazy"
+                      width={30}
+                      height={30}
+                      alt=""
+                    />
                   </div>
                   <div className="customer-review">
                     <div className="d-flex align-items-center gap-2">
@@ -44,7 +48,7 @@ const Comments = async ({ comments, slug }: Props) => {
                     </div>
 
                     <div className="review-date">
-                      {formattedDate(comment.created_at, locale)}
+                      {formattedDate(comment.created_at)}
                     </div>
                     <div className="review-text">
                       <p>{comment.comment}</p>

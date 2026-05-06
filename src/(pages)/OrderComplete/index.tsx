@@ -3,10 +3,8 @@ import CheckoutSteps from '@/components/CheckoutSteps';
 import { formattedDate, getPriceDisplay, getProductPrice } from '@/helpers';
 import { Link } from '@/i18n/routing';
 import { OrderItem } from '@/types';
-import { getLocale } from 'next-intl/server';
 
 const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
-  const locale = await getLocale();
   const total = orderDetails.items.reduce((acc, item) => {
     return acc + getProductPrice(item.product) * item.quantity;
   }, 0);
@@ -29,7 +27,7 @@ const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
             </div>
             <div className="order-info__item">
               <label>Date</label>
-              <span>{formattedDate(orderDetails.created_at, locale)}</span>
+              <span>{formattedDate(orderDetails.created_at)}</span>
             </div>
             <div className="order-info__item">
               <label>Total</label>

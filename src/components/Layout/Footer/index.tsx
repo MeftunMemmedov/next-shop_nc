@@ -3,6 +3,7 @@ import { PROJECT_NAME, routes } from '@/constants';
 import { CONTACT_INFORMATION } from '@/data/contact';
 import { Link } from '@/i18n/routing';
 import { Category } from '@/types';
+import Image from 'next/image';
 
 const Footer = ({ categories }: { categories: Category[] }) => {
   const noFeaturedCategories = categories.filter(
@@ -15,10 +16,12 @@ const Footer = ({ categories }: { categories: Category[] }) => {
           <div className="footer-column footer-store-info col-12 mb-4 mb-lg-0">
             <div className="logo">
               <Link href="/">
-                <img
+                <Image
                   src={LOGO}
+                  width={128}
+                  height={30}
                   className="logo__image d-block"
-                  alt={PROJECT_NAME}
+                  alt={PROJECT_NAME ?? ''}
                 />
               </Link>
             </div>
@@ -52,12 +55,12 @@ const Footer = ({ categories }: { categories: Category[] }) => {
                     <a
                       href={social.url}
                       target="_blank"
-                      className="footer__social-link d-block"
-                    >
-                      <img
+                      className="footer__social-link d-block">
+                      <Image
                         loading="lazy"
                         src={social.icon}
                         width={32}
+                        height={32}
                         alt={social.title}
                       />
                     </a>
@@ -90,12 +93,10 @@ const Footer = ({ categories }: { categories: Category[] }) => {
                   return (
                     <li
                       className="sub-menu__item"
-                      key={`footer-category-${category.slug}`}
-                    >
+                      key={`footer-category-${category.slug}`}>
                       <Link
                         href={`/products?category=${category.slug}`}
-                        className="menu-link menu-link_us-s"
-                      >
+                        className="menu-link menu-link_us-s">
                         {category.title}
                       </Link>
                     </li>

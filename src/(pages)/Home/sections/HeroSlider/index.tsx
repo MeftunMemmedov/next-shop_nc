@@ -29,8 +29,7 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
         wrapperTag="ul"
         wrapperClass="list-unstyled"
         className="hero-slider h-100"
-        {...sliderSettings}
-      >
+        {...sliderSettings}>
         {slides.map((slide, index) => (
           <SwiperSlide
             tag="li"
@@ -39,12 +38,10 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
               opacity: 1,
               transform: 'translate3d(0px, 0px, 0px)',
               transitionDuration: '0ms',
-            }}
-          >
+            }}>
             <Link
               href={slide.url || '/products'}
-              className="overflow-hidden position-relative h-100"
-            >
+              className="overflow-hidden position-relative h-100">
               <div className="slideshow-bg">
                 <Image
                   loading={index === 0 ? 'eager' : 'lazy'}
@@ -57,9 +54,7 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
                 />
                 <div className="slideshow-text container position-absolute start-50 top-50 translate-middle">
                   <h2
-                    className={`${slide.title.length > 20 ? 'fs-45' : 'fs-70'} mb-2 mb-lg-3 animate animate_fade animate_btt animate_delay-5 text-uppercase fw-normal text-light`}
-                    style={{ fontFamily: '"Average Sans"' }}
-                  >
+                    className={`${slide.title.length > 20 ? 'fs-45' : 'fs-70'} mb-2 mb-lg-3 animate animate_fade animate_btt animate_delay-5 text-uppercase fw-semibold text-light`}>
                     {slide.title}
                   </h2>
                   <p className="h6 mb-4 pb-2 animate animate_fade animate_btt animate_delay-5 lh-2rem text-light d-sm-block d-none">

@@ -12,6 +12,7 @@ import 'yet-another-react-lightbox/styles.css';
 import { NextIcon, PrevIcon } from '@/assets/images/icons';
 
 import { Product } from '@/types';
+import Image from 'next/image';
 
 interface Props {
   product: Product;
@@ -77,15 +78,16 @@ const ImageGallery = ({ product }: Props) => {
             {product.images.map((img, index) => (
               <SwiperSlide
                 key={`product-${product.slug}-${index}`}
-                className="product-single__image-item h-100"
-              >
-                <img
-                  className="product-image"
-                  style={{ cursor: 'pointer', objectFit: 'contain' }}
+                className="product-single__image-item h-100">
+                <Image
+                  className="product-image object-fit-contain"
+                  style={{ cursor: 'pointer' }}
                   src={img}
-                  alt={product.title}
-                  loading="lazy"
+                  width={500}
+                  height={500}
+                  loading={index === 0 ? 'eager' : 'lazy'}
                   onClick={() => openLightbox(index)}
+                  alt={`${product.title} ${product.description}`}
                 />
               </SwiperSlide>
             ))}
@@ -106,9 +108,14 @@ const ImageGallery = ({ product }: Props) => {
               {product.images.map((img, index) => (
                 <SwiperSlide
                   key={`product-thumb-${product.slug}-${index}`}
-                  className="product-single__image-item"
-                >
-                  <img src={img} alt={product.title} />
+                  className="product-single__image-item relative aspect-square mb-2">
+                  <Image
+                    className="object-fit-contain"
+                    fill
+                    src={img}
+                    loading="lazy"
+                    alt={`${product.title} ${product.description}`}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
