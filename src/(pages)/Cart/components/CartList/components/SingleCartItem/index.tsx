@@ -141,16 +141,14 @@ const SingleCartItem = ({
           <button
             disabled={blocking || +quantity === 1}
             className="qty-control__reduce btn bg-transparent"
-            onClick={() => handleClickQuantity(item, '-', setQuantity)}
-          >
+            onClick={() => handleClickQuantity(item, '-', setQuantity)}>
             -
           </button>
 
           <button
             disabled={blocking}
             className="qty-control__increase  btn bg-transparent"
-            onClick={() => handleClickQuantity(item, '+', setQuantity)}
-          >
+            onClick={() => handleClickQuantity(item, '+', setQuantity)}>
             +
           </button>
         </div>
@@ -170,8 +168,7 @@ const SingleCartItem = ({
       <td>
         <button
           onClick={() => toggleCart(item.product, 0)}
-          className="remove-cart btn"
-        >
+          className="remove-cart btn">
           <RemoveIcon />
         </button>
       </td>

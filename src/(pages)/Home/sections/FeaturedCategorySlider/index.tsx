@@ -12,6 +12,8 @@ const FeaturedCategorySlider = ({
 }) => {
   const swiperSettings: SwiperProps = {
     freeMode: true,
+    wrapperTag: 'ul',
+    wrapperClass: 'list-unstyled',
     modules: [FreeMode, Autoplay],
     className: 'featured-category-slider',
     autoplay: {
@@ -51,10 +53,7 @@ const FeaturedCategorySlider = ({
         </h2>
         <div className="position-relative">
           <div className="swiper-container">
-            <Swiper
-              wrapperTag="ul"
-              wrapperClass="list-unstyled"
-              {...swiperSettings}>
+            <Swiper {...swiperSettings}>
               {featuredCategories.map((category, index) => (
                 <SwiperSlide tag="li" key={`featured-category-slide-${index}`}>
                   <Link

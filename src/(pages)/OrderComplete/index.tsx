@@ -1,13 +1,16 @@
 import { ConfirmIcon } from '@/assets/images/icons';
 import CheckoutSteps from '@/components/CheckoutSteps';
-import { formattedDate, getPriceDisplay, getProductPrice } from '@/helpers';
+import {
+  formattedDate,
+  getPriceDisplay,
+  getProductPrice,
+  getTotal,
+} from '@/helpers';
 import { Link } from '@/i18n/routing';
 import { OrderItem } from '@/types';
 
 const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
-  const total = orderDetails.items.reduce((acc, item) => {
-    return acc + getProductPrice(item.product) * item.quantity;
-  }, 0);
+  const total = getTotal(orderDetails.items);
 
   return (
     <main>

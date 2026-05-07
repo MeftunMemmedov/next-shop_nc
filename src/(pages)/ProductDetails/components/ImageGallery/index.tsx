@@ -38,6 +38,8 @@ const ImageGallery = ({ product }: Props) => {
   };
 
   const thumbSliderSettings: SwiperProps = {
+    wrapperTag: 'ul',
+    wrapperClass: 'list-unstyled',
     modules: [FreeMode, Navigation, Thumbs],
     direction: 'vertical',
     freeMode: true,
@@ -78,6 +80,7 @@ const ImageGallery = ({ product }: Props) => {
             {product.images.map((img, index) => (
               <SwiperSlide
                 key={`product-${product.slug}-${index}`}
+                tag="li"
                 className="product-single__image-item h-100">
                 <Image
                   className="product-image object-fit-contain"
@@ -114,7 +117,7 @@ const ImageGallery = ({ product }: Props) => {
                     fill
                     src={img}
                     loading="lazy"
-                    alt={`${product.title} ${product.description}`}
+                    alt={`thumbnail - ${product.title} ${product.description}`}
                   />
                 </SwiperSlide>
               ))}

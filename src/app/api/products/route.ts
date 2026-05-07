@@ -18,6 +18,7 @@ export const GET = async (req: NextRequest) => {
       'shop_products',
       searchResultParams
     );
+
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(

@@ -18,12 +18,14 @@ const FeaturedProductSlider = ({
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
 
   const swiperSettings: SwiperProps = {
+    freeMode: true,
+    wrapperTag: 'ul',
+    wrapperClass: 'list-unstyled',
+    modules: [FreeMode, Navigation, Autoplay],
+
     autoplay: {
       delay: 4000,
     },
-    freeMode: true,
-    modules: [FreeMode, Navigation, Autoplay],
-
     loop: true,
     breakpoints: {
       320: {
@@ -75,26 +77,21 @@ const FeaturedProductSlider = ({
           <div className="swiper-nav-btns position-absolute w-100 h-100 d-flex justify-content-between align-items-center">
             <div
               className="swiper-nav-btn swiper-slide-prev-btn border rounded-circle d-flex justify-content-center align-items-center shadow"
-              onClick={slidePrev}
-            >
+              onClick={slidePrev}>
               <PrevIcon />
             </div>
             <div
               className="swiper-nav-btn swiper-slide-next-btn border rounded-circle d-flex justify-content-center align-items-center shadow"
-              onClick={slideNext}
-            >
+              onClick={slideNext}>
               <NextIcon />
             </div>
           </div>
         )}
         <div className="swiper-container">
           <Swiper
-            wrapperTag="ul"
-            wrapperClass="list-unstyled"
-            className="home-featured-product-slider"
             ref={swiperRef}
-            {...swiperSettings}
-          >
+            className="home-featured-product-slider"
+            {...swiperSettings}>
             {featuredProducts.map((product, index) => (
               <SwiperSlide tag="li" key={`featured-product-slide-${index}`}>
                 <ProductCard product={product} />

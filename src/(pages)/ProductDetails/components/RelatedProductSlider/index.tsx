@@ -16,6 +16,8 @@ const RelatedProductSlider = () => {
 
   const swiperSettings: SwiperProps = {
     modules: [Pagination, Navigation],
+    wrapperTag: 'ul',
+    wrapperClass: 'list-unstyled',
     loop: true,
     effect: 'none',
     autoplay: {
@@ -71,7 +73,7 @@ const RelatedProductSlider = () => {
       <div id="related_products" className="position-relative">
         <Swiper ref={swiperRef} {...swiperSettings}>
           {PRODUCTS.slice(0, 6).map((item) => (
-            <SwiperSlide key={`related-product-slide-${item.slug}`}>
+            <SwiperSlide tag="li" key={`related-product-slide-${item.slug}`}>
               <ProductCard product={item} />
             </SwiperSlide>
           ))}
@@ -81,15 +83,13 @@ const RelatedProductSlider = () => {
           <>
             <div
               className="products-carousel__prev position-absolute top-50 d-flex align-items-center justify-content-center"
-              onClick={() => slideTo('prev')}
-            >
+              onClick={() => slideTo('prev')}>
               <PrevIcon className="related-product-icon" />
             </div>
 
             <div
               className="products-carousel__next position-absolute top-50 d-flex align-items-center justify-content-center"
-              onClick={() => slideTo('next')}
-            >
+              onClick={() => slideTo('next')}>
               <NextIcon className="related-product-icon" />
             </div>
           </>

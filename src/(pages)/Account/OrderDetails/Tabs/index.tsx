@@ -1,5 +1,5 @@
 'use client';
-import { getPriceDisplay, getProductPrice } from '@/helpers';
+import { getPriceDisplay, getProductPrice, getTotal } from '@/helpers';
 import { OrderItem } from '@/types';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -60,11 +60,7 @@ const Tabs = ({ order }: { order: OrderItem }) => {
               <span>Total:</span>
 
               <span className="fw-6">
-                {getPriceDisplay(
-                  order.items.reduce((acc, item) => {
-                    return acc + getProductPrice(item.product) * item.quantity;
-                  }, 0)
-                )}
+                {getPriceDisplay(getTotal(order.items))}
               </span>
             </li>
 

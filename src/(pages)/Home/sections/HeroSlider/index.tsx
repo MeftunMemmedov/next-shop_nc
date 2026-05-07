@@ -11,6 +11,8 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
 
   const sliderSettings: SwiperProps = {
+    wrapperTag: 'ul',
+    wrapperClass: 'list-unstyled',
     modules: [Navigation, Autoplay],
     loop: true,
     navigation: showNavigation,
@@ -25,11 +27,7 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
   if (!slides || slides.length === 0) return null;
   return (
     <section className="home-hero-slider-container swiper-container slideshow type4 slideshow-navigation-white-sm container">
-      <Swiper
-        wrapperTag="ul"
-        wrapperClass="list-unstyled"
-        className="hero-slider h-100"
-        {...sliderSettings}>
+      <Swiper className="hero-slider h-100" {...sliderSettings}>
         {slides.map((slide, index) => (
           <SwiperSlide
             tag="li"

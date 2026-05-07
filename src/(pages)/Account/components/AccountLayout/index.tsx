@@ -7,6 +7,7 @@ import { logoutAction } from '@/actions/auth/logout';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearUser, clearUserCart } from '@/store/inventory';
 import { toast } from 'react-toastify';
+import Spinner from '@/components/Spinner';
 
 interface Props {
   children: ReactNode;
@@ -43,6 +44,7 @@ const AccountLayout = ({ children }: Props) => {
     });
   };
 
+  if (!isAuth || !info) return <Spinner />;
   return (
     <>
       <div className="mb-4 pb-4"></div>

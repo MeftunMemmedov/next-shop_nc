@@ -12,7 +12,7 @@ const CartBtn = ({ product }: { product: Product }) => {
         disabled={isPending}
         className="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
         onClick={() => toggleCart(product, 1)}
-      >
+        suppressHydrationWarning>
         {productInCart ? 'REMOVE' : 'ADD TO CART'}
       </button>
     </div>
