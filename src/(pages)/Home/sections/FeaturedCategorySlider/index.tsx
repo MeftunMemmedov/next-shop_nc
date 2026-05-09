@@ -2,7 +2,6 @@
 import { Link } from '@/i18n/routing';
 import { Category } from '@/types';
 import Image from 'next/image';
-import { useState } from 'react';
 import { Autoplay, FreeMode } from 'swiper/modules';
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react';
 
@@ -11,7 +10,7 @@ const FeaturedCategorySlider = ({
 }: {
   featuredCategories: Category[];
 }) => {
-  const [loopState, setLoopState] = useState<boolean>(false);
+  const loopState = featuredCategories.length > 5;
 
   const swiperSettings: SwiperProps = {
     wrapperTag: 'ul',
@@ -19,9 +18,11 @@ const FeaturedCategorySlider = ({
     freeMode: true,
     loop: loopState,
     modules: [FreeMode, Autoplay],
-    autoplay: {
-      delay: 4500,
-    },
+    autoplay: loopState
+      ? {
+          delay: 4500,
+        }
+      : false,
     breakpoints: {
       0: {
         slidesPerView: 1,
@@ -43,9 +44,6 @@ const FeaturedCategorySlider = ({
         slidesPerView: 5,
         spaceBetween: 30,
       },
-    },
-    onSwiper: (swiper) => {
-      setLoopState(swiper.slides.length > +swiper.params.slidesPerView!);
     },
   };
 

@@ -33,15 +33,18 @@ const ProductCard = ({ product, onRemove }: Props) => {
       className="product-card-wrapper">
       <div className="product-card mb-3 mb-md-4 mb-xxl-5">
         <div className="pc__img-wrapper">
-          <Link href={`/products/${slug}`} itemProp="url">
+          <Link
+            href={`/products/${slug}`}
+            itemProp="url"
+            className="d-block position-relative h-100">
             <Image
               src={images[0]}
-              width={330}
-              height={380}
+              fill
+              sizes="(max-width: 992px) 33vw, (max-width: 768px) 50vw, 100vw"
               itemProp="image"
               loading="lazy"
               alt={`${title}-${description}`}
-              className="pc__img"
+              className="object-cover"
             />
           </Link>
 

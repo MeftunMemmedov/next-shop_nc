@@ -16,7 +16,7 @@ const FeaturedProductSlider = ({
 }) => {
   const swiperRef = useRef<SwiperRef | null>(null);
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
-  const [loopState, setLoopState] = useState<boolean>(false);
+  const loopState = featuredProducts.length > 4;
 
   const swiperSettings: SwiperProps = {
     wrapperTag: 'ul',
@@ -24,9 +24,11 @@ const FeaturedProductSlider = ({
     freeMode: loopState,
     loop: true,
     modules: [FreeMode, Navigation, Autoplay],
-    autoplay: {
-      delay: 4000,
-    },
+    autoplay: loopState
+      ? {
+          delay: 4000,
+        }
+      : false,
     breakpoints: {
       320: {
         slidesPerView: 2,
@@ -50,9 +52,6 @@ const FeaturedProductSlider = ({
       setShowNavigation(
         swiper.slides.length > Number(swiper.params.slidesPerView)
       );
-    },
-    onSwiper: (swiper) => {
-      setLoopState(swiper.slides.length > +swiper.params.slidesPerView!);
     },
   };
 
@@ -78,16 +77,16 @@ const FeaturedProductSlider = ({
       <div className="position-relative">
         {showNavigation && (
           <div className="swiper-nav-btns position-absolute w-100 h-100 d-flex justify-content-between align-items-center">
-            <div
+            <button
               className="swiper-nav-btn swiper-slide-prev-btn border rounded-circle d-flex justify-content-center align-items-center shadow"
               onClick={slidePrev}>
               <PrevIcon />
-            </div>
-            <div
+            </button>
+            <button
               className="swiper-nav-btn swiper-slide-next-btn border rounded-circle d-flex justify-content-center align-items-center shadow"
               onClick={slideNext}>
               <NextIcon />
-            </div>
+            </button>
           </div>
         )}
         <div className="swiper-container">

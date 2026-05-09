@@ -9,7 +9,7 @@ import { Slide } from '@/types';
 
 const HeroSlider = ({ slides }: { slides: Slide[] }) => {
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
-  const [loopState, setLoopState] = useState<boolean>(false);
+  const loopState = slides.length > 1;
 
   const sliderSettings: SwiperProps = {
     wrapperTag: 'ul',
@@ -17,14 +17,13 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
     loop: loopState,
     navigation: showNavigation,
     modules: [Navigation, Autoplay],
-    autoplay: {
-      delay: 5000,
-    },
+    autoplay: loopState
+      ? {
+          delay: 5000,
+        }
+      : false,
     onResize: () => {
       setShowNavigation(window.innerWidth >= 768);
-    },
-    onSwiper: (swiper) => {
-      setLoopState(swiper.slides.length > +swiper.params.slidesPerView!);
     },
   };
 
@@ -41,10 +40,8 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
               transform: 'translate3d(0px, 0px, 0px)',
               transitionDuration: '0ms',
             }}>
-            <Link
-              href={slide.url || '/products'}
-              className="overflow-hidden position-relative">
-              <div className="slideshow-bg">
+            <Link href={slide.url || '/products'} className="overflow-hidden">
+              <div className="slideshow-bg position-relative">
                 <Image
                   loading={index === 0 ? 'eager' : 'lazy'}
                   priority={index === 0}

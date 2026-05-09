@@ -44,11 +44,11 @@ const ImageGallery = ({ product }: Props) => {
     direction: 'vertical',
     freeMode: true,
     onSwiper: setThumbsSwiper,
-    slidesPerView: 6,
     spaceBetween: 0,
     watchSlidesProgress: true,
     breakpoints: {
       992: {
+        slidesPerView: 6,
         direction: 'vertical',
       },
       425: {
@@ -83,25 +83,30 @@ const ImageGallery = ({ product }: Props) => {
                 tag="li"
                 className="product-single__image-item h-100">
                 <Image
-                  className="product-image object-fit-contain"
                   style={{ cursor: 'pointer' }}
                   src={img}
-                  width={500}
-                  height={500}
+                  fill
+                  sizes="(max-width: 991px) 100vw, 50vw"
+                  priority={index === 0}
                   loading={index === 0 ? 'eager' : 'lazy'}
-                  onClick={() => openLightbox(index)}
                   alt={`${product.title} ${product.description}`}
+                  className="product-image object-fit-contain"
+                  onClick={() => openLightbox(index)}
                 />
               </SwiperSlide>
             ))}
 
-            <div className="swiper-button-prev">
+            <button
+              className="swiper-button-prev border-1"
+              aria-label="product image, slide left">
               <PrevIcon className="iconSlider" />
-            </div>
+            </button>
 
-            <div className="swiper-button-next">
+            <button
+              className="swiper-button-next border-1"
+              aria-label="product image, slide right">
               <NextIcon className="iconSlider" />
-            </div>
+            </button>
           </Swiper>
         </div>
 
@@ -113,11 +118,12 @@ const ImageGallery = ({ product }: Props) => {
                   key={`product-thumb-${product.slug}-${index}`}
                   className="product-single__image-item relative aspect-square mb-2">
                   <Image
-                    className="object-fit-contain"
-                    fill
                     src={img}
+                    fill
+                    sizes="(max-width: 425px) 25vw, (max-width: 991px) 20vw, 10vw)"
                     loading="lazy"
                     alt={`thumbnail - ${product.title} ${product.description}`}
+                    className="object-fit-contain"
                   />
                 </SwiperSlide>
               ))}

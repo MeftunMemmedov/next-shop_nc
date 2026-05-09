@@ -1,5 +1,4 @@
 'use client';
-
 import { ErrorIcon } from '@/assets/images/icons';
 import { Link } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
