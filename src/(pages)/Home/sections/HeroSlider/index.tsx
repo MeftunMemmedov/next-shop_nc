@@ -9,18 +9,22 @@ import { Slide } from '@/types';
 
 const HeroSlider = ({ slides }: { slides: Slide[] }) => {
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
+  const [loopState, setLoopState] = useState<boolean>(false);
 
   const sliderSettings: SwiperProps = {
     wrapperTag: 'ul',
     wrapperClass: 'list-unstyled',
-    modules: [Navigation, Autoplay],
-    loop: true,
+    loop: loopState,
     navigation: showNavigation,
+    modules: [Navigation, Autoplay],
     autoplay: {
       delay: 5000,
     },
     onResize: () => {
       setShowNavigation(window.innerWidth >= 768);
+    },
+    onSwiper: (swiper) => {
+      setLoopState(swiper.slides.length > +swiper.params.slidesPerView!);
     },
   };
 
@@ -31,7 +35,7 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
         {slides.map((slide, index) => (
           <SwiperSlide
             tag="li"
-            key={`hero-slide-${index}-${slide.id}`}
+            key={`hero-slide-${slide.id}`}
             style={{
               opacity: 1,
               transform: 'translate3d(0px, 0px, 0px)',
@@ -39,14 +43,15 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
             }}>
             <Link
               href={slide.url || '/products'}
-              className="overflow-hidden position-relative h-100">
+              className="overflow-hidden position-relative">
               <div className="slideshow-bg">
                 <Image
                   loading={index === 0 ? 'eager' : 'lazy'}
                   priority={index === 0}
+                  fetchPriority={index === 0 ? 'high' : 'low'}
                   src={slide.image}
-                  width={1920}
-                  height={757}
+                  fill
+                  sizes="100vw"
                   alt={`${slide.title} - ${slide.description}`}
                   className="slideshow-bg__img object-fit-cover"
                 />

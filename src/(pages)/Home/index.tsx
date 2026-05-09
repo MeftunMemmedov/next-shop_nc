@@ -50,13 +50,13 @@ const Home = async () => {
   return (
     <main>
       <Sections.HeroSlider slides={slides} />
-      <div className="mb-3 mb-xl-5 pb-3 pt-1 pb-xl-5"></div>
+      <div className="mb-3 mb-xl-5 pb-3 pt-1 pb-xl-5" role="presentation"></div>
       <Sections.FeaturedCategorySlider
         featuredCategories={featuredCategories}
       />
-      <div className="mb-3 mb-xl-5 pb-3 pt-1 pb-xl-5"></div>
+      <div className="mb-3 mb-xl-5 pb-3 pt-1 pb-xl-5" role="presentation"></div>
       <Sections.FeaturedProductSlider featuredProducts={featuredProducts} />
-      <div className="mb-3 mb-xl-5 pb-3 pt-1 pb-xl-5"></div>
+      <div className="mb-3 mb-xl-5 pb-3 pt-1 pb-xl-5" role="presentation"></div>
     </main>
   );
 };

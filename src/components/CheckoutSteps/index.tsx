@@ -24,13 +24,11 @@ const CheckoutSteps = ({ currentStep }: Props) => {
   ];
 
   return (
-    <div className="checkout-steps">
+    <ol className="checkout-steps list-unstyled">
       {steps.map((item, index) => (
-        <a
-          role="button"
+        <li
           className={`checkout-steps__item ${index < currentStep ? 'active' : ''}`}
-          key={`checkout-step-${index}`}
-        >
+          key={`checkout-step-${index}`}>
           <span className="checkout-steps__item-number">
             {(index + 1).toString().padStart(2, '0')}
           </span>
@@ -39,9 +37,9 @@ const CheckoutSteps = ({ currentStep }: Props) => {
             <span>{item.title}</span>
             <em>{item.description}</em>
           </span>
-        </a>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 };
 

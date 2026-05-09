@@ -30,3 +30,4 @@ export { default as UploadIcon } from './upload.svg';
 export { default as GooglePlayDownloadIcon } from './googleplaydownload.svg';
 export { default as AppStoreDownloadIcon } from './appstoredownload.svg';
 export { default as Guitar } from './guitar.svg';
+export { default as ErrorIcon } from './error.svg';

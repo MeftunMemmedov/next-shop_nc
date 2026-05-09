@@ -14,6 +14,7 @@ import { getUser } from '@/api/fetch/helpers/auth/index';
 import { getUserCart } from '@/api/fetch/helpers/cart';
 import { getUserWishlist } from '@/api/fetch/helpers/wishlist';
 import localFont from 'next/font/local';
+import MobileHeader from '@/components/Layout/MobileHeader';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -93,7 +94,7 @@ const RootLayout = async ({
               toastClassName={`${quickSand.className} fw-semibold`}
             />
             <Header categories={categories} user={userSession} />
-            {/* <MobileHeader /> */}
+            <MobileHeader />
             <GlobalContextProvider>
               <NuqsAdapter>{children}</NuqsAdapter>
             </GlobalContextProvider>

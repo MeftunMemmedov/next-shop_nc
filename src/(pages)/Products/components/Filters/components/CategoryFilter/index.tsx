@@ -49,28 +49,24 @@ const CategoryFilter = ({ categories }: Props) => {
         <h5 className="accordion-header">
           <button
             className={`accordion-button p-0 border-0 fs-5 text-uppercase ${!isVisible ? 'collapsed' : ''}`}
-            onClick={() => setIsVisible((prevState) => !prevState)}
-          >
+            onClick={() => setIsVisible((prevState) => !prevState)}>
             Category
             <ArrowDownIcon className="accordion-button__icon type2" />
           </button>
         </h5>
 
         <div
-          className={`accordion-collapse filters border-0 ${isVisible ? 'show' : 'hide'}`}
-        >
+          className={`accordion-collapse filters border-0 ${isVisible ? 'show' : 'hide'}`}>
           <div className="accordion-body px-0 pb-0 pt-3">
             <ul className="list list-inline mb-0">
               {categories.map((category) => (
                 <li
                   className="list-item"
-                  key={`category-${category.slug}-filter`}
-                >
-                  <a
-                    role="button"
-                    className={`menu-link py-1 d-flex gap-2  ${isCategoryFiterActive(category) ? 'fw-bold' : ''}`}
+                  key={`category-${category.slug}-filter`}>
+                  <button
                     onClick={() => toggleCategoryFilter(category)}
-                  >
+                    className={`menu-link py-1 d-flex gap-2 btn p-0 ${isCategoryFiterActive(category) ? 'fw-bold' : ''}`}
+                    aria-expanded={isVisible}>
                     {category.image ? (
                       <Image
                         src={category.image}
@@ -83,34 +79,34 @@ const CategoryFilter = ({ categories }: Props) => {
                       <CategoryIcon width="20" height="20" />
                     )}
                     {category.title}
-                  </a>
-                  <ul>
-                    {category.children?.map((childCat) => (
-                      <li
-                        className="list-item"
-                        key={`category-${childCat.slug}-filter`}
-                      >
-                        <a
-                          role="button"
-                          className={`menu-link py-1 d-flex gap-2  ${isCategoryFiterActive(childCat) ? 'fw-bold' : ''}`}
-                          onClick={() => toggleCategoryFilter(childCat)}
-                        >
-                          {childCat.image ? (
-                            <Image
-                              src={childCat.image}
-                              loading="lazy"
-                              width={20}
-                              height={20}
-                              alt={childCat.title}
-                            />
-                          ) : (
-                            <CategoryIcon width="20" height="20" />
-                          )}
-                          {childCat.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+                  </button>
+                  {category.children && category.children.length > 0 && (
+                    <ul>
+                      {category.children.map((childCat) => (
+                        <li
+                          className="list-item"
+                          key={`category-child-${childCat.slug}-filter`}>
+                          <button
+                            onClick={() => toggleCategoryFilter(childCat)}
+                            className={`menu-link py-1 d-flex gap-2 btn p-0 ${isCategoryFiterActive(childCat) ? 'fw-bold' : ''}`}
+                            aria-expanded={isVisible}>
+                            {childCat.image ? (
+                              <Image
+                                src={childCat.image}
+                                loading="lazy"
+                                width={20}
+                                height={20}
+                                alt={childCat.title}
+                              />
+                            ) : (
+                              <CategoryIcon width="20" height="20" />
+                            )}
+                            {childCat.title}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>

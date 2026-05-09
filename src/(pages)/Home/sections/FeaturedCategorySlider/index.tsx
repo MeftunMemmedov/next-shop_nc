@@ -2,6 +2,7 @@
 import { Link } from '@/i18n/routing';
 import { Category } from '@/types';
 import Image from 'next/image';
+import { useState } from 'react';
 import { Autoplay, FreeMode } from 'swiper/modules';
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react';
 
@@ -10,16 +11,17 @@ const FeaturedCategorySlider = ({
 }: {
   featuredCategories: Category[];
 }) => {
+  const [loopState, setLoopState] = useState<boolean>(false);
+
   const swiperSettings: SwiperProps = {
-    freeMode: true,
     wrapperTag: 'ul',
     wrapperClass: 'list-unstyled',
+    freeMode: true,
+    loop: loopState,
     modules: [FreeMode, Autoplay],
-    className: 'featured-category-slider',
     autoplay: {
       delay: 4500,
     },
-    loop: true,
     breakpoints: {
       0: {
         slidesPerView: 1,
@@ -42,6 +44,9 @@ const FeaturedCategorySlider = ({
         spaceBetween: 30,
       },
     },
+    onSwiper: (swiper) => {
+      setLoopState(swiper.slides.length > +swiper.params.slidesPerView!);
+    },
   };
 
   if (!featuredCategories || featuredCategories.length === 0) return null;
@@ -53,7 +58,7 @@ const FeaturedCategorySlider = ({
         </h2>
         <div className="position-relative">
           <div className="swiper-container">
-            <Swiper {...swiperSettings}>
+            <Swiper className="featured-category-slider" {...swiperSettings}>
               {featuredCategories.map((category, index) => (
                 <SwiperSlide tag="li" key={`featured-category-slide-${index}`}>
                   <Link

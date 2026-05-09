@@ -1,4 +1,5 @@
 <svg
+    aria-hidden="true"
     width='10'
     heigth='10'
     className="accordion-button__icon type2"

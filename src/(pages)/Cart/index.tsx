@@ -6,10 +6,10 @@ const CartList = dynamic(() => import('./components/CartList'), { ssr: false });
 const Cart = () => {
   return (
     <main>
-      <div className="mb-4 pb-5" />
+      <div className="mb-4 pb-5" role="presentation" />
 
       <section className="shop-checkout container mb-5">
-        <h2 className="page-title text-sm-start text-center">Cart</h2>
+        <h1 className="page-title text-sm-start text-center">Cart</h1>
 
         <CheckoutSteps currentStep={1} />
         <CartList />

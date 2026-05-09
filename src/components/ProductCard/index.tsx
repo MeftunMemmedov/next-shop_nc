@@ -27,16 +27,20 @@ const ProductCard = ({ product, onRemove }: Props) => {
   } = product;
 
   return (
-    <div className="product-card-wrapper">
+    <article
+      itemScope
+      itemType="https://schema.org/Product"
+      className="product-card-wrapper">
       <div className="product-card mb-3 mb-md-4 mb-xxl-5">
         <div className="pc__img-wrapper">
-          <Link href={`/products/${slug}`}>
+          <Link href={`/products/${slug}`} itemProp="url">
             <Image
               src={images[0]}
               width={330}
               height={380}
-              alt={`${title}-${description}`}
+              itemProp="image"
               loading="lazy"
+              alt={`${title}-${description}`}
               className="pc__img"
             />
           </Link>
@@ -51,23 +55,33 @@ const ProductCard = ({ product, onRemove }: Props) => {
         )}
 
         <div className="pc__info position-relative">
-          <h3 className="pc__category fs-6">{category.title}</h3>
+          <h3 itemProp="name" className="pc__category fs-6">
+            {category.title}
+          </h3>
 
           <h2 className="pc__title">
             <Link href={`/products/${slug}`}>{title}</Link>
           </h2>
 
-          <div className="product-card__price d-flex flex-xl-row flex-column justify-content-xl-between align-items-xl-center">
+          <div
+            itemProp="offers"
+            itemScope
+            itemType="https://schema.org/Offer"
+            className="product-card__price d-flex flex-xl-row flex-column justify-content-xl-between align-items-xl-center">
+            <meta itemProp="priceCurrency" content="AZN" />
             <div>
               {discount > 0 && (
-                <span className="money price price-old">
+                <span
+                  content={String(price - discount)}
+                  className="money price price-old">
                   {getPriceDisplay(+price)}
                 </span>
               )}
 
               <span
-                className={`money price ${discount > 0 ? 'price-sale' : ''}`}
-              >
+                itemProp="price"
+                content={String(price)}
+                className={`money price ${discount > 0 ? 'price-sale' : ''}`}>
                 {getPriceDisplay(product)}
               </span>
             </div>
@@ -101,7 +115,7 @@ const ProductCard = ({ product, onRemove }: Props) => {
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 

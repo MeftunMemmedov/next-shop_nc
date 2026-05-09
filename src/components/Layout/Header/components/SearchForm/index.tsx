@@ -82,14 +82,14 @@ const SearchForm = () => {
       <div
         className={`header-tools__item hover-container ${isSearchVisible ? 'js-content_visible' : ''}`}>
         <div className="position-relative">
-          <a
-            className="search-field__actor"
-            role="button"
+          <button
+            className="search-field__actor btn p-0"
+            aria-label="open search"
+            aria-expanded={isSearchVisible}
             onClick={() => setIsSearchVisible((prevState) => !prevState)}>
             <SearchIcon />
-
             <i className="btn-icon btn-close-lg"></i>
-          </a>
+          </button>
         </div>
       </div>
       <div
@@ -97,15 +97,18 @@ const SearchForm = () => {
         <form
           className="search-field container"
           onSubmit={handleSearchFormSubmit}>
-          <p className="text-uppercase text-secondary fw-medium mb-4">
+          <label
+            htmlFor="search-input"
+            className="text-uppercase text-secondary fw-medium mb-4">
             WHAT ARE YOU LOOKIN FOR?
-          </p>
+          </label>
           <div className="position-relative">
             <input
-              className="search-field__input search-popup__input w-100 fw-medium"
+              id="search-input"
               type="text"
-              name="search-keyword"
               placeholder={'SEARCH....'}
+              className="search-field__input search-popup__input w-100 fw-medium"
+              autoComplete="off"
               onChange={(e) => {
                 const value = e.target.value.trim();
                 setSearchInput(value);
@@ -137,12 +140,14 @@ const SearchForm = () => {
                               width={100}
                               height={100}
                               src={result.images[0]}
-                              className="h-100 w-100"
+                              sizes="80px"
+                              loading="lazy"
                               alt={result.title}
+                              className="h-100 w-100"
                             />
                           </div>
                           <div className="col-8 d-flex flex-column">
-                            <h4>{result.title}</h4>
+                            <strong>{result.title}</strong>
                             <span>{result.category.title}</span>
                           </div>
                           <div className="col-3 d-flex justify-content-center align-items-center">
@@ -156,7 +161,7 @@ const SearchForm = () => {
               )}
               {searchInputValue === '' && status === 'idle' && (
                 <div className="py-3 text-center">
-                  <p>Start typing to search movies</p>
+                  <p>Start typing to search products</p>
                 </div>
               )}
               {status === 'success' && results.length === 0 && (
@@ -170,8 +175,6 @@ const SearchForm = () => {
                 </div>
               )}
             </div>
-
-            <div className="search-result row row-cols-5" />
           </div>
         </form>
       </div>

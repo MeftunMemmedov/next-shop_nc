@@ -19532,20 +19532,18 @@ textarea.form-control.is-invalid {
 }
 
 .slideshow-bg {
-  height: 100%;
+  aspect-ratio: 1920/557;
+}
+@media (max-width: 992px) {
+  .slideshow-bg {
+    aspect-ratio: 1920/757;
+  }
 }
 
 .slideshow-bg__img {
   width: 100%;
   height: 100%;
-  aspect-ratio: 1920/557;
   object-position: 70% center;
-}
-
-@media (max-width: 992px) {
-  .slideshow-bg__img {
-    aspect-ratio: 1920/757;
-  }
 }
 
 .slideshow-character__img {
@@ -22142,7 +22140,6 @@ a.add-to-wishlist.active .flaticon.flaticon-heart {
   padding-bottom: 1rem;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
-  cursor: pointer;
 }
 
 .shop-checkout .checkout-steps__item-number {

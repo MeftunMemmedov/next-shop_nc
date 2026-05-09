@@ -16,17 +16,17 @@ const FeaturedProductSlider = ({
 }) => {
   const swiperRef = useRef<SwiperRef | null>(null);
   const [showNavigation, setShowNavigation] = useState<boolean>(false);
+  const [loopState, setLoopState] = useState<boolean>(false);
 
   const swiperSettings: SwiperProps = {
-    freeMode: true,
     wrapperTag: 'ul',
     wrapperClass: 'list-unstyled',
+    freeMode: loopState,
+    loop: true,
     modules: [FreeMode, Navigation, Autoplay],
-
     autoplay: {
       delay: 4000,
     },
-    loop: true,
     breakpoints: {
       320: {
         slidesPerView: 2,
@@ -50,6 +50,9 @@ const FeaturedProductSlider = ({
       setShowNavigation(
         swiper.slides.length > Number(swiper.params.slidesPerView)
       );
+    },
+    onSwiper: (swiper) => {
+      setLoopState(swiper.slides.length > +swiper.params.slidesPerView!);
     },
   };
 

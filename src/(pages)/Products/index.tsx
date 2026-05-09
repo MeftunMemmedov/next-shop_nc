@@ -63,7 +63,7 @@ const Products = async ({ searchParams }: Props) => {
           {products.length > 0 ? (
             <div className={`products-grid row row-cols-2 row-cols-md-3`}>
               {products.map((item) => (
-                <ProductCard product={item} key={item.id} />
+                <ProductCard product={item} key={`product-${item.id}`} />
               ))}
             </div>
           ) : (
