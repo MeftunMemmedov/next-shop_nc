@@ -41,9 +41,9 @@ const ProductCard = ({ product, onRemove }: Props) => {
               src={images[0]}
               fill
               sizes="(max-width: 992px) 33vw, (max-width: 768px) 50vw, 100vw"
-              itemProp="image"
               loading="lazy"
               alt={`${title}-${description}`}
+              itemProp="image"
               className="object-cover"
             />
           </Link>
@@ -52,7 +52,10 @@ const ProductCard = ({ product, onRemove }: Props) => {
         </div>
 
         {onRemove && (
-          <button className="btn-remove-from-wishlist" onClick={onRemove}>
+          <button
+            className="btn-remove-from-wishlist"
+            aria-label="remove from wishlist button"
+            onClick={onRemove}>
             <RemoveIcon />
           </button>
         )}

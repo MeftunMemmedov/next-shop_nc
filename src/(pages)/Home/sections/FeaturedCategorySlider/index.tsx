@@ -51,9 +51,9 @@ const FeaturedCategorySlider = ({
   return (
     <section>
       <div className="category-carousel container">
-        <h2 className="section-title text-uppercase fs-25 fw-semibold text-center mb-4">
+        <h3 className="section-title text-uppercase fs-25 fw-semibold text-center mb-4">
           Featured Categories
-        </h2>
+        </h3>
         <div className="position-relative">
           <div className="swiper-container">
             <Swiper className="featured-category-slider" {...swiperSettings}>

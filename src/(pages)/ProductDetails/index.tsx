@@ -45,112 +45,119 @@ const ProductDetails = async ({ slug }: { slug: string }) => {
       <section className="product-single container">
         <div>
           <div className="d-lg-none d-flex justify-content-between align-items-center mb-4 pb-md-2">
-            <div className="breadcrumb mb-0 flex-grow-1">
-              <Link
-                href="/"
-                className="menu-link menu-link_us-s text-uppercase fw-medium"
-              >
-                Home
-              </Link>
-
-              <span className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
-                /
-              </span>
-
-              <Link
-                href="/products"
-                className="menu-link menu-link_us-s text-uppercase fw-medium"
-              >
-                Products
-              </Link>
-
-              <span className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
-                /
-              </span>
-
-              <a
-                role="none"
-                className="menu-link menu-link_us-s text-uppercase fw-medium"
-              >
-                {product.title}
-              </a>
-            </div>
+            <nav aria-label="breadcrumb">
+              <ol className="breadcrumb mb-0 flex-grow-1">
+                <li>
+                  <Link
+                    href="/"
+                    className="menu-link menu-link_us-s text-uppercase fw-medium">
+                    Home
+                  </Link>
+                </li>
+                <li className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
+                  /
+                </li>
+                <li>
+                  <Link
+                    href="/products"
+                    className="menu-link menu-link_us-s text-uppercase fw-medium">
+                    Products
+                  </Link>
+                </li>
+                <li className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
+                  /
+                </li>
+                <li>
+                  <span className="menu-link menu-link_us-s text-uppercase fw-medium">
+                    {product.title}
+                  </span>
+                </li>
+              </ol>
+            </nav>
             {product.is_new && (
               <div
                 className="bg-danger d-inline-block px-2 py-0 d-flex justify-content-center align-items-center d-inline"
-                style={{ height: 30 }}
-              >
+                style={{ height: 30 }}>
                 New
               </div>
             )}
           </div>
         </div>
-        <div className="row">
+        <article
+          itemScope
+          itemType="https://schema.org/Product"
+          className="row">
           <div className="col-lg-7">
             <ImageGallery product={product} />
           </div>
           <div className="col-lg-5">
             <div className="d-lg-flex d-none justify-content-between mb-4 pb-md-2">
               <div className="breadcrumb mb-0 d-none d-md-block flex-grow-1">
-                <Link
-                  href="/"
-                  className="menu-link menu-link_us-s text-uppercase fw-medium"
-                >
-                  Home
-                </Link>
-
-                <span className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
-                  /
-                </span>
-
-                <Link
-                  href="/products"
-                  className="menu-link menu-link_us-s text-uppercase fw-medium"
-                >
-                  Products
-                </Link>
-
-                <span className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
-                  /
-                </span>
-
-                <a
-                  role="none"
-                  className=" menu-link_us-s text-uppercase fw-medium"
-                >
-                  {product.title}
-                </a>
+                <nav aria-label="breadcrumb">
+                  <ol className="breadcrumb mb-0 flex-grow-1">
+                    <li>
+                      <Link
+                        href="/"
+                        className="menu-link menu-link_us-s text-uppercase fw-medium">
+                        Home
+                      </Link>
+                    </li>
+                    <li className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
+                      /
+                    </li>
+                    <li>
+                      <Link
+                        href="/products"
+                        className="menu-link menu-link_us-s text-uppercase fw-medium">
+                        Products
+                      </Link>
+                    </li>
+                    <li className="breadcrumb-separator menu-link fw-medium ps-1 pe-1">
+                      /
+                    </li>
+                    <li>
+                      <span className="menu-link menu-link_us-s text-uppercase fw-medium">
+                        {product.title}
+                      </span>
+                    </li>
+                  </ol>
+                </nav>
               </div>
               {product.is_new && (
                 <div
                   className="bg-danger d-inline-block px-2 py-0 d-flex justify-content-center align-items-center d-inline"
-                  style={{ height: 30 }}
-                >
+                  style={{ height: 30 }}>
                   New
                 </div>
               )}
             </div>
-            <h1 className="product-single__name">{product.title} </h1>
+            <h1 itemProp="name" className="product-single__name">
+              {product.title}{' '}
+            </h1>
             <div className="position-relative">
               <WishlistBtn product={product} />
             </div>
-            <div className="product-single__price">
+            <div
+              className="product-single__price"
+              itemProp="offers"
+              itemScope
+              itemType="https://schema.org/Offer">
               {product.discount > 0 && (
-                <strong className="price-old current-price fw-normal">
+                <span className="price-old current-price fw-normal">
                   {getPriceDisplay(+product.price)}
-                </strong>
+                </span>
               )}
 
               <span
-                className={` current-price ${product.discount > 0 ? 'price-sale' : ''}`}
-              >
+                itemProp="price"
+                className={` current-price ${product.discount > 0 ? 'price-sale' : ''}`}>
                 {getPriceDisplay(product)}
               </span>
             </div>
             {/* {product.discount > 0 && product.discount_end_date && (
               <DiscountTimer discountEnd={product.discount_end_date} />
               )} */}
-            <div>
+            <div itemProp="description">
               <p>{product.description}</p>
             </div>
 
@@ -188,7 +195,7 @@ const ProductDetails = async ({ slug }: { slug: string }) => {
               </div>
             </div> */}
           </div>
-        </div>
+        </article>
         <Comments slug={slug} comments={comments} />
       </section>
       <RelatedProductSlider />

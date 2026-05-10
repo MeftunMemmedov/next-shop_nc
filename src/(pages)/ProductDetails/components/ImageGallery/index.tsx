@@ -90,6 +90,7 @@ const ImageGallery = ({ product }: Props) => {
                   priority={index === 0}
                   loading={index === 0 ? 'eager' : 'lazy'}
                   alt={`${product.title} ${product.description}`}
+                  itemProp="image"
                   className="product-image object-fit-contain"
                   onClick={() => openLightbox(index)}
                 />
@@ -123,6 +124,7 @@ const ImageGallery = ({ product }: Props) => {
                     sizes="(max-width: 425px) 25vw, (max-width: 991px) 20vw, 10vw)"
                     loading="lazy"
                     alt={`thumbnail - ${product.title} ${product.description}`}
+                    itemProp="image"
                     className="object-fit-contain"
                   />
                 </SwiperSlide>

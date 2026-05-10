@@ -71,9 +71,9 @@ const FeaturedProductSlider = ({
 
   return (
     <section className="products-carousel container home-product-slider">
-      <h2 className="section-title text-uppercase fs-25 fw-medium text-center mb-4">
+      <h3 className="section-title text-uppercase fs-25 fw-medium text-center mb-4">
         Featured Products
-      </h2>
+      </h3>
       <div className="position-relative">
         {showNavigation && (
           <div className="swiper-nav-btns position-absolute w-100 h-100 d-flex justify-content-between align-items-center">
