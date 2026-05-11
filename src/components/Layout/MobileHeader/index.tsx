@@ -1,5 +1,4 @@
 'use client';
-import { LOGO } from '@/assets/images';
 import {
   LoginIcon,
   MenuIcon,
@@ -8,18 +7,29 @@ import {
   SearchIcon,
   UserIcon,
 } from '@/assets/images/icons';
-import { PROJECT_NAME, routes } from '@/constants';
-import { CATEGORIES } from '@/data/category';
+import { routes } from '@/constants';
 import { Fragment, SubmitEvent, useEffect, useState } from 'react';
-import { CONTACT_INFORMATION } from '@/data/contact';
 import CartModal from '../CartModal';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
-import { Category } from '@/types';
+import { Category, Config, UserAuthState } from '@/types';
+import { useAppSelector } from '@/store/hooks';
+import Logo from '../Logo';
 
-const MobileHeader = () => {
+interface Props {
+  categories: Category[];
+  user: UserAuthState | null;
+  config: Config;
+}
+
+const MobileHeader = ({ categories }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
+
+  const { isAuth } = useAppSelector((store) => store.inventory.user);
+
+  // const { contact_info } = config;
+
   const [menu, setMenu] = useState<boolean>(false);
   const [activeMenu, setActiveMenu] = useState<number[]>([-1, -1]);
 
@@ -43,7 +53,7 @@ const MobileHeader = () => {
 
   const handleSearchFormSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    router.push(`/products?search=${searchInput}&page=1`);
+    router.push(`/products?search=${searchInput}`);
     setMenu(false);
   };
 
@@ -61,30 +71,23 @@ const MobileHeader = () => {
     };
   }, [menu]);
 
+  useEffect(() => {
+    setMenu(false);
+  }, [pathname]);
+
   return (
     <div
       className="header-mobile header_sticky position-absolute"
-      style={{ paddingRight: menu ? '0px' : '' }}
-    >
+      style={{ paddingRight: menu ? '0px' : '' }}>
       <div className="container d-flex align-items-center h-100">
-        <a
-          className="mobile-nav-activator d-block position-relative"
-          role="button"
-          onClick={() => setMenu(!menu)}
-        >
-          <MenuIcon />
+        <button
+          className="mobile-nav-activator d-block position-relative btn p-0"
+          onClick={() => setMenu((prevState) => !prevState)}>
+          <MenuIcon className="nav-icon" />
           <span className="btn-close-lg position-absolute top-0 start-0 w-100"></span>
-        </a>
+        </button>
 
-        <div className="logo">
-          <Link href="/">
-            <img
-              src={LOGO}
-              alt={PROJECT_NAME}
-              className="logo__image d-block"
-            />
-          </Link>
-        </div>
+        <Logo />
 
         <CartModal />
       </div>
@@ -93,28 +96,24 @@ const MobileHeader = () => {
         <div className="container">
           <form
             className="search-field position-relative mt-4 mb-3"
-            onSubmit={handleSearchFormSubmit}
-          >
+            onSubmit={handleSearchFormSubmit}>
             <div className="position-relative">
               <input
                 className="search-field__input w-100 border rounded-1"
                 type="text"
-                name="search-keyword"
                 placeholder={'What are you looking for?'}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
 
               <button
                 className="btn-icon search-popup__submit pb-0 me-2"
-                type="submit"
-              >
+                type="submit">
                 <SearchIcon className="ms-auto" />
               </button>
 
               <button
-                className="btn-icon btn-close-lg search-popup__reset pb-0 me-2"
-                type="reset"
-              ></button>
+                className="btn-icon btn-close-lg search-popup__reset pb-0 me-4"
+                type="reset"></button>
             </div>
 
             <div className="position-absolute start-0 top-100 m-0 w-100">
@@ -123,7 +122,7 @@ const MobileHeader = () => {
           </form>
         </div>
 
-        <div className="container">
+        <nav className="container">
           <div className="overflow-hidden">
             <ul
               className="navigation__list list-unstyled position-relative"
@@ -135,16 +134,13 @@ const MobileHeader = () => {
                       : 'translateX(-100%)'
                     : '',
                 minHeight: !isActive(-1) ? '858px' : '',
-              }}
-            >
+              }}>
               {routes.map((route, index) => (
                 <li
                   className="navigation__item"
-                  key={`mobile-navlink-${index}`}
-                >
+                  key={`mobile-navlink-${index}`}>
                   <div
-                    className={`${route.path === '/products' ? 'd-flex justify-content-between' : ''}`}
-                  >
+                    className={`${route.path === '/products' ? 'd-flex align-items-center justify-content-between' : ''}`}>
                     <Link href={route.path} className="navigation__link">
                       {route.title}
                     </Link>
@@ -159,28 +155,24 @@ const MobileHeader = () => {
                   {route.path === '/products' &&
                     !pathname.endsWith('/products') && (
                       <div
-                        className={`sub-menu position-absolute top-0 start-100 w-100 ${isActive(2) ? '' : 'd-none'}`}
-                      >
-                        <a
-                          role="button"
+                        className={`sub-menu position-absolute top-0 start-100 w-100 ${isActive(2) ? '' : 'd-none'}`}>
+                        <button
                           onClick={() => toggleMenu(2)}
-                          className="navigation__link d-flex align-items-center border-bottom mb-3"
-                        >
+                          className="navigation__link d-flex align-items-center border-bottom mb-3 btn px-0 w-100">
                           <PrevIcon className="me-2" />
-                          Routes.1.title
-                        </a>
+                          {route.title}
+                        </button>
 
                         <div className="sub-menu__wrapper">
-                          {CATEGORIES?.map((item, index1) => (
+                          {categories?.map((category, index1) => (
                             <Fragment key={index1}>
                               <div className="navigation__link d-flex align-items-center">
                                 <Link
-                                  href={`/products?category=${item.slug}`}
-                                  onClick={() => setMenu(false)}
-                                >
-                                  {item.title}
+                                  href={`/products?category=${category.slug}`}
+                                  prefetch={false}>
+                                  {category.title}
                                 </Link>
-                                {item.children?.length && (
+                                {category.children?.length && (
                                   <NextIcon
                                     className="ms-auto"
                                     onClick={() => toggleMenu(2, index1)}
@@ -188,34 +180,31 @@ const MobileHeader = () => {
                                 )}
                               </div>
 
-                              {item.children && (
+                              {category.children && (
                                 <div
-                                  className={`sub-menu__wrapper position-absolute top-0 start-100 w-100 ${isActive(2, index1) ? '' : 'd-none'}`}
-                                >
-                                  <a
-                                    role="button"
-                                    className="navigation__link d-flex align-items-center border-bottom mb-2"
-                                    onClick={() => toggleMenu(2)}
-                                  >
+                                  className={`sub-menu__wrapper position-absolute top-0 start-100 w-100 ${isActive(2, index1) ? '' : 'd-none'}`}>
+                                  <button
+                                    className="navigation__link d-flex align-items-center border-bottom mb-2 btn p-0"
+                                    onClick={() => toggleMenu(2)}>
                                     <PrevIcon className="me-2" />
-                                    {item.title}
-                                  </a>
+                                    {category.title}
+                                  </button>
 
                                   <ul className="sub-menu__list list-unstyled">
-                                    {item.children.map((child: Category) => (
-                                      <li
-                                        className="sub-menu__item"
-                                        key={`childcategory--${child.slug}`}
-                                      >
-                                        <Link
-                                          href={`/products?category=${child.slug}`}
-                                          onClick={() => setMenu(false)}
-                                          className="menu-link menu-link_us-s"
-                                        >
-                                          {child.title}
-                                        </Link>
-                                      </li>
-                                    ))}
+                                    {category.children.map(
+                                      (child: Category) => (
+                                        <li
+                                          className="sub-menu__item"
+                                          key={`childcategory--${child.slug}`}>
+                                          <Link
+                                            href={`/products?category=${child.slug}`}
+                                            prefetch={false}
+                                            className="menu-link menu-link_us-s">
+                                            {child.title}
+                                          </Link>
+                                        </li>
+                                      )
+                                    )}
                                   </ul>
                                 </div>
                               )}
@@ -228,21 +217,20 @@ const MobileHeader = () => {
               ))}
             </ul>
           </div>
-        </div>
+        </nav>
 
         <div className="border-top mt-auto pb-5">
           <Link
-            href={true ? '/account/details' : '/login'}
-            className="customer-links container mt-4 mb-2 pb-1"
-          >
-            {true ? (
+            href={isAuth ? '/account/details' : '/auth/signin'}
+            className="customer-links container mt-4 mb-2 pb-1">
+            {isAuth ? (
               <UserIcon className="d-inline-block align-middle" />
             ) : (
               <LoginIcon className="d-inline-block align-middle" />
             )}
 
             <span className="d-inline-block ms-2 text-uppercase align-middle fw-medium py-2">
-              {true ? 'account' : 'login'}
+              {isAuth ? 'account' : 'login'}
             </span>
           </Link>
 
@@ -250,22 +238,17 @@ const MobileHeader = () => {
             <LangSelect />
           </div>
 
-          {CONTACT_INFORMATION && CONTACT_INFORMATION?.socials.length > 0 ? (
+          {/* {contact_info && contact_info?.socials.length > 0 ? (
             <ul className="social-links list-unstyled d-flex flex-wrap mb-0 mb-5">
-              {CONTACT_INFORMATION?.socials.map((social, index) => (
+              {contact_info?.socials.map((social, index) => (
                 <li key={`social-${social.title}-${index}`}>
                   <a href={social.url} className="footer__social-link d-block">
-                    <img
-                      loading="lazy"
-                      src={social.icon}
-                      width={32}
-                      alt={`${social.title} icon`}
-                    />
+                    
                   </a>
                 </li>
               ))}
             </ul>
-          ) : null}
+          ) : null} */}
         </div>
       </nav>
     </div>

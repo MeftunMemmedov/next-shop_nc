@@ -19,10 +19,6 @@ export const routes: {
     title: 'Contact',
     path: '/contact',
   },
-  {
-    title: 'Our Stores',
-    path: '/stores',
-  },
 ];
 
 export const languages = [

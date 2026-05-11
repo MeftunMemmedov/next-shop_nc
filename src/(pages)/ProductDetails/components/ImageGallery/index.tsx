@@ -145,6 +145,7 @@ const ImageGallery = ({ product }: Props) => {
         zoom={{
           ref: zoomRef,
           maxZoomPixelRatio: 300,
+          scrollToZoom: true,
         }}
       />
     </>

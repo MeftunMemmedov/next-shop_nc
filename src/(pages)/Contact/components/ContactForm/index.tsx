@@ -18,7 +18,7 @@ const ContactForm = () => {
     defaultValues: {
       user_name: info?.user_name || '',
       email: info?.email || '',
-      phone: '',
+      phone: '+994',
       note: '',
     },
   });
@@ -64,7 +64,6 @@ const ContactForm = () => {
         <div className="form-floating mb-3">
           <input
             {...register('email')}
-            placeholder="+994xxxxxxxxx"
             id="email"
             disabled={disabled}
             className={`form-control ${errors.email ? 'border-danger' : ''}`}

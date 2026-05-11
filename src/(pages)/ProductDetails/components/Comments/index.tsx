@@ -1,7 +1,6 @@
-import { createFakeImage } from '@/data/image';
 import { Comment } from '@/types';
 import CommentForm from './components/CommentForm';
-import { formattedDate } from '@/helpers';
+import { createFakeImage, formattedDate } from '@/helpers';
 import Image from 'next/image';
 
 interface Props {
@@ -11,14 +10,14 @@ interface Props {
 
 const Comments = async ({ comments, slug }: Props) => {
   return (
-    <div className="product-single__details-tab m-auto" id="tabs">
-      <ul className="nav nav-tabs" id="myTab" role="tablist">
-        <li className="nav-item" role="presentation">
+    <div className="product-single__details-tab m-auto">
+      <div className="nav nav-tabs">
+        <div className="nav-item">
           <button className="nav-link nav-link_underscore btn">
             Comments ({comments.length})
           </button>
-        </li>
-      </ul>
+        </div>
+      </div>
 
       <div className="tab-content">
         <div className="tab-pane fade active show">
@@ -28,7 +27,9 @@ const Comments = async ({ comments, slug }: Props) => {
           <div className="product-single__reviews-list">
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <div className="product-single__reviews-item" key={comment.id}>
+                <article
+                  className="product-single__reviews-item"
+                  key={comment.id}>
                   <div className="customer-avatar">
                     <Image
                       src={createFakeImage(10, 10)}
@@ -47,14 +48,16 @@ const Comments = async ({ comments, slug }: Props) => {
                       </span>
                     </div>
 
-                    <div className="review-date">
+                    <time
+                      dateTime={String(comment.created_at)}
+                      className="review-date">
                       {formattedDate(comment.created_at)}
-                    </div>
+                    </time>
                     <div className="review-text">
                       <p>{comment.comment}</p>
                     </div>
                   </div>
-                </div>
+                </article>
               ))
             ) : (
               <div className="py-2 text-center fs-3">

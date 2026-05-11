@@ -40,7 +40,7 @@ const HeroSlider = ({ slides }: { slides: Slide[] }) => {
               transform: 'translate3d(0px, 0px, 0px)',
               transitionDuration: '0ms',
             }}>
-            <Link href={slide.url || '/products'} className="overflow-hidden">
+            <Link href={slide.path || '/products'} className="overflow-hidden">
               <div className="slideshow-bg position-relative">
                 <Image
                   loading={index === 0 ? 'eager' : 'lazy'}

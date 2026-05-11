@@ -1,4 +1,4 @@
-import { createFakeImage } from '@/data/image';
+import { createFakeImage } from '@/helpers';
 import Image from 'next/image';
 
 const About = () => {
@@ -8,16 +8,14 @@ const About = () => {
         <h1 className="page-title">About Us</h1>
       </div>
       <div className="about-us__content pb-5 mb-5">
-        <figure className="mb-5">
-          <Image
-            loading="lazy"
-            className="w-100 h-auto d-block img-1"
-            src={createFakeImage(1410, 550)}
-            width={1410}
-            height={550}
-            alt="about"
-          />
-        </figure>
+        <Image
+          loading="lazy"
+          className="w-100 h-auto d-block img-1"
+          src={createFakeImage(1410, 550)}
+          width={1410}
+          height={550}
+          alt="about"
+        />
         <section className="mw-930" aria-labelledby="our-story">
           <h2 id="our-story" className="mb-4">
             Our Story
@@ -45,16 +43,14 @@ const About = () => {
           </div>
         </section>
         <section className="mw-930 d-lg-flex align-items-lg-center">
-          <figure className="image-wrapper col-lg-6">
-            <Image
-              className="h-auto img-2"
-              loading="lazy"
-              src={createFakeImage(450, 500)}
-              width={450}
-              height={500}
-              alt="about"
-            />
-          </figure>
+          <Image
+            className="h-auto img-2"
+            loading="lazy"
+            src={createFakeImage(450, 500)}
+            width={450}
+            height={500}
+            alt="about"
+          />
           <div className="content-wrapper col-lg-6 px-lg-4">
             <h2 className="my-3" id="company">
               SHOP

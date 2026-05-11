@@ -1,14 +1,20 @@
 import { LOGO } from '@/assets/images';
 import { PROJECT_NAME, routes } from '@/constants';
-import { CONTACT_INFORMATION } from '@/data/contact';
 import { Link } from '@/i18n/routing';
-import { Category } from '@/types';
+import { Category, Config } from '@/types';
 import Image from 'next/image';
 
-const Footer = ({ categories }: { categories: Category[] }) => {
+interface Props {
+  categories: Category[];
+  config: Config;
+}
+
+const Footer = ({ categories, config }: Props) => {
   const noFeaturedCategories = categories.filter(
     (category) => !category.is_featured
   );
+
+  const { contact_info } = config;
   return (
     <footer className="footer footer_type_1">
       <div className="footer-middle container">
@@ -27,30 +33,26 @@ const Footer = ({ categories }: { categories: Category[] }) => {
             </div>
 
             <div className="d-flex flex-column gap-2 mb-4">
-              {CONTACT_INFORMATION?.address && (
-                <p className="footer-address">{CONTACT_INFORMATION?.address}</p>
+              {contact_info?.address && (
+                <p className="footer-address">{contact_info?.address}</p>
               )}
 
-              {CONTACT_INFORMATION?.email && (
-                <a href={`mailto:${CONTACT_INFORMATION.email}`} className="m-0">
-                  <strong className="fw-medium">
-                    {CONTACT_INFORMATION?.email}
-                  </strong>
+              {contact_info?.email && (
+                <a href={`mailto:${contact_info.email}`} className="m-0">
+                  <strong className="fw-medium">{contact_info?.email}</strong>
                 </a>
               )}
 
-              {CONTACT_INFORMATION?.phone && (
-                <a href={`tel:${CONTACT_INFORMATION.phone}`}>
-                  <strong className="fw-medium">
-                    {CONTACT_INFORMATION?.phone}
-                  </strong>
+              {contact_info?.phone && (
+                <a href={`tel:${contact_info.phone}`}>
+                  <strong className="fw-medium">{contact_info?.phone}</strong>
                 </a>
               )}
             </div>
 
-            {CONTACT_INFORMATION && CONTACT_INFORMATION?.socials.length > 0 ? (
+            {/* {contact_info && contact_info?.socials.length > 0 ? (
               <ul className="social-links list-unstyled d-flex flex-wrap mb-0">
-                {CONTACT_INFORMATION?.socials.map((social, index) => (
+                {contact_info?.socials.map((social, index) => (
                   <li key={`social-${index}-${social.title}`}>
                     <a
                       href={social.url}
@@ -67,7 +69,7 @@ const Footer = ({ categories }: { categories: Category[] }) => {
                   </li>
                 ))}
               </ul>
-            ) : null}
+            ) : null} */}
           </div>
 
           <div className="footer-column footer-menu mb-4 mb-lg-0">

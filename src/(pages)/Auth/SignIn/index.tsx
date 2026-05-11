@@ -9,6 +9,12 @@ import { LoginInput, loginSchema } from '../../../schemas/login.schema';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearLocalCart, clearLocalWishlist } from '@/store/inventory';
 
+type SignInSuccessMessage = {
+  signin: string;
+  cartSync?: string;
+  wishlistSync?: string;
+};
+
 const SignIn = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -21,7 +27,7 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isLoading },
     setError,
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -32,13 +38,25 @@ const SignIn = () => {
     },
   });
 
-  const [successMessage, setSuccessMessage] = useState<{
-    signin: string;
-    cartSync?: string;
-    wishlistSync?: string;
-  }>({ signin: '', cartSync: '', wishlistSync: '' });
+  const isFormLoading: boolean = isLoading || isSubmitting;
+
+  const initialSuccessMessage: SignInSuccessMessage = {
+    signin: '',
+    cartSync: '',
+    wishlistSync: '',
+  };
+
+  const [successMessage, setSuccessMessage] = useState<SignInSuccessMessage>(
+    initialSuccessMessage
+  );
+
+  const isFormSucceed: boolean = Object.values(successMessage).some(
+    (val) => val !== ''
+  );
 
   const onSubmit = handleSubmit(async (data: LoginInput) => {
+    if (isFormSucceed) setSuccessMessage(initialSuccessMessage);
+
     const res = await loginAction(
       { items: localCartItems, count: localCartCount },
       { items: localWishlistItems, count: localWishlistCount },
@@ -96,21 +114,23 @@ const SignIn = () => {
       <div className="mb-4 pb-4"></div>
 
       <section className="login-register container">
-        <ul className="nav nav-tabs mb-5">
-          <li className="nav-item">
-            <a role="button" className="nav-link nav-link_underscore active">
-              Sign In
-            </a>
-          </li>
+        <nav>
+          <ul className="nav nav-tabs mb-5">
+            <li className="nav-item">
+              <a role="button" className="nav-link nav-link_underscore active">
+                Sign In
+              </a>
+            </li>
 
-          <li className="nav-item">
-            <Link
-              href="/auth/signup"
-              className={`nav-link nav-link_underscore ${isSubmitting ? 'disabled-link' : ''}`}>
-              Sign Up
-            </Link>
-          </li>
-        </ul>
+            <li className="nav-item">
+              <Link
+                href="/auth/signup"
+                className={`nav-link nav-link_underscore ${isFormLoading ? 'disabled-link' : ''}`}>
+                Sign Up
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
         {isSubmitting && (
           <div className="d-flex flex-column align-items-center py-2 mb-2">
@@ -138,7 +158,7 @@ const SignIn = () => {
                       )}
                     </div>
                   )}
-                  {Object.values(successMessage).some((val) => val !== '') && (
+                  {isFormSucceed && (
                     <div className="alert alert-success my-3" role="alert">
                       <p className="m-0 text-dark">{successMessage.signin}</p>
                       {successMessage.cartSync && (
@@ -158,7 +178,7 @@ const SignIn = () => {
                     {...register('email')}
                     className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Email"
-                    disabled={isSubmitting}
+                    disabled={isFormLoading}
                   />
 
                   <label>Email</label>
@@ -178,7 +198,7 @@ const SignIn = () => {
                     type="password"
                     className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder={'Password'}
-                    disabled={isSubmitting}
+                    disabled={isFormLoading}
                   />
 
                   <label>Password</label>
@@ -195,8 +215,9 @@ const SignIn = () => {
                     <input
                       {...register('remember_me')}
                       id="remember_me"
-                      className="form-check-input form-check-input_fill"
                       type="checkbox"
+                      className="form-check-input form-check-input_fill"
+                      disabled={isFormLoading}
                     />
 
                     <label
@@ -214,12 +235,12 @@ const SignIn = () => {
                 <button
                   className="btn btn-primary w-100 text-uppercase"
                   type="submit"
-                  disabled={isSubmitting}>
-                  {isSubmitting ? 'Processing...' : 'Sign In'}
+                  disabled={isFormLoading}>
+                  {isFormLoading ? 'Processing...' : 'Sign In'}
                 </button>
 
                 <div className="customer-option mt-4 text-center">
-                  <span className="text-secondary">No account yet?</span>
+                  <span className="text-secondary me-2">No account yet?</span>
 
                   <Link href="/auth/signup" className="btn-text">
                     Sign Up

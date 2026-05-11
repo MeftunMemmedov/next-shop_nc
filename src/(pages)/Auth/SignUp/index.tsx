@@ -2,10 +2,7 @@
 import { Link, useRouter } from '@/i18n/routing';
 import { registerAction } from '../../../actions/auth/register';
 import { useForm } from 'react-hook-form';
-import {
-  RegisterInput,
-  registerSchema,
-} from '../../../schemas/register.schema';
+import { RegisterInput, registerSchema } from '@/schemas/register.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 
@@ -29,6 +26,8 @@ const SignUp = () => {
       },
     },
   });
+
+  const isFormLoading: boolean = isSubmitting || isLoading;
 
   const [successMessage, setSuccessMessage] = useState<string>('');
 
@@ -54,24 +53,26 @@ const SignUp = () => {
       <div className="mb-4 pb-4"></div>
 
       <section className="login-register container">
-        <ul className="nav nav-tabs mb-5">
-          <li className="nav-item">
-            <Link
-              className={`nav-link nav-link_underscore ${false ? 'disabled-link' : ''}`}
-              href="/auth/signin">
-              Sign In
-            </Link>
-          </li>
+        <nav>
+          <ul className="nav nav-tabs mb-5">
+            <li className="nav-item">
+              <Link
+                className={`nav-link nav-link_underscore ${isFormLoading ? 'disabled-link' : ''}`}
+                href="/auth/signin">
+                Sign In
+              </Link>
+            </li>
 
-          <li className="nav-item">
-            <a role="button" className="nav-link nav-link_underscore active">
-              Sign Up
-            </a>
-          </li>
-        </ul>
+            <li className="nav-item">
+              <a role="button" className="nav-link nav-link_underscore active">
+                Sign Up
+              </a>
+            </li>
+          </ul>
+        </nav>
 
         <div className="tab-content pt-2">
-          <div className="tab-pane fade show active">
+          <div className="tab-pane fade show active" style={{ maxHeight: 500 }}>
             <div className="register-form">
               <form onSubmit={onSubmit}>
                 <div className="col-md-12">
@@ -90,9 +91,9 @@ const SignUp = () => {
                 <div className="form-floating mb-3">
                   <input
                     {...register('email')}
-                    className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Email"
-                    disabled={isSubmitting || isLoading}
+                    disabled={isFormLoading}
+                    className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
                   />
 
                   <label>Email</label>
@@ -110,8 +111,8 @@ const SignUp = () => {
                   <input
                     {...register('data.user_name')}
                     placeholder="User name"
+                    disabled={isFormLoading}
                     className={`form-control form-control_gray ${errors.data?.user_name ? 'is-invalid  invalid-input' : ''}`}
-                    disabled={isSubmitting || isLoading}
                   />
                   <label>User name</label>
                   {errors?.data?.user_name && (
@@ -127,9 +128,9 @@ const SignUp = () => {
                   <input
                     {...register('password')}
                     type="password"
-                    className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Password"
-                    disabled={isSubmitting || isLoading}
+                    disabled={isFormLoading}
+                    className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                   />
 
                   <label>Password</label>
@@ -146,9 +147,9 @@ const SignUp = () => {
                   <input
                     {...register('confirmPassword')}
                     type="password"
-                    className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Confirm password"
-                    disabled={isSubmitting || isLoading}
+                    disabled={isFormLoading}
+                    className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                   />
 
                   <label>Confirm Password</label>
@@ -161,6 +162,7 @@ const SignUp = () => {
 
                 <div className="pb-3"></div>
                 <button
+                  disabled={isFormLoading || successMessage !== ''}
                   className="btn btn-primary w-100 text-uppercase"
                   type="submit">
                   Sign Up

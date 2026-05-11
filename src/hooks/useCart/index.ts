@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useRef, useTransition } from 'react';
 
 import { toast } from 'react-toastify';
 
-import { CartItem, Product } from '@/types';
+import { CartHookType, CartItem, Product } from '@/types';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -16,25 +16,6 @@ import {
 import { toggleCartAction, updateCartitemQuantity } from '@/actions/cart';
 import { debounce } from '@/helpers/debounce';
 import { useRouter } from '@/i18n/routing';
-
-type CartHookType = {
-  items: CartItem[] | null;
-  count: number;
-  total: number;
-  isPending?: boolean;
-  toggleCart: (product: Product, quantity: number) => void;
-  inCart: (product: Product) => boolean | undefined;
-  handleClickQuantity: (
-    item: CartItem,
-    type: '+' | '-',
-    setQuantity?: Dispatch<SetStateAction<string>>
-  ) => void;
-  updateQuantity: (
-    product: Product,
-    quantity: number,
-    func: () => void
-  ) => void;
-};
 
 const useCart = (): CartHookType => {
   const dispatch = useAppDispatch();

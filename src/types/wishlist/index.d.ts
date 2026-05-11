@@ -9,3 +9,11 @@ export type WishlistItem = {
 export type WishlistPayload = {
   payload: wishlistItem;
 };
+
+export type WishlistHookType = {
+  items: WishlistItem[] | null;
+  count: number;
+  inWishlist: (product: Product) => boolean | undefined;
+  toggleWishlist: (product: Product) => void;
+  isPending: boolean;
+};

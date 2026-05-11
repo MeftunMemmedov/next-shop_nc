@@ -15,6 +15,8 @@ import { getUserCart } from '@/api/fetch/helpers/cart';
 import { getUserWishlist } from '@/api/fetch/helpers/wishlist';
 import localFont from 'next/font/local';
 import MobileHeader from '@/components/Layout/MobileHeader';
+import { getData } from '@/api/fetch/helpers/get';
+import { Config } from '@/types';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -55,13 +57,12 @@ const quickSand = localFont({
   ],
 });
 
-const RootLayout = async ({
-  children,
-  params,
-}: Readonly<{
+interface RootLayoutParams {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
-}>) => {
+}
+
+const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
   const { locale } = await params;
 
   const isValidLocale = hasLocale(routing.locales, locale);
@@ -74,6 +75,7 @@ const RootLayout = async ({
   const userCart = userSession && (await getUserCart());
   const userWishlist = userSession && (await getUserWishlist());
   setRequestLocale(locale);
+  const config = await getData<Config>('shop_config', { select: '*' });
 
   // if (!isValidLocale) {
   //   notFound();
@@ -94,11 +96,15 @@ const RootLayout = async ({
               toastClassName={`${quickSand.className} fw-semibold`}
             />
             <Header categories={categories} user={userSession} />
-            <MobileHeader />
+            <MobileHeader
+              categories={categories}
+              user={userSession}
+              config={config}
+            />
             <GlobalContextProvider>
               <NuqsAdapter>{children}</NuqsAdapter>
             </GlobalContextProvider>
-            <Footer categories={categories} />
+            <Footer categories={categories} config={config} />
           </NextIntlClientProvider>
         </ReduxProvider>
       </body>

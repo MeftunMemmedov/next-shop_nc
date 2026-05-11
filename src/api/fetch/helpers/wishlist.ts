@@ -15,9 +15,9 @@ export const getUserWishlist = async (): Promise<WishlistItem[] | null> => {
       headers: {
         Authorization: `Bearer ${access}`,
       },
-      next: {
-        tags: ['wishlist'],
-      },
+      // next: {
+      //   tags: ['wishlist'],
+      // },
     }
   );
   return res;

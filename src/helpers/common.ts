@@ -3,8 +3,8 @@ import { az, enUS, ru } from 'date-fns/locale';
 import { getLocale } from 'next-intl/server';
 
 export const getPageTitle = (title: string) => {
-  // const PROJECT_NAME = import.meta.env.VITE_PROJECT_NAME as string;
-  return `${title} | SHOP`;
+  const PROJECT_NAME = process.env.NEXT_PUBLIC_PROJECT_NAME as string;
+  return `${title} | ${PROJECT_NAME}`;
 };
 
 export const formattedDate = async (date: Date) => {
@@ -27,3 +27,6 @@ export const blockScreenByTransparentOverlay = (state: boolean) => {
   }
   return () => document.body.classList.remove('overflow-hidden');
 };
+
+export const createFakeImage = (w: number, h: number) =>
+  `https://placehold.co/${w}x${h}/webp`;

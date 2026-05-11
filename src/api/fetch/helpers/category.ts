@@ -10,7 +10,7 @@ export const getCategoryListwChildren = async () => {
   const categories = await getDatalist<Category>(
     'shop_categories',
     categoryParams,
-    { next: { revalidate: 3600, tags: ['categories'] } }
+    { next: { revalidate: 3600 } }
   );
 
   return categories;

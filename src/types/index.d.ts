@@ -17,3 +17,4 @@ export type * from './user';
 export type * from './comment';
 export type * from './actions';
 export type * from './wishlist';
+export type * from './config';

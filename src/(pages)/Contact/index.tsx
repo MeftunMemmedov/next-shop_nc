@@ -1,8 +1,11 @@
-import { CONTACT_INFORMATION } from '@/data/contact';
-import Image from 'next/image';
 import ContactForm from './components/ContactForm';
+import { getData } from '@/api/fetch/helpers/get';
+import { Config } from '@/types';
 
-const Contact = () => {
+const Contact = async () => {
+  const { contact_info } = await getData<Config>('shop_config', {
+    select: 'contact_info',
+  });
   return (
     <>
       <div className="mb-4 pb-4"></div>
@@ -13,11 +16,11 @@ const Contact = () => {
         </div>
       </section>
 
-      {CONTACT_INFORMATION?.map_url && (
+      {contact_info?.map_url && (
         <section className="google-map mb-5">
           <div className="google-map__wrapper">
             <iframe
-              src={CONTACT_INFORMATION?.map_url}
+              src={contact_info?.map_url}
               width={'100%'}
               height={`100%`}
               style={{ border: 0 }}
@@ -34,26 +37,26 @@ const Contact = () => {
             <div className="col-lg-6">
               <h3 className="mb-4">Contact Us</h3>
               <address className="contacts-container1">
-                {CONTACT_INFORMATION?.phone && (
+                {contact_info?.phone && (
                   <p>
-                    <span>Phone:</span> {CONTACT_INFORMATION?.phone}
+                    <span>Phone:</span> {contact_info?.phone}
                   </p>
                 )}
-                {CONTACT_INFORMATION?.email && (
+                {contact_info?.email && (
                   <p>
-                    <span>Email:</span> {CONTACT_INFORMATION?.email}
+                    <span>Email:</span> {contact_info?.email}
                   </p>
                 )}
-                {CONTACT_INFORMATION?.address && (
+                {contact_info?.address && (
                   <p>
-                    <span>Address:</span> {CONTACT_INFORMATION?.address}
+                    <span>Address:</span> {contact_info?.address}
                   </p>
                 )}
               </address>
             </div>
-            {CONTACT_INFORMATION && CONTACT_INFORMATION?.socials.length > 0 && (
+            {/* {contact_info && contact_info?.socials.length > 0 && (
               <nav className="socials d-flex gap-3">
-                {CONTACT_INFORMATION?.socials.map((social, index) => (
+                {contact_info?.socials.map((social, index) => (
                   <a
                     href={social.url}
                     target="_blank"
@@ -69,7 +72,7 @@ const Contact = () => {
                   </a>
                 ))}
               </nav>
-            )}
+            )} */}
           </div>
           <ContactForm />
         </div>

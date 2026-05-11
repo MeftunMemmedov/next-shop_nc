@@ -3,7 +3,7 @@ export type ContactInformation = {
   phone: string;
   email: string;
   map_url: string;
-  socials: { title: string; icon: string; url: string }[];
+  socials: { title: string; url: string }[];
 };
 
 export type ContactMessage = {

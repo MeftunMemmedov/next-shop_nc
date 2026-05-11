@@ -1,29 +1,28 @@
-import { LOGO } from '@/assets/images';
 import { LoginIcon, UserIcon } from '@/assets/images/icons';
-import { PROJECT_NAME, routes } from '@/constants';
+import { routes } from '@/constants';
 import SearchForm from './components/SearchForm';
 import { Link } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
 import { Category, UserAuthState } from '@/types';
 import CartModal from '../CartModal';
-import Image from 'next/image';
+import Logo from '../Logo';
 
 const header_top_texts = [
-  'DISCOUNTS ON SAMOVARS – THE MOST DELICIOUS WAY TO BREW TEA',
-  'PREMIUM KNIVES – A MUST-HAVE FOR EVERY KITCHEN!',
-  'TRADITIONAL TANDOORS – THE SECRET TO FLAVORFUL MEALS',
-  "GRILL SEASON IS HERE – DON'T MISS MANAGL DISCOUNTS",
-  'AFGHAN POTS ON SALE – ADD FLAVOR TO YOUR COOKING',
-  'UZBEK POT – BRING EASTERN TASTE TO YOUR HOME',
-  'CHOOSE A SAMOVAR – ENJOY TRADITIONAL TEA WITH DISCOUNT',
-  'BIG DISCOUNTS ON KITCHEN KNIVES – LIMITED TIME ONLY!',
-  'TANDOOR COOKING MADE EASY – GRAB YOUR DEAL NOW',
-  'SMELLS LIKE GRILL – MANAGL SALE IS ON!',
-  'AFGHAN POT – YOUR NEW KITCHEN FAVORITE',
-  'UZBEK POT – THE SECRET TO AUTHENTIC PILAF',
-  'SAMOVARS ARE BACK – ENJOY TRADITION WITH STYLE',
-  'PROFESSIONAL KITCHEN KNIVES – SPECIAL OFFERS NOW',
-  'LIMITED-TIME TANDOOR DEAL – DON’T MISS OUT!',
+  'DISCOVER GUITARS THAT INSPIRE EVERY NOTE',
+  'PREMIUM GUITARS & GEAR – MADE FOR REAL MUSICIANS',
+  'TURN UP YOUR SOUND WITH EXCLUSIVE DEALS',
+  'FIND YOUR PERFECT TONE – SHOP NOW',
+  'PLAY LOUDER, PLAY BETTER – NEW COLLECTION AVAILABLE',
+  'LEGENDARY GUITARS FOR EVERY STYLE',
+  'UNLOCK YOUR SOUND WITH PROFESSIONAL MUSIC GEAR',
+  'LIMITED-TIME DISCOUNTS ON GUITARS & AMPS',
+  'FROM CLASSIC ROCK TO MODERN BLUES – WE HAVE IT ALL',
+  'ELEVATE YOUR PERFORMANCE WITH PREMIUM INSTRUMENTS',
+  'YOUR NEXT GUITAR IS WAITING FOR YOU',
+  'CREATE MUSIC WITHOUT LIMITS',
+  'HIGH-QUALITY GUITARS, PEDALS & ACCESSORIES',
+  'THE PERFECT SOUND STARTS HERE',
+  'SHOP THE BEST DEALS FOR MUSICIANS TODAY',
 ];
 
 interface Props {
@@ -56,19 +55,7 @@ const Header = async ({ categories, user }: Props) => {
       </aside>
       <div className="container">
         <div className="header-desk header-desk_type_1">
-          <div className="logo">
-            <Link href="/" scroll aria-label={`${PROJECT_NAME} home page`}>
-              <Image
-                src={LOGO}
-                alt={PROJECT_NAME ?? ''}
-                width={120}
-                height={30}
-                className="logo__image d-block"
-                priority
-                fetchPriority="high"
-              />
-            </Link>
-          </div>
+          <Logo />
 
           <nav className="navigation">
             <ul className="navigation__list list-unstyled d-flex">

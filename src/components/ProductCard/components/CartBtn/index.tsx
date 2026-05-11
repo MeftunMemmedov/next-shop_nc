@@ -1,22 +1,15 @@
 'use client';
-import { useCart } from '@/hooks';
+import Spinner from '@/components/Spinner';
 import { Product } from '@/types';
+import dynamic from 'next/dynamic';
+
+const CartToggle = dynamic(() => import('./component'), {
+  ssr: false,
+  loading: () => <Spinner />,
+});
 
 const CartBtn = ({ product }: { product: Product }) => {
-  const { toggleCart, inCart, isPending } = useCart();
-  const productInCart = inCart(product);
-
-  return (
-    <div>
-      <button
-        disabled={isPending}
-        className="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"
-        onClick={() => toggleCart(product, 1)}
-        suppressHydrationWarning>
-        {productInCart ? 'REMOVE' : 'ADD TO CART'}
-      </button>
-    </div>
-  );
+  return <CartToggle product={product} />;
 };
 
 export default CartBtn;

@@ -5,7 +5,6 @@ import { getPriceDisplay } from '@/helpers';
 import CartForm from './components/CartForm';
 import ShareModal from './components/ShareModal';
 import Comments from './components/Comments';
-import RelatedProductSlider from './components/RelatedProductSlider';
 import WishlistBtn from '@/components/WishlistBtn';
 import { notFound } from 'next/navigation';
 import { getData, getDatalist } from '@/api/fetch/helpers/get';
@@ -198,7 +197,7 @@ const ProductDetails = async ({ slug }: { slug: string }) => {
         </article>
         <Comments slug={slug} comments={comments} />
       </section>
-      <RelatedProductSlider />
+      {/* <RelatedProductSlider /> */}
     </main>
   );
 };

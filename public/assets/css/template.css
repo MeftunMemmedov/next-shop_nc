@@ -19525,11 +19525,11 @@ textarea.form-control.is-invalid {
 }
 
 .slideshow-bg {
-  aspect-ratio: 1920/557;
+  aspect-ratio: 1920/657;
 }
 @media (max-width: 992px) {
   .slideshow-bg {
-    aspect-ratio: 1920/757;
+    aspect-ratio: 1920/857;
   }
 }
 
