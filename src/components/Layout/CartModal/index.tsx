@@ -21,7 +21,7 @@ const CartModal = () => {
     total,
     handleClickQuantity,
     toggleCart,
-    isPending,
+    loadingIds,
   } = useCart();
 
   const { count: wishlistCount } = useWishlist();
@@ -113,19 +113,21 @@ const CartModal = () => {
                         readOnly
                         min={1}
                         className="qty-control__number border-0 text-center"
-                        disabled={isPending}
+                        disabled={loadingIds?.has(item.product.id)}
                       />
 
                       <button
-                        disabled={item.quantity <= 1 || isPending}
+                        disabled={
+                          item.quantity <= 1 || loadingIds?.has(item.product.id)
+                        }
                         className="btn qty-control__reduce text-start"
                         onClick={() => handleClickQuantity(item, '-')}>
                         -
                       </button>
 
                       <button
+                        disabled={loadingIds?.has(item.product.id)}
                         className="btn qty-control__increase text-end"
-                        disabled={isPending}
                         onClick={() => handleClickQuantity(item, '+')}>
                         +
                       </button>
@@ -180,7 +182,7 @@ const CartModal = () => {
               <Link
                 onClick={() => setIsCartModalVisible(false)}
                 href={true ? '/checkout' : '/auth/signin'}
-                className={`btn btn-primary mt-3 d-block ${isPending ? 'disabled-link' : ''}`}>
+                className={`btn btn-primary mt-3 d-block ${!!loadingIds && loadingIds.size > 0 ? 'disabled-link' : ''}`}>
                 Checkout
               </Link>
             </>

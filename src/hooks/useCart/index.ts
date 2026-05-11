@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useTransition } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 
 import { toast } from 'react-toastify';
 
@@ -81,7 +81,7 @@ const useCart = (): CartHookType => {
 
   const { isAuth, info: userInfo } = user;
 
-  const [isCartActionPending, startCartActionTransition] = useTransition();
+  const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
 
   const inUserCart = (product: Product): boolean | undefined => {
     return (
@@ -89,14 +89,31 @@ const useCart = (): CartHookType => {
     );
   };
 
-  const toggleUserCart = (product: Product, quantity: number = 1) => {
-    if (inUserCart(product)) {
+  const setLoadingProduct = (id: string, value: boolean) => {
+    setLoadingIds((prev) => {
+      const next = new Set(prev);
+      if (value) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+
+      return next;
+    });
+  };
+
+  const toggleUserCart = async (product: Product, quantity: number = 1) => {
+    const currentlyInCart = !!inUserCart(product);
+
+    setLoadingProduct(product.id, true);
+
+    if (currentlyInCart) {
       dispatch(removeFromUserCart(product));
     } else {
       dispatch(addToUserCart({ product: product, quantity: quantity }));
     }
 
-    startCartActionTransition(async () => {
+    try {
       if (isAuth && userInfo) {
         const formData = new FormData();
         formData.append('product', product.id);
@@ -106,30 +123,50 @@ const useCart = (): CartHookType => {
         formData.append('intent', inUserCart(product) ? 'remove' : 'add');
 
         const res = await toggleCartAction(formData);
+
         const { status, message } = res;
+
         if (status === 'success')
           toast.success(`${product.title} | ${message}`);
+
         if (status === 'failure') {
+          dispatch(changeUserCartItemQuantity({ product, quantity: 1 }));
           toast.error(`${product.title} | ${message}`);
-          if (inUserCart(product)) {
-            dispatch(changeUserCartItemQuantity({ product, quantity: 1 }));
-          }
         }
       }
-    });
+    } catch {
+      if (currentlyInCart) {
+        toast.error('Something went wrong');
+      }
+    } finally {
+      setLoadingProduct(product.id, false);
+    }
   };
 
-  const debouncedUpdateRef = useRef(
-    debounce(async (productId: string, quantity: number) => {
-      startCartActionTransition(async () => {
-        const formData = new FormData();
-        formData.append('quantity', quantity.toString());
-        formData.append('product', productId);
-
-        await updateCartitemQuantity(formData);
-      });
-    }, 500)
+  const debouncedUpdateMapRef = useRef(
+    new Map<string, (quantity: number) => void>()
   );
+
+  const getDebouncedUpdater = (productId: string) => {
+    if (!debouncedUpdateMapRef.current.has(productId)) {
+      const debonceFn = debounce(async (quantity: number) => {
+        setLoadingProduct(productId, true);
+        try {
+          const formData = new FormData();
+          formData.append('quantity', quantity.toString());
+          formData.append('product', productId);
+
+          await updateCartitemQuantity(formData);
+        } finally {
+          setLoadingProduct(productId, false);
+        }
+      }, 500);
+
+      debouncedUpdateMapRef.current.set(productId, debonceFn);
+    }
+
+    return debouncedUpdateMapRef.current.get(productId)!;
+  };
 
   const handleClickUserQuantity = (
     item: CartItem,
@@ -146,7 +183,8 @@ const useCart = (): CartHookType => {
       })
     );
 
-    debouncedUpdateRef.current(item.product.id, newQuantity);
+    getDebouncedUpdater(item.product.id)(newQuantity);
+
     if (setQuantity) {
       setQuantity(newQuantity.toString());
     }
@@ -159,7 +197,8 @@ const useCart = (): CartHookType => {
   ) => {
     dispatch(changeUserCartItemQuantity({ product, quantity }));
 
-    startCartActionTransition(async () => {
+    setLoadingProduct(product.id, true);
+    try {
       const formData = new FormData();
       formData.append('quantity', quantity.toString());
       formData.append('product', product.id);
@@ -169,7 +208,9 @@ const useCart = (): CartHookType => {
       if (status === 'failure') toast.error(`${product.title} | ${message}`);
 
       if (onFailure && status === 'failure') onFailure();
-    });
+    } finally {
+      setLoadingProduct(product.id, false);
+    }
   };
 
   if (isAuth) {
@@ -181,7 +222,7 @@ const useCart = (): CartHookType => {
       toggleCart: toggleUserCart,
       handleClickQuantity: handleClickUserQuantity,
       updateQuantity: updateQuantityAction,
-      isPending: isCartActionPending,
+      loadingIds: loadingIds,
     };
   }
   return {
@@ -192,6 +233,7 @@ const useCart = (): CartHookType => {
     toggleCart: toggleLocalCart,
     handleClickQuantity: handleClickLocalQuantity,
     updateQuantity: updateLocalCartItemQuantity,
+    loadingIds: null,
   };
 };
 

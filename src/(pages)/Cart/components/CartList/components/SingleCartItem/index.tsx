@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 interface Props {
   item: CartItem;
   setLetCheckout: Dispatch<SetStateAction<boolean>>;
-  isPending: boolean | undefined;
+  loadingIds: Set<string> | null;
   toggleCart: (product: Product, quantity: number) => void;
   handleClickQuantity: (
     item: CartItem,
@@ -34,7 +34,7 @@ const SingleCartItem = ({
   toggleCart,
   updateQuantity,
   handleClickQuantity,
-  isPending,
+  loadingIds,
 }: Props) => {
   const [inputFocused, setInputFocused] = useState<boolean>(false);
 
@@ -58,6 +58,8 @@ const SingleCartItem = ({
       toast.error(`An error occured while cart action.`);
     });
   };
+
+  const isPending = loadingIds?.has(item.product.id);
 
   const blocking = quantity === '' || inputFocused || isPending;
 

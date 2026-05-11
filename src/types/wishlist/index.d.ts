@@ -15,5 +15,5 @@ export type WishlistHookType = {
   count: number;
   inWishlist: (product: Product) => boolean | undefined;
   toggleWishlist: (product: Product) => void;
-  isPending: boolean;
+  loadingIds: Set<string>;
 };

@@ -18,7 +18,9 @@ const CartFormComponent = ({ product }: Props) => {
       cart: { loading: isLoading },
     },
   } = useAppSelector((store) => store.inventory);
-  const { items, inCart, toggleCart, updateQuantity, isPending } = useCart();
+  const { items, inCart, toggleCart, updateQuantity, loadingIds } = useCart();
+
+  const isPending = loadingIds?.has(product.id);
 
   const productInCart: CartItem | undefined = items?.find(
     (item) => item.product.id === product.id

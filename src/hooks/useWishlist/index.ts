@@ -46,13 +46,29 @@ const useWishlist = (): WishlistHookType => {
     },
   } = user;
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
+
+  const setLoadingProduct = (id: string, value: boolean) => {
+    setLoadingIds((prev) => {
+      const next = new Set(prev);
+
+      if (value) {
+        next.add(id);
+      } else {
+        next.delete(id);
+      }
+
+      return next;
+    });
+  };
 
   const inUserWishlist = (product: Product) =>
     userWishlistItems?.some((item) => item.product.slug === product.slug);
 
   const toggleUserWishlist = async (product: Product) => {
     const currentlyInWishlist = !!inUserWishlist(product);
+
+    setLoadingProduct(product.id, true);
 
     if (currentlyInWishlist) {
       dispatch(removeFromUserWishlist(product));
@@ -63,8 +79,6 @@ const useWishlist = (): WishlistHookType => {
     if (!info) return;
 
     try {
-      setIsLoading(true);
-
       const formData = new FormData();
       formData.append('product', product.id);
       formData.append('user_id', info?.user_id);
@@ -88,7 +102,7 @@ const useWishlist = (): WishlistHookType => {
         dispatch(removeFromUserWishlist(product));
       }
     } finally {
-      setIsLoading(false);
+      setLoadingProduct(product.id, false);
     }
   };
 
@@ -98,7 +112,7 @@ const useWishlist = (): WishlistHookType => {
       count: userWishlistCount,
       inWishlist: inUserWishlist,
       toggleWishlist: toggleUserWishlist,
-      isPending: isLoading,
+      loadingIds,
     };
   else
     return {
@@ -106,7 +120,7 @@ const useWishlist = (): WishlistHookType => {
       count: localWishlistCount,
       inWishlist: inLocalWishlist,
       toggleWishlist: toggleLocalWishlist,
-      isPending: false,
+      loadingIds: new Set(),
     };
 };
 export default useWishlist;

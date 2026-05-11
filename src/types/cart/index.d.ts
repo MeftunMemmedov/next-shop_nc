@@ -9,7 +9,7 @@ export type CartHookType = {
   items: CartItem[] | null;
   count: number;
   total: number;
-  isPending?: boolean;
+  loadingIds: Set<string> | null;
   toggleCart: (product: Product, quantity: number) => void;
   inCart: (product: Product) => boolean | undefined;
   handleClickQuantity: (

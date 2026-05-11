@@ -4,8 +4,10 @@ import { useWishlist } from '@/hooks';
 import { Product } from '@/types';
 
 const WishlistToggle = ({ product }: { product: Product }) => {
-  const { inWishlist, toggleWishlist, isPending } = useWishlist();
+  const { inWishlist, toggleWishlist, loadingIds } = useWishlist();
   const isProductInWishlist = inWishlist(product);
+
+  const isPending = loadingIds.has(product.id);
 
   return (
     <button

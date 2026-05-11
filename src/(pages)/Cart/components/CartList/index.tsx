@@ -22,11 +22,13 @@ const CartList = () => {
     handleClickQuantity,
     toggleCart,
     updateQuantity,
-    isPending,
+    loadingIds,
   } = useCart();
   const columns = ['Product', '', 'Price', 'Quantity', 'Total'];
 
   const [letCheckout, setLetCheckout] = useState<boolean>(false);
+
+  const isPending = !!loadingIds && loadingIds.size > 0;
   return (
     <>
       {isCartLoading ? (
@@ -65,7 +67,7 @@ const CartList = () => {
                         handleClickQuantity={handleClickQuantity}
                         toggleCart={toggleCart}
                         updateQuantity={updateQuantity}
-                        isPending={isPending}
+                        loadingIds={loadingIds}
                       />
                     ))}
                   </tbody>
