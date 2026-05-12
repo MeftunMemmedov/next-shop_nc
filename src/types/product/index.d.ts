@@ -21,13 +21,6 @@ export type Product = {
   in_wishlist?: boolean;
 };
 
-export type ProductFilter = DefaultFilter & {
-  is_new?: boolean;
-  category?: (string | number)[];
-  price__gte?: number;
-  price__lte?: number;
-};
-
 export type FilterParams = {
   category: string;
   brand: string;

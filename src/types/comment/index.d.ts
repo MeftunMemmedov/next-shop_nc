@@ -14,8 +14,3 @@ export type CommentForm = {
   product: string;
   comment: string;
 };
-
-export type CommentActionState = {
-  status: 'success' | 'failure';
-  message: string;
-};

@@ -5,11 +5,3 @@ export type ContactInformation = {
   map_url: string;
   socials: { title: string; url: string }[];
 };
-
-export type ContactMessage = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  message: string;
-};

@@ -1,10 +1,10 @@
-import { domain } from '@/constants/metadata';
+import { domain, metaDescription } from '@/constants/metadata';
 import { Metadata } from 'next';
 
 type CreateMetadataParams = {
   locale: string;
   title: string;
-  description: string;
+  description?: string;
   path: `/${string}`;
   image?: string;
 };
@@ -12,9 +12,9 @@ type CreateMetadataParams = {
 export const createMetadata = ({
   locale,
   title,
-  description,
+  description = metaDescription,
   path,
-  image,
+  image = '/assets/images/meta_image.webp',
 }: CreateMetadataParams): Metadata => {
   const url = `${domain}/${locale}${path}`;
 

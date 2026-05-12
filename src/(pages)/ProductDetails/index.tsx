@@ -7,21 +7,15 @@ import ShareModal from './components/ShareModal';
 import Comments from './components/Comments';
 import WishlistBtn from '@/components/WishlistBtn';
 import { notFound } from 'next/navigation';
-import { getData, getDatalist } from '@/api/fetch/helpers/get';
+import { getDatalist } from '@/api/fetch/helpers/get';
 
-const ProductDetails = async ({ slug }: { slug: string }) => {
-  const productFetch = getData<Product>(
-    'shop_products',
-    {
-      slug: `eq.${slug}`,
-    },
-    {
-      next: {
-        revalidate: 3000,
-        tags: ['product', `product-${slug}`],
-      },
-    }
-  );
+const ProductDetails = async ({
+  slug,
+  productFetch,
+}: {
+  slug: string;
+  productFetch: () => Promise<Product>;
+}) => {
   const commentsFetch = getDatalist<Comment>(
     'shop_comments',
     {
@@ -35,7 +29,10 @@ const ProductDetails = async ({ slug }: { slug: string }) => {
     }
   );
 
-  const [product, comments] = await Promise.all([productFetch, commentsFetch]);
+  const [product, comments] = await Promise.all([
+    productFetch(),
+    commentsFetch,
+  ]);
 
   if (!product) notFound();
   return (

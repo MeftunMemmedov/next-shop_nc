@@ -10,9 +10,9 @@ const Logo = () => {
         <Image
           src={LOGO}
           alt={PROJECT_NAME ?? ''}
-          width={120}
-          height={30}
-          className="logo__image d-block"
+          width={50}
+          height={50}
+          className="logo__image d-block object-fit-contain"
           priority
           fetchPriority="high"
         />

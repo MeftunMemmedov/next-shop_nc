@@ -1,5 +1,5 @@
 // LOGO
-export const LOGO = 'https://placehold.co/128x30/png';
+export { default as LOGO } from './logo.webp';
 
 //ABOUT
 export { default as AboutImg1 } from './about/about-img1.webp';

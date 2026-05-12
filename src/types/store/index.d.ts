@@ -37,4 +37,7 @@ type InventoryStateProps = {
 };
 
 type CartPayload = { payload: CartItem };
+type WishlistPayload = {
+  payload: wishlistItem;
+};
 type InventoryState = WritableDraft<InventoryStateProps>;

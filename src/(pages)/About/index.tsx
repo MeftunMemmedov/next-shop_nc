@@ -1,3 +1,4 @@
+import { PROJECT_NAME } from '@/constants';
 import { createFakeImage } from '@/helpers';
 import Image from 'next/image';
 
@@ -53,7 +54,7 @@ const About = () => {
           />
           <div className="content-wrapper col-lg-6 px-lg-4">
             <h2 className="my-3" id="company">
-              SHOP
+              {PROJECT_NAME}
             </h2>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia modi

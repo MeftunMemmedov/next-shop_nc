@@ -43,11 +43,6 @@ const Products = async ({ searchParams }: Props) => {
   const products = await getDatalist<Product>(
     'shop_products',
     productParamsHaskeys ? productParams : undefined
-    // {
-    //   next: {
-    //     tags: ['products'],
-    //   },
-    // }
   );
 
   return (

@@ -1,6 +1,11 @@
 import OrderComplete from '@/(pages)/OrderComplete';
-import { getOrderDetails } from '@/api/fetch/helpers/order';
+import { getOrder } from '@/api/fetch/helpers/order';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: 'Order complete!',
+};
 
 const OrderCompletePage = async ({
   searchParams,
@@ -11,7 +16,7 @@ const OrderCompletePage = async ({
 
   if (!id) notFound();
 
-  const orderDetails = await getOrderDetails(id);
+  const orderDetails = await getOrder(id);
   return <OrderComplete orderDetails={orderDetails} />;
 };
 

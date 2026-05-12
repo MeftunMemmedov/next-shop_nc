@@ -2,7 +2,7 @@ import { OrderItem } from '@/types';
 import { cookies } from 'next/headers';
 import { getData } from './get';
 
-export const getOrderDetails = async (id: string): Promise<OrderItem> => {
+export const getOrder = async (id: string): Promise<OrderItem> => {
   const access = (await cookies()).get('access')?.value;
   return await getData<OrderItem>(
     'shop_orders',

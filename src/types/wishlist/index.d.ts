@@ -6,10 +6,6 @@ export type WishlistItem = {
   user_id?: string;
 };
 
-export type WishlistPayload = {
-  payload: wishlistItem;
-};
-
 export type WishlistHookType = {
   items: WishlistItem[] | null;
   count: number;

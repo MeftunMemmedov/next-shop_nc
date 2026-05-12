@@ -1,8 +1,7 @@
-import { LOGO } from '@/assets/images';
-import { PROJECT_NAME, routes } from '@/constants';
+import { routes } from '@/constants';
 import { Link } from '@/i18n/routing';
 import { Category, Config } from '@/types';
-import Image from 'next/image';
+import Logo from '../Logo';
 
 interface Props {
   categories: Category[];
@@ -20,17 +19,7 @@ const Footer = ({ categories, config }: Props) => {
       <div className="footer-middle container">
         <div className="row row-cols-lg-5 row-cols-1">
           <div className="footer-column footer-store-info col-12 mb-4 mb-lg-0">
-            <div className="logo">
-              <Link href="/">
-                <Image
-                  src={LOGO}
-                  width={128}
-                  height={30}
-                  className="logo__image d-block"
-                  alt={PROJECT_NAME ?? ''}
-                />
-              </Link>
-            </div>
+            <Logo />
 
             <div className="d-flex flex-column gap-2 mb-4">
               {contact_info?.address && (
