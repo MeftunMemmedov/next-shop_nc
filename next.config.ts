@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: String(process.env.NEXT_PUBLIC_API_URL).slice(8),
+        hostname: new URL(process.env.NEXT_PUBLIC_API_URL!).hostname,
       },
       {
         protocol: 'https',
@@ -16,14 +16,22 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+
+    return config;
   },
+  // turbopack: {
+  //   rules: {
+  //     '*.svg': {
+  //       loaders: ['@svgr/webpack'],
+  //       as: '*.js',
+  //     },
+  //   },
+  // },
 };
 const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);

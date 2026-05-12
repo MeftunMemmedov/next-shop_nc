@@ -23679,7 +23679,7 @@ a.add-to-wishlist.active .flaticon.flaticon-heart {
 }
 
 body.not-found-page {
-  background: url(/assets/images/background/not-found.png) center no-repeat;
+  /* background: url(/assets/images/background/not-found.png) center no-repeat; */
   background-size: cover;
   background-attachment: fixed;
 }
@@ -23727,7 +23727,7 @@ body.not-found-page .header {
 }
 
 body.coming-soon-page {
-  background: url(../../images/pattern_bg.png) center no-repeat;
+  /* background: url(../../images/pattern_bg.png) center no-repeat; */
   background-size: cover;
   background-attachment: fixed;
 }
