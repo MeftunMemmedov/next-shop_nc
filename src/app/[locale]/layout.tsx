@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import './globals.css';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { routing } from '@/i18n/routing';
 import ReduxProvider from '@/store/provider';
@@ -19,6 +18,11 @@ import { getData } from '@/api/fetch/helpers/get';
 import { Config } from '@/types';
 import { PROJECT_NAME } from '@/constants';
 
+import '@/assets/css/flaticon.css';
+import '@/assets/css/swiper.min.css';
+import '@/assets/css/template.css';
+import './globals.css';
+
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
 };
@@ -30,27 +34,27 @@ export const metadata: Metadata = {
 const quickSand = localFont({
   src: [
     {
-      path: '../../../public/assets/fonts/quicksand/Quicksand-Light.ttf',
+      path: '../../assets/fonts/quicksand/Quicksand-Light.ttf',
       weight: '300',
       style: 'normal',
     },
     {
-      path: '../../../public/assets/fonts/quicksand/Quicksand-Regular.ttf',
+      path: '../../assets/fonts/quicksand/Quicksand-Regular.ttf',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../../../public/assets/fonts/quicksand/Quicksand-Medium.ttf',
+      path: '../../assets/fonts/quicksand/Quicksand-Medium.ttf',
       weight: '500',
       style: 'normal',
     },
     {
-      path: '../../../public/assets/fonts/quicksand/Quicksand-Semibold.ttf',
+      path: '../../assets/fonts/quicksand/Quicksand-Semibold.ttf',
       weight: '600',
       style: 'normal',
     },
     {
-      path: '../../../public/assets/fonts/quicksand/Quicksand-Bold.ttf',
+      path: '../../assets/fonts/quicksand/Quicksand-Bold.ttf',
       weight: '700',
       style: 'normal',
     },
@@ -82,10 +86,6 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
   // }
   return (
     <html lang={finalLocale}>
-      <head>
-        <link rel="stylesheet" href="/assets/css/flaticon.css" />
-        <link rel="stylesheet" href="/assets/css/template.css" />
-      </head>
       <body className={quickSand.className}>
         <ReduxProvider
           user={userSession}
