@@ -6,9 +6,10 @@ import Image from 'next/image';
 interface Props {
   comments: Comment[];
   slug: string;
+  locale: string;
 }
 
-const Comments = async ({ comments, slug }: Props) => {
+const Comments = async ({ comments, slug, locale }: Props) => {
   return (
     <div className="product-single__details-tab m-auto">
       <div className="nav nav-tabs">
@@ -51,7 +52,7 @@ const Comments = async ({ comments, slug }: Props) => {
                     <time
                       dateTime={String(comment.created_at)}
                       className="review-date">
-                      {formattedDate(comment.created_at)}
+                      {formattedDate(comment.created_at, locale)}
                     </time>
                     <div className="review-text">
                       <p>{comment.comment}</p>

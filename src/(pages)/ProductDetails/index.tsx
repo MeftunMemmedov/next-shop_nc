@@ -9,13 +9,13 @@ import WishlistBtn from '@/components/WishlistBtn';
 import { notFound } from 'next/navigation';
 import { getDatalist } from '@/api/fetch/helpers/get';
 
-const ProductDetails = async ({
-  slug,
-  productFetch,
-}: {
+interface Props {
   slug: string;
   productFetch: () => Promise<Product>;
-}) => {
+  locale: string;
+}
+
+const ProductDetails = async ({ slug, locale, productFetch }: Props) => {
   const commentsFetch = getDatalist<Comment>(
     'shop_comments',
     {
@@ -192,7 +192,7 @@ const ProductDetails = async ({
             </div> */}
           </div>
         </article>
-        <Comments slug={slug} comments={comments} />
+        <Comments slug={slug} locale={locale} comments={comments} />
       </section>
       {/* <RelatedProductSlider /> */}
     </main>

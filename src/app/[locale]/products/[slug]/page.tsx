@@ -36,11 +36,15 @@ export const generateStaticParams = async () => {
 };
 
 const ProductDetailsPage = async ({ params }: PageProps) => {
-  const { slug } = await params;
+  const { slug, locale } = await params;
 
   if (!slug) notFound();
   return (
-    <ProductDetails slug={slug} productFetch={() => getProductDetails(slug)} />
+    <ProductDetails
+      slug={slug}
+      locale={locale}
+      productFetch={() => getProductDetails(slug)}
+    />
   );
 };
 
