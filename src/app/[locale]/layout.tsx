@@ -18,9 +18,9 @@ import { getData } from '@/api/fetch/helpers/get';
 import { Config } from '@/types';
 import { PROJECT_NAME } from '@/constants';
 
-import '@/assets/css/flaticon.css';
-import '@/assets/css/swiper.min.css';
-import '@/assets/css/template.css';
+// import '@/assets/css/flaticon.css';
+// import '@/assets/css/swiper.min.css';
+// import '@/assets/css/template.css';
 import './globals.css';
 
 export const generateStaticParams = () => {
