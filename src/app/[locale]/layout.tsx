@@ -17,7 +17,6 @@ import { getData } from '@/api/fetch/helpers/get';
 import { Config } from '@/types';
 import { PROJECT_NAME } from '@/constants';
 import './globals.css';
-import { quickSand } from '../fonts';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -56,13 +55,13 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
         <link rel="stylesheet" href="/assets/css/template.css" />
         <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
       </head>
-      <body className={`${quickSand.className} fw-semibold`}>
+      <body>
         <ReduxProvider
           user={userSession}
           cart={userCart}
           wishlist={userWishlist}>
           <NextIntlClientProvider>
-            <ToastContainer toastClassName={quickSand.className} />
+            <ToastContainer />
             <Header categories={categories} user={userSession} />
             <MobileHeader
               categories={categories}
