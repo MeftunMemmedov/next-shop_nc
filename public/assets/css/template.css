@@ -10086,14 +10086,8 @@ svg.flaticon {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-@font-face {
-  font-family: 'SofiaProBold';
-  src: url(../fonts/SofiaProBold.woff);
-}
-
 body {
   color: #222222;
-  /* font-family: 'Montserrat', sans-serif; */
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.7143;
@@ -10115,25 +10109,12 @@ h5,
 h6,
 .h6 {
   color: #222222;
-  /* font-family: 'Montserrat', sans-serif; */
   font-weight: 500;
-}
-
-.font-special {
-  font-family: 'Allura', cursive;
-}
-
-.font-courgette {
-  font-family: Courgette;
 }
 
 .fs-base,
 .form-title {
   font-size: 0.875rem !important;
-}
-
-.font-sofia {
-  font-family: 'SofiaProBold';
 }
 
 .third-color {
