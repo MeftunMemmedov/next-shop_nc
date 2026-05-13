@@ -9,9 +9,13 @@ import {
 import { Link } from '@/i18n/routing';
 import { OrderItem } from '@/types';
 
-const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
-  const total = getTotal(orderDetails.items);
+interface Props {
+  orderDetails: OrderItem;
+  locale: string;
+}
 
+const OrderComplete = async ({ orderDetails, locale }: Props) => {
+  const total = getTotal(orderDetails.items);
   return (
     <main>
       <section className="shop-checkout container">
@@ -30,7 +34,7 @@ const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
             </div>
             <div className="order-info__item">
               <label>Date</label>
-              <span>{formattedDate(orderDetails.created_at)}</span>
+              <span>{formattedDate(orderDetails.created_at, locale)}</span>
             </div>
             <div className="order-info__item">
               <label>Total</label>

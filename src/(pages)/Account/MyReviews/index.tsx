@@ -3,7 +3,7 @@ import { getDatalist } from '@/api/fetch/helpers/get';
 import { Comment } from '@/types';
 import SingleComment from './SingleComment';
 
-const MyReviews = async () => {
+const MyReviews = async ({ locale }: { locale: string }) => {
   const user_id = (await getUser())?.user.user_id;
 
   const userReviews = await getDatalist<Comment>(
@@ -28,6 +28,7 @@ const MyReviews = async () => {
               review={review}
               user_id={user_id}
               key={`comment-${review.id}-${index}`}
+              locale={locale}
             />
           ))}
         </ul>

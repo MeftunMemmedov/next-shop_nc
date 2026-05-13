@@ -9,15 +9,18 @@ export const metadata: Metadata = {
 
 const OrderCompletePage = async ({
   searchParams,
+  params,
 }: {
   searchParams: Promise<{ id: string }>;
+  params: Promise<{ locale: string }>;
 }) => {
   const { id } = await searchParams;
+  const { locale } = await params;
 
   if (!id) notFound();
 
   const orderDetails = await getOrder(id);
-  return <OrderComplete orderDetails={orderDetails} />;
+  return <OrderComplete orderDetails={orderDetails} locale={locale} />;
 };
 
 export default OrderCompletePage;

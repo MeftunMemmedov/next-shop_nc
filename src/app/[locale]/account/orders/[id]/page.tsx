@@ -21,11 +21,11 @@ export const generateMetadata = async ({
 const OrderDetailsPage = async ({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) => {
-  const { id } = await params;
+  const { id, locale } = await params;
   const order = await getOrderDetails(id);
-  return <OrderDetails order={order} />;
+  return <OrderDetails order={order} locale={locale} />;
 };
 
 export default OrderDetailsPage;

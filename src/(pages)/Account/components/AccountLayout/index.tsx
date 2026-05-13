@@ -51,7 +51,7 @@ const AccountLayout = ({ children }: Props) => {
 
       <section className="my-account container">
         <div className="d-flex align-items-center">
-          <h2 className="page-title me-4">{pageTitle}</h2>
+          <h2 className="page-title me-4 mt-3">{pageTitle}</h2>
           {!pathname.endsWith('/account/details/') && (
             <div className="d-flex align-items-center gap-3 fw-bold">
               <span>{info?.user_name}</span>

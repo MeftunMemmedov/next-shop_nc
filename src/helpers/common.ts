@@ -1,14 +1,12 @@
 import { format, Locale } from 'date-fns';
 import { az, enUS, ru } from 'date-fns/locale';
-import { getLocale } from 'next-intl/server';
 
 export const getPageTitle = (title: string) => {
   const PROJECT_NAME = process.env.NEXT_PUBLIC_PROJECT_NAME as string;
   return `${title} | ${PROJECT_NAME}`;
 };
 
-export const formattedDate = async (date: Date) => {
-  const locale = await getLocale();
+export const formattedDate = async (date: Date, locale: string) => {
   const locales: Record<string, Locale> = {
     az,
     en: enUS,

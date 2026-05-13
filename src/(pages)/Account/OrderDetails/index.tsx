@@ -2,7 +2,12 @@ import { formattedDate } from '@/helpers';
 import { OrderItem } from '@/types';
 import Tabs from './Tabs';
 
-const OrderDetails = ({ order }: { order: OrderItem }) => {
+interface Props {
+  order: OrderItem;
+  locale: string;
+}
+
+const OrderDetails = ({ order, locale }: Props) => {
   return (
     <section>
       <div className="container mt-5 p-0 order-details-page">
@@ -20,7 +25,7 @@ const OrderDetails = ({ order }: { order: OrderItem }) => {
                 <div className="item">
                   <div className="text-2 text_black-2">Order Created</div>
                   <div className="text-2 mt_4 fw-6">
-                    {formattedDate(order.created_at)}
+                    {formattedDate(order.created_at, locale)}
                   </div>
                 </div>
 

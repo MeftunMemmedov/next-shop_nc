@@ -6,8 +6,13 @@ export const metadata: Metadata = {
   title: getPageTitle('My Reviews'),
 };
 
-const MyReviewsPage = () => {
-  return <MyReviews />;
+const MyReviewsPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) => {
+  const { locale } = await params;
+  return <MyReviews locale={locale} />;
 };
 
 export default MyReviewsPage;

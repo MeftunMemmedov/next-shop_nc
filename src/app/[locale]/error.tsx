@@ -17,7 +17,7 @@ const Error = ({ error, unstable_retry }: ErrorPageProps) => {
       <div className="content container d-flex flex-column align-items-center">
         <ErrorIcon />
         <p className="mb-3 fs-3">{error.message}</p>
-        <div className="d-flex gap-2 align-items-center">
+        <div className="d-flex flex-lg-row flex-col gap-2 align-items-center">
           <button
             onClick={() => unstable_retry()}
             className="btn btn-warning d-flex justify-content-center align-items-center">
