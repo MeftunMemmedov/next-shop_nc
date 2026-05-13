@@ -1,6 +1,5 @@
 'use client';
 import { HeartActiveIcon } from '@/assets/images/icons';
-import Icon from '@/components/Icon';
 import { useWishlist } from '@/hooks';
 import { Product } from '@/types';
 
@@ -16,11 +15,7 @@ const WishlistToggle = ({ product }: { product: Product }) => {
       className="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0"
       disabled={isPending}
       onClick={() => toggleWishlist(product)}>
-      {isProductInWishlist ? (
-        <Icon src={HeartActiveIcon} />
-      ) : (
-        <Icon src={HeartActiveIcon} />
-      )}
+      {isProductInWishlist ? <HeartActiveIcon /> : <HeartActiveIcon />}
     </button>
   );
 };

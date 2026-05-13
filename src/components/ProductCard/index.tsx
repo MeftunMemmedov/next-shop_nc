@@ -56,7 +56,7 @@ const ProductCard = ({ product, onRemove }: Props) => {
             className="btn-remove-from-wishlist"
             aria-label="remove from wishlist button"
             onClick={onRemove}>
-            <Image alt="" src={RemoveIcon} />
+            <RemoveIcon />
           </button>
         )}
 

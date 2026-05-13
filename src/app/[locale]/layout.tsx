@@ -16,6 +16,8 @@ import MobileHeader from '@/components/Layout/MobileHeader';
 import { getData } from '@/api/fetch/helpers/get';
 import { Config } from '@/types';
 import { PROJECT_NAME } from '@/constants';
+import './globals.css';
+import localFont from 'next/font/local';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -25,35 +27,35 @@ export const metadata: Metadata = {
   title: PROJECT_NAME,
 };
 
-// const quickSand = localFont({
-//   src: [
-//     {
-//       path: '../../assets/fonts/quicksand/Quicksand-Light.ttf',
-//       weight: '300',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../../assets/fonts/quicksand/Quicksand-Regular.ttf',
-//       weight: '400',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../../assets/fonts/quicksand/Quicksand-Medium.ttf',
-//       weight: '500',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../../assets/fonts/quicksand/Quicksand-Semibold.ttf',
-//       weight: '600',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../../assets/fonts/quicksand/Quicksand-Bold.ttf',
-//       weight: '700',
-//       style: 'normal',
-//     },
-//   ],
-// });
+const quickSand = localFont({
+  src: [
+    {
+      path: '../fonts/quicksand/Quicksand-Light.ttf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/quicksand/Quicksand-Regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/quicksand/Quicksand-Medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/quicksand/Quicksand-Semibold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../fonts/quicksand/Quicksand-Bold.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+});
 
 interface RootLayoutParams {
   children: React.ReactNode;
@@ -80,13 +82,17 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
   // }
   return (
     <html lang={finalLocale}>
-      <body>
+      <head>
+        <link rel="stylesheet" href="/assets/css/template.css" />
+        <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+      </head>
+      <body className={`${quickSand.className} fw-semibold`}>
         <ReduxProvider
           user={userSession}
           cart={userCart}
           wishlist={userWishlist}>
           <NextIntlClientProvider>
-            <ToastContainer />
+            <ToastContainer toastClassName={quickSand.className} />
             <Header categories={categories} user={userSession} />
             <MobileHeader
               categories={categories}

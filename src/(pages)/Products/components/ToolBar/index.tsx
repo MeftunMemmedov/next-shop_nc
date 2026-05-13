@@ -2,7 +2,6 @@
 import { FilterIcon } from '@/assets/images/icons';
 import { GlobalContext } from '@/context/GlobalContext';
 import { GlobalContextType } from '@/types';
-import Image from 'next/image';
 import { useQueryState } from 'nuqs';
 import { use } from 'react';
 
@@ -57,7 +56,7 @@ const ToolBar = () => {
           <button
             className="btn-link btn-link_f d-flex align-items-center ps-0 "
             onClick={() => setSidebarVisible(!sidebarVisible)}>
-            <Image src={FilterIcon} alt="" className="mx-1" />
+            <FilterIcon className="mx-1" />
 
             <span className="text-uppercase fw-medium d-inline-block align-middle">
               Filters

@@ -15,7 +15,6 @@ import LangSelect from '../LangSelect';
 import { Category, Config, UserAuthState } from '@/types';
 import { useAppSelector } from '@/store/hooks';
 import Logo from '../Logo';
-import Image from 'next/image';
 
 interface Props {
   categories: Category[];
@@ -84,7 +83,7 @@ const MobileHeader = ({ categories }: Props) => {
         <button
           className="mobile-nav-activator d-block position-relative btn p-0"
           onClick={() => setMenu((prevState) => !prevState)}>
-          <Image alt="" src={MenuIcon} className="nav-icon" />
+          <MenuIcon className="nav-icon" />
           <span className="btn-close-lg position-absolute top-0 start-0 w-100"></span>
         </button>
 
@@ -109,7 +108,7 @@ const MobileHeader = ({ categories }: Props) => {
               <button
                 className="btn-icon search-popup__submit pb-0 me-2"
                 type="submit">
-                <Image alt="" src={SearchIcon} className="ms-auto" />
+                <SearchIcon className="ms-auto" />
               </button>
 
               <button
@@ -147,9 +146,7 @@ const MobileHeader = ({ categories }: Props) => {
                     </Link>
                     {route.path === '/products' &&
                       !pathname.endsWith('/products') && (
-                        <Image
-                          alt=""
-                          src={NextIcon}
+                        <NextIcon
                           className="ms-auto"
                           onClick={() => toggleMenu(2)}
                         />
@@ -162,7 +159,7 @@ const MobileHeader = ({ categories }: Props) => {
                         <button
                           onClick={() => toggleMenu(2)}
                           className="navigation__link d-flex align-items-center border-bottom mb-3 btn px-0 w-100">
-                          <Image alt="" src={PrevIcon} className="me-2" />
+                          <PrevIcon className="me-2" />
                           {route.title}
                         </button>
 
@@ -176,9 +173,7 @@ const MobileHeader = ({ categories }: Props) => {
                                   {category.title}
                                 </Link>
                                 {category.children?.length && (
-                                  <Image
-                                    alt=""
-                                    src={NextIcon}
+                                  <NextIcon
                                     className="ms-auto"
                                     onClick={() => toggleMenu(2, index1)}
                                   />
@@ -191,11 +186,7 @@ const MobileHeader = ({ categories }: Props) => {
                                   <button
                                     className="navigation__link d-flex align-items-center border-bottom mb-2 btn p-0"
                                     onClick={() => toggleMenu(2)}>
-                                    <Image
-                                      alt=""
-                                      src={PrevIcon}
-                                      className="me-2"
-                                    />
+                                    <PrevIcon className="me-2" />
                                     {category.title}
                                   </button>
 
@@ -233,17 +224,9 @@ const MobileHeader = ({ categories }: Props) => {
             href={isAuth ? '/account/details' : '/auth/signin'}
             className="customer-links container mt-4 mb-2 pb-1">
             {isAuth ? (
-              <Image
-                alt=""
-                src={UserIcon}
-                className="d-inline-block align-middle"
-              />
+              <UserIcon className="d-inline-block align-middle" />
             ) : (
-              <Image
-                alt=""
-                src={LoginIcon}
-                className="d-inline-block align-middle"
-              />
+              <LoginIcon className="d-inline-block align-middle" />
             )}
 
             <span className="d-inline-block ms-2 text-uppercase align-middle fw-medium py-2">

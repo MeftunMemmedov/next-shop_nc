@@ -10,7 +10,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { EditUserInput, editUserSchema } from '@/schemas/edituser.schema';
 import { editUserAction } from '@/actions/auth/edituser';
 import { updateUser } from '@/store/inventory';
-import Image from 'next/image';
 
 const AccountForm = () => {
   const dispatch = useAppDispatch();
@@ -63,9 +62,7 @@ const AccountForm = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => setIsAccountFormActive(!isAccountFormActive)}>
         <h5>Account details</h5>
-        <Image
-          alt=""
-          src={ArrowDownIcon}
+        <ArrowDownIcon
           style={{
             transform: `rotate(${isAccountFormActive ? '0' : '180deg'})`,
             transition: '.5s all',

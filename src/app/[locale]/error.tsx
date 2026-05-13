@@ -2,7 +2,6 @@
 import { ErrorIcon } from '@/assets/images/icons';
 import { Link } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 interface ErrorPageProps {
@@ -16,7 +15,7 @@ const Error = ({ error, unstable_retry }: ErrorPageProps) => {
   return (
     <section className="page-not-found">
       <div className="content container d-flex flex-column align-items-center">
-        <Image src={ErrorIcon} alt="" />
+        <ErrorIcon />
         <p className="mb-3 fs-3">{error.message}</p>
         <div className="d-flex gap-2 align-items-center">
           <button

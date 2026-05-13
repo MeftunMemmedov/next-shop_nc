@@ -6,7 +6,6 @@ import {
   ShareIcon,
   TwitterxIcon,
 } from '@/assets/images/icons';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import {
   FacebookIcon,
@@ -61,7 +60,7 @@ const ShareModal = () => {
         <button
           className="menu-link menu-link_us-s to-share border-0 bg-transparent d-flex align-items-center"
           onClick={() => setShareModalVisible((prev) => !prev)}>
-          <Image src={ShareIcon} alt="" className="shareIcon" />
+          <ShareIcon className="shareIcon" />
           <span>Share</span>
         </button>
       </div>
@@ -78,7 +77,7 @@ const ShareModal = () => {
             <div className="d-flex justify-content-between mb-4">
               <h3 className="text-sm-start text-center m-0">Share</h3>
               <button className="btn p-0" onClick={handleClose}>
-                <Image src={RemoveIcon} alt="" />
+                <RemoveIcon />
               </button>
             </div>
 
@@ -94,7 +93,7 @@ const ShareModal = () => {
                   <TelegramIcon size={35} round />
                 </TelegramShareButton>
                 <TwitterShareButton url={url}>
-                  <Image src={TwitterxIcon} alt="" width={35} height={35} />
+                  <TwitterxIcon width="35" height="35" />
                 </TwitterShareButton>
               </div>
 
@@ -109,7 +108,7 @@ const ShareModal = () => {
                     readOnly
                   />
                   <button className="btn p-0 px-3" onClick={handleCopy}>
-                    <Image src={LinkIcon} alt="" width={15} height={15} />
+                    <LinkIcon width="15" height="15" />
                   </button>
                 </div>
               </div>

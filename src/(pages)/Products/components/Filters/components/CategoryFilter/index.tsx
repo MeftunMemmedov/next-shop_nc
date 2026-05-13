@@ -51,11 +51,7 @@ const CategoryFilter = ({ categories }: Props) => {
             className={`accordion-button p-0 border-0 fs-5 text-uppercase ${!isVisible ? 'collapsed' : ''}`}
             onClick={() => setIsVisible((prevState) => !prevState)}>
             Category
-            <Image
-              alt=""
-              src={ArrowDownIcon}
-              className="accordion-button__icon type2"
-            />
+            <ArrowDownIcon className="accordion-button__icon type2" />
           </button>
         </h5>
 
@@ -80,7 +76,7 @@ const CategoryFilter = ({ categories }: Props) => {
                         alt={category.title}
                       />
                     ) : (
-                      <Image alt="" src={CategoryIcon} width={20} height={20} />
+                      <CategoryIcon width="20" height="20" />
                     )}
                     {category.title}
                   </button>
@@ -103,12 +99,7 @@ const CategoryFilter = ({ categories }: Props) => {
                                 alt={childCat.title}
                               />
                             ) : (
-                              <Image
-                                alt=""
-                                src={CategoryIcon}
-                                width={20}
-                                height={20}
-                              />
+                              <CategoryIcon width="20" height="20" />
                             )}
                             {childCat.title}
                           </button>

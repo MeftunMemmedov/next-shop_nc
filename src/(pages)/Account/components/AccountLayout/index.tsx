@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearUser, clearUserCart } from '@/store/inventory';
 import { toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
-import Image from 'next/image';
 
 interface Props {
   children: ReactNode;
@@ -80,7 +79,7 @@ const AccountLayout = ({ children }: Props) => {
                 <button
                   onClick={handleLogout}
                   className="btn btn-transparent menu-link menu-link_us-s d-flex align-items-center gap-2 text-danger">
-                  <Image src={LogoutIcon} alt="" />
+                  <LogoutIcon />
                   <span>{isLogoutPending ? 'Logging out' : 'Logout'}</span>
                 </button>
               </li>

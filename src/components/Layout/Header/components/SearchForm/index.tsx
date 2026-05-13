@@ -87,7 +87,7 @@ const SearchForm = () => {
             aria-label="open search"
             aria-expanded={isSearchVisible}
             onClick={() => setIsSearchVisible((prevState) => !prevState)}>
-            <Image alt="" src={SearchIcon} />
+            <SearchIcon />
             <i className="btn-icon btn-close-lg"></i>
           </button>
         </div>
@@ -116,7 +116,7 @@ const SearchForm = () => {
               }}
             />
             <button className="btn-icon search-popup__submit" type="submit">
-              <Image alt="" src={SearchIcon} />
+              <SearchIcon />
             </button>
             <button
               className="btn-icon btn-close-lg search-popup__reset"

@@ -8,7 +8,6 @@ import {
 } from '@/helpers';
 import { Link } from '@/i18n/routing';
 import { OrderItem } from '@/types';
-import Image from 'next/image';
 
 const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
   const total = getTotal(orderDetails.items);
@@ -20,7 +19,7 @@ const OrderComplete = async ({ orderDetails }: { orderDetails: OrderItem }) => {
         <CheckoutSteps currentStep={3} />
         <div className="order-complete">
           <div className="order-complete__message">
-            <Image src={ConfirmIcon} alt="" />
+            <ConfirmIcon />
             <h3>Your order is completed!</h3>
             <p>Thank you. Your order has been received.</p>
           </div>
