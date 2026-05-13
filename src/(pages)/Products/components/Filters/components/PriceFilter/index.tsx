@@ -8,6 +8,7 @@ import 'react-range-slider-input/dist/style.css';
 
 import { ArrowDownIcon } from '@/assets/images/icons';
 import { parseAsInteger, useQueryStates } from 'nuqs';
+import Image from 'next/image';
 
 const PriceFilter = () => {
   const [isVisible, setisVisible] = useState<boolean>(true);
@@ -84,16 +85,18 @@ const PriceFilter = () => {
         <h5 className="accordion-header mb-2">
           <button
             className={`accordion-button p-0 border-0 fs-5 text-uppercase ${!isVisible ? 'collapsed' : ''}`}
-            onClick={() => setisVisible(!isVisible)}
-          >
+            onClick={() => setisVisible(!isVisible)}>
             Price
-            <ArrowDownIcon className="accordion-button__icon type2" />
+            <Image
+              src={ArrowDownIcon}
+              alt=""
+              className="accordion-button__icon type2"
+            />
           </button>
         </h5>
 
         <div
-          className={`accordion-collapse filters ${isVisible ? 'show' : 'hide'} border-0`}
-        >
+          className={`accordion-collapse filters ${isVisible ? 'show' : 'hide'} border-0`}>
           <div className="product-left-item mb-50">
             <div className="filter-widget-content">
               <div className="filter-price">

@@ -2,6 +2,7 @@
 import { FilterIcon } from '@/assets/images/icons';
 import { GlobalContext } from '@/context/GlobalContext';
 import { GlobalContextType } from '@/types';
+import Image from 'next/image';
 import { useQueryState } from 'nuqs';
 import { use } from 'react';
 
@@ -44,8 +45,7 @@ const ToolBar = () => {
         <select
           className="shop-acs__select form-select w-auto border-0 p-1 pe-4 order-1 order-md-0"
           value={orderQuery || ''}
-          onChange={(e) => setOrderQuery(e.target.value || null)}
-        >
+          onChange={(e) => setOrderQuery(e.target.value || null)}>
           {sortOptions.map((option) => (
             <option key={`sort-option-${option.label}`} value={option.value}>
               {option.label}
@@ -56,9 +56,8 @@ const ToolBar = () => {
         <div className="shop-filter d-flex align-items-center order-0 order-md-3 d-lg-none">
           <button
             className="btn-link btn-link_f d-flex align-items-center ps-0 "
-            onClick={() => setSidebarVisible(!sidebarVisible)}
-          >
-            <FilterIcon className="mx-1" />
+            onClick={() => setSidebarVisible(!sidebarVisible)}>
+            <Image src={FilterIcon} alt="" className="mx-1" />
 
             <span className="text-uppercase fw-medium d-inline-block align-middle">
               Filters
@@ -69,8 +68,7 @@ const ToolBar = () => {
 
       <div
         className={`page-overlay ${sidebarVisible ? 'page-overlay_visible' : ''}`}
-        onClick={() => setSidebarVisible(!sidebarVisible)}
-      ></div>
+        onClick={() => setSidebarVisible(!sidebarVisible)}></div>
     </>
   );
 };

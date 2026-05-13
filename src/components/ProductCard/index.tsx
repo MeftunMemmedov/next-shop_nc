@@ -56,7 +56,7 @@ const ProductCard = ({ product, onRemove }: Props) => {
             className="btn-remove-from-wishlist"
             aria-label="remove from wishlist button"
             onClick={onRemove}>
-            <RemoveIcon />
+            <Image alt="" src={RemoveIcon} />
           </button>
         )}
 
@@ -92,7 +92,7 @@ const ProductCard = ({ product, onRemove }: Props) => {
               </span>
             </div>
             {/* <div className="d-flex align-items-center gap-1">
-              <RatingIcon width="12" />
+              <Image src={RatingIcon} width={12} />
               {rating}
             </div> */}
           </div>

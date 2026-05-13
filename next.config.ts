@@ -2,12 +2,8 @@ import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const nextConfig: NextConfig = {
-  webpack(config) {
-    return config;
-  },
   reactCompiler: true,
   trailingSlash: true,
-
   images: {
     remotePatterns: [
       {
@@ -19,14 +15,6 @@ const nextConfig: NextConfig = {
         hostname: 'placehold.co',
       },
     ],
-  },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
   },
 };
 const withNextIntl = createNextIntlPlugin();

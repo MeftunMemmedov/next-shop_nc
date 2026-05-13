@@ -171,7 +171,7 @@ const SingleCartItem = ({
         <button
           onClick={() => toggleCart(item.product, 0)}
           className="remove-cart btn">
-          <RemoveIcon />
+          <Image src={RemoveIcon} alt="" />
         </button>
       </td>
     </tr>

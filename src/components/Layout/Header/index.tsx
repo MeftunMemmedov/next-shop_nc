@@ -6,6 +6,7 @@ import LangSelect from '../LangSelect';
 import { Category, UserAuthState } from '@/types';
 import CartModal from '../CartModal';
 import Logo from '../Logo';
+import Image from 'next/image';
 
 const header_top_texts = [
   'DISCOVER GUITARS THAT INSPIRE EVERY NOTE',
@@ -123,7 +124,11 @@ const Header = async ({ categories, user }: Props) => {
                 href={user?.isAuth ? '/account/details' : '/auth/signin'}
                 className="header-tools__item"
                 aria-label={user?.isAuth ? 'account details' : 'sign in'}>
-                {user?.isAuth ? <UserIcon /> : <LoginIcon />}
+                {user?.isAuth ? (
+                  <Image src={UserIcon} alt="" />
+                ) : (
+                  <Image src={LoginIcon} alt="" />
+                )}
               </Link>
             </nav>
 

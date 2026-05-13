@@ -1,7 +1,7 @@
 <svg
-    aria-hidden="true"
     width='10'
-    heigth='10'
+    height='10'
+    aria-hidden="true"
     className="accordion-button__icon type2"
     viewBox="0 0 10 6"
     xmlns="http://www.w3.org/2000/svg">

@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { EditUserInput, editUserSchema } from '@/schemas/edituser.schema';
 import { editUserAction } from '@/actions/auth/edituser';
 import { updateUser } from '@/store/inventory';
+import Image from 'next/image';
 
 const AccountForm = () => {
   const dispatch = useAppDispatch();
@@ -60,10 +61,11 @@ const AccountForm = () => {
       <div
         className="border-bottom p-3 d-flex justify-content-between align-items-center"
         style={{ cursor: 'pointer' }}
-        onClick={() => setIsAccountFormActive(!isAccountFormActive)}
-      >
+        onClick={() => setIsAccountFormActive(!isAccountFormActive)}>
         <h5>Account details</h5>
-        <ArrowDownIcon
+        <Image
+          alt=""
+          src={ArrowDownIcon}
           style={{
             transform: `rotate(${isAccountFormActive ? '0' : '180deg'})`,
             transition: '.5s all',
@@ -75,8 +77,7 @@ const AccountForm = () => {
         style={{
           maxHeight: isAccountFormActive ? 1000 : 0,
           transition: '1s all',
-        }}
-      >
+        }}>
         <div className="row mt-3">
           <div className="col-lg-10">
             <div className="cp-signin-wrap border-0">
@@ -126,15 +127,13 @@ const AccountForm = () => {
                     <button
                       type="submit"
                       className="btn btn-primary w-50 text-center text-uppercase me-2"
-                      disabled={isEditDisabled || isSubmitting}
-                    >
+                      disabled={isEditDisabled || isSubmitting}>
                       {isSubmitting ? <Spinner size={15} /> : 'Submit'}
                     </button>
                     <button
                       className="btn btn-primary w-50 text-uppercase"
                       onClick={() => setIsEditDisabled(true)}
-                      disabled={isEditDisabled || isSubmitting}
-                    >
+                      disabled={isEditDisabled || isSubmitting}>
                       Cancel
                     </button>
                   </div>
@@ -143,8 +142,7 @@ const AccountForm = () => {
               {isEditDisabled ? (
                 <div
                   className="mt-5 mb-5"
-                  onClick={() => setIsEditDisabled(false)}
-                >
+                  onClick={() => setIsEditDisabled(false)}>
                   <button className="btn btn-primary w-50 text-uppercase">
                     Edit
                   </button>

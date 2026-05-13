@@ -41,7 +41,7 @@ const CartModal = () => {
         }
         onClick={() => setIsCartModalVisible(true)}
         className="header-tools__item header-tools__cart btn">
-        <ShoppingIcon />
+        <Image alt="" src={ShoppingIcon} />
         <span
           className="cart-amount d-block position-absolute"
           suppressHydrationWarning>
@@ -51,7 +51,7 @@ const CartModal = () => {
       <Link
         className="header-tools__item header-tools__cart"
         href="/account/wishlist">
-        <WishlistIcon />
+        <Image alt="" src={WishlistIcon} />
         <span className="cart-amount d-block position-absolute">
           {wishlistCount}
         </span>

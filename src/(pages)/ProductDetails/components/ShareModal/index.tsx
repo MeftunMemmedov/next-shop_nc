@@ -6,6 +6,7 @@ import {
   ShareIcon,
   TwitterxIcon,
 } from '@/assets/images/icons';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import {
   FacebookIcon,
@@ -59,9 +60,8 @@ const ShareModal = () => {
       <div className="share-button">
         <button
           className="menu-link menu-link_us-s to-share border-0 bg-transparent d-flex align-items-center"
-          onClick={() => setShareModalVisible((prev) => !prev)}
-        >
-          <ShareIcon className="shareIcon" />
+          onClick={() => setShareModalVisible((prev) => !prev)}>
+          <Image src={ShareIcon} alt="" className="shareIcon" />
           <span>Share</span>
         </button>
       </div>
@@ -71,16 +71,14 @@ const ShareModal = () => {
         <div
           className="position-fixed share-modal-backgorund top-0 left-0 w-100 h-100 d-flex justify-content-center align-items-center"
           onClick={handleClose}
-          style={{ zIndex: 9999 }}
-        >
+          style={{ zIndex: 9999 }}>
           <div
             className={`share-modal d-flex flex-column p-5 ${isClosing ? 'exit' : 'enter'}`}
-            onClick={(e) => e.stopPropagation()}
-          >
+            onClick={(e) => e.stopPropagation()}>
             <div className="d-flex justify-content-between mb-4">
               <h3 className="text-sm-start text-center m-0">Share</h3>
               <button className="btn p-0" onClick={handleClose}>
-                <RemoveIcon />
+                <Image src={RemoveIcon} alt="" />
               </button>
             </div>
 
@@ -96,7 +94,7 @@ const ShareModal = () => {
                   <TelegramIcon size={35} round />
                 </TelegramShareButton>
                 <TwitterShareButton url={url}>
-                  <TwitterxIcon width={35} height={35} />
+                  <Image src={TwitterxIcon} alt="" width={35} height={35} />
                 </TwitterShareButton>
               </div>
 
@@ -111,7 +109,7 @@ const ShareModal = () => {
                     readOnly
                   />
                   <button className="btn p-0 px-3" onClick={handleCopy}>
-                    <LinkIcon width={15} height={15} />
+                    <Image src={LinkIcon} alt="" width={15} height={15} />
                   </button>
                 </div>
               </div>

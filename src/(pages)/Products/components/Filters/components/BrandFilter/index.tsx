@@ -7,6 +7,7 @@ import { ArrowDownIcon } from '@/assets/images/icons';
 import { useQueryState } from 'nuqs';
 import { Brand } from '@/types';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 const BrandFilter = ({ brands }: { brands: Brand[] }) => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
@@ -45,7 +46,11 @@ const BrandFilter = ({ brands }: { brands: Brand[] }) => {
             aria-pressed={isVisible}
             className={`accordion-button p-0 border-0 fs-5 text-uppercase ${!isVisible ? 'collapsed' : ''}`}>
             Brand
-            <ArrowDownIcon className="accordion-button__icon type2" />
+            <Image
+              src={ArrowDownIcon}
+              alt=""
+              className="accordion-button__icon type2"
+            />
           </button>
         </h5>
 

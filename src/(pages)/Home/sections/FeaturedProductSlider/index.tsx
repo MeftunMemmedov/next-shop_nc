@@ -8,6 +8,7 @@ import { NextIcon, PrevIcon } from '@/assets/images/icons';
 
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/types';
+import Image from 'next/image';
 
 const FeaturedProductSlider = ({
   featuredProducts,
@@ -80,12 +81,12 @@ const FeaturedProductSlider = ({
             <button
               className="swiper-nav-btn swiper-slide-prev-btn border rounded-circle d-flex justify-content-center align-items-center shadow"
               onClick={slidePrev}>
-              <PrevIcon />
+              <Image src={PrevIcon} alt="" />
             </button>
             <button
               className="swiper-nav-btn swiper-slide-next-btn border rounded-circle d-flex justify-content-center align-items-center shadow"
               onClick={slideNext}>
-              <NextIcon />
+              <Image src={NextIcon} alt="" />
             </button>
           </div>
         )}

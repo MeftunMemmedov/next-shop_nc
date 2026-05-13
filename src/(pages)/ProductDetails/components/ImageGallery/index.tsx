@@ -100,13 +100,13 @@ const ImageGallery = ({ product }: Props) => {
             <button
               className="swiper-button-prev border-1"
               aria-label="product image, slide left">
-              <PrevIcon className="iconSlider" />
+              <Image src={PrevIcon} alt="" className="iconSlider" />
             </button>
 
             <button
               className="swiper-button-next border-1"
               aria-label="product image, slide right">
-              <NextIcon className="iconSlider" />
+              <Image src={NextIcon} alt="" className="iconSlider" />
             </button>
           </Swiper>
         </div>
