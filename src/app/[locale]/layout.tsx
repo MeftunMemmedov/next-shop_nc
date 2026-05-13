@@ -12,7 +12,6 @@ import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
 import { getUser } from '@/api/fetch/helpers/auth/index';
 import { getUserCart } from '@/api/fetch/helpers/cart';
 import { getUserWishlist } from '@/api/fetch/helpers/wishlist';
-import localFont from 'next/font/local';
 import MobileHeader from '@/components/Layout/MobileHeader';
 import { getData } from '@/api/fetch/helpers/get';
 import { Config } from '@/types';
@@ -26,35 +25,35 @@ export const metadata: Metadata = {
   title: PROJECT_NAME,
 };
 
-const quickSand = localFont({
-  src: [
-    {
-      path: '../../assets/fonts/quicksand/Quicksand-Light.ttf',
-      weight: '300',
-      style: 'normal',
-    },
-    {
-      path: '../../assets/fonts/quicksand/Quicksand-Regular.ttf',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: '../../assets/fonts/quicksand/Quicksand-Medium.ttf',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../assets/fonts/quicksand/Quicksand-Semibold.ttf',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: '../../assets/fonts/quicksand/Quicksand-Bold.ttf',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-});
+// const quickSand = localFont({
+//   src: [
+//     {
+//       path: '../../assets/fonts/quicksand/Quicksand-Light.ttf',
+//       weight: '300',
+//       style: 'normal',
+//     },
+//     {
+//       path: '../../assets/fonts/quicksand/Quicksand-Regular.ttf',
+//       weight: '400',
+//       style: 'normal',
+//     },
+//     {
+//       path: '../../assets/fonts/quicksand/Quicksand-Medium.ttf',
+//       weight: '500',
+//       style: 'normal',
+//     },
+//     {
+//       path: '../../assets/fonts/quicksand/Quicksand-Semibold.ttf',
+//       weight: '600',
+//       style: 'normal',
+//     },
+//     {
+//       path: '../../assets/fonts/quicksand/Quicksand-Bold.ttf',
+//       weight: '700',
+//       style: 'normal',
+//     },
+//   ],
+// });
 
 interface RootLayoutParams {
   children: React.ReactNode;
@@ -81,15 +80,13 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
   // }
   return (
     <html lang={finalLocale}>
-      <body className={quickSand.className}>
+      <body>
         <ReduxProvider
           user={userSession}
           cart={userCart}
           wishlist={userWishlist}>
           <NextIntlClientProvider>
-            <ToastContainer
-              toastClassName={`${quickSand.className} fw-semibold`}
-            />
+            <ToastContainer />
             <Header categories={categories} user={userSession} />
             <MobileHeader
               categories={categories}
