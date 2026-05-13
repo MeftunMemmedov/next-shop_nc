@@ -3,10 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "preinstall": "node check-yarn.js",
-    "predev": "node check-yarn.js",
-    "prebuild": "node check-yarn.js",
-    "prelint": "node check-yarn.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
