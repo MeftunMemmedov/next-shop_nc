@@ -1,3 +1,4 @@
+import { Meta_IMG } from '@/assets/images';
 import { domain, metaDescription } from '@/constants/metadata';
 import { Metadata } from 'next';
 
@@ -14,7 +15,7 @@ export const createMetadata = ({
   title,
   description = metaDescription,
   path,
-  image = '/assets/images/meta_image.webp',
+  image = Meta_IMG.src,
 }: CreateMetadataParams): Metadata => {
   const url = `${domain}/${locale}${path}`;
 
