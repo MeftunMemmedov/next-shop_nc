@@ -1,3 +1,4 @@
+import { ToggleIntent } from '../actions';
 import { Product } from '../product';
 
 export type WishlistItem = {
@@ -11,5 +12,12 @@ export type WishlistHookType = {
   count: number;
   inWishlist: (product: Product) => boolean | undefined;
   toggleWishlist: (product: Product) => void;
-  loadingIds: Set<string>;
+  // loadingIds: Set<string>;
+  isPending: boolean;
+};
+
+export type ToggleWishlistActionParams = {
+  user_id: string;
+  product: string;
+  intent: ToggleIntent;
 };

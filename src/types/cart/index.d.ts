@@ -1,3 +1,4 @@
+import { ToggleIntent } from '../actions';
 import { Product } from '../product';
 
 export type CartItem = {
@@ -22,4 +23,11 @@ export type CartHookType = {
     quantity: number,
     func: () => void
   ) => void;
+};
+
+export type ToggleCartActionParams = {
+  user_id: string;
+  product: string;
+  quantity: number;
+  intent: ToggleIntent;
 };

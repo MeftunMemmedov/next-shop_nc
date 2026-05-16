@@ -9,6 +9,7 @@ const Contact = async () => {
   return (
     <>
       <div className="mb-4 pb-4"></div>
+      <div className="mb-4 pb-4"></div>
 
       <section className="contact-us container">
         <div className="mw-930">

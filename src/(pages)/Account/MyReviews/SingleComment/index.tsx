@@ -16,6 +16,7 @@ const SingleComment = ({
   locale: string;
 }) => {
   const [isEditDisabled, setIsEditDisabled] = useState<boolean>(true);
+
   const [isCommentDeletePending, startDeleteCommentTransition] =
     useTransition();
 
@@ -56,53 +57,61 @@ const SingleComment = ({
   }, [state]);
 
   return (
-    <li className="mb-3 border rounded p-2">
+    <li className="mb-3 rounded-3 p-md-4 p-3 bg-lighter">
       <div>
-        <div className="d-flex gap-2">
-          <Image src={review.product.images[0]} width={50} height={50} alt="" />
-          <div className="d-flex flex-column align-items-center">
-            <h6>{review.product.title}</h6>
-            <span>{getPriceDisplay(review.product.price)}</span>
+        <div className="row">
+          <div className="col-lg-8 d-flex gap-3 mb-3">
+            <Image
+              src={review.product.images[0]}
+              className="rounded-3"
+              width={50}
+              height={50}
+              alt=""
+            />
+            <div className="d-flex flex-column">
+              <h6>{review.product.title}</h6>
+              <span>{getPriceDisplay(review.product.price)}</span>
+            </div>
+          </div>
+          <div className="col-lg-4 d-flex align-items-end justify-content-end">
+            <span>{formattedDate(review.created_at, locale)}</span>
           </div>
         </div>
         <form action={formAction}>
           <input name="id" hidden readOnly value={review.id} />
+          <input name="prevcomment" hidden readOnly value={review.comment} />
           <textarea
             name="comment"
-            className="w-100 h-auto form-control form-control_gray mb-4"
+            className="w-100 h-auto form-control form-control_gray mb-4 rounded-3"
             cols={30}
             rows={8}
             defaultValue={review.comment}
             disabled={isPending}
             readOnly={isEditDisabled}></textarea>
-          <div className="d-flex justify-content-between">
-            <span>{formattedDate(review.created_at, locale)}</span>
-            <div className="d-flex">
-              <button
-                type="button"
-                className="btn btn-light"
-                onClick={() => setIsEditDisabled((prev) => !prev)}>
-                {isEditDisabled ? 'Edit' : 'Cancel Edit'}
-              </button>
+          <div className="d-flex gap-2">
+            <button
+              type="button"
+              className={`btn ${isEditDisabled ? 'btn-dark' : 'btn-danger'}`}
+              onClick={() => setIsEditDisabled((prev) => !prev)}>
+              {isEditDisabled ? 'Edit' : 'Cancel Edit'}
+            </button>
 
-              <button
-                hidden={isEditDisabled}
-                className="btn btn-success"
-                type="submit"
-                disabled={isEditDisabled}>
-                Save
-              </button>
+            <button
+              hidden={isEditDisabled}
+              className="btn btn-success"
+              type="submit"
+              disabled={isEditDisabled}>
+              Save
+            </button>
 
-              <button
-                hidden={!isEditDisabled}
-                type="button"
-                className="btn btn-danger"
-                disabled={isCommentDeletePending}
-                onClick={handleDeleteComment}>
-                {' '}
-                Delete{' '}
-              </button>
-            </div>
+            <button
+              hidden={!isEditDisabled}
+              type="button"
+              className="btn btn-danger"
+              disabled={isCommentDeletePending}
+              onClick={handleDeleteComment}>
+              {isCommentDeletePending ? 'DELETING...' : 'Delete'}
+            </button>
           </div>
         </form>
       </div>

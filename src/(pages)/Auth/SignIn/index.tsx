@@ -178,7 +178,7 @@ const SignIn = () => {
                     {...register('email')}
                     className={`form-control form-control_gray ${errors.email ? 'is-invalid  invalid-input' : ''}`}
                     placeholder="Email"
-                    disabled={isFormLoading}
+                    disabled={isFormLoading || isFormSucceed}
                   />
 
                   <label>Email</label>
@@ -198,7 +198,7 @@ const SignIn = () => {
                     type="password"
                     className={`form-control form-control_gray ${errors.password ? 'is-invalid  invalid-input' : ''}`}
                     placeholder={'Password'}
-                    disabled={isFormLoading}
+                    disabled={isFormLoading || isFormSucceed}
                   />
 
                   <label>Password</label>
@@ -217,7 +217,7 @@ const SignIn = () => {
                       id="remember_me"
                       type="checkbox"
                       className="form-check-input form-check-input_fill"
-                      disabled={isFormLoading}
+                      disabled={isFormLoading || isFormSucceed}
                     />
 
                     <label
@@ -235,7 +235,7 @@ const SignIn = () => {
                 <button
                   className="btn btn-primary w-100 text-uppercase"
                   type="submit"
-                  disabled={isFormLoading}>
+                  disabled={isFormLoading || isFormSucceed}>
                   {isFormLoading ? 'Processing...' : 'Sign In'}
                 </button>
 

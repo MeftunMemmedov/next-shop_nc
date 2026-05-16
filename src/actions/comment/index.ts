@@ -85,12 +85,20 @@ export const editCommentAction = async (
   const access = (await cookies()).get('access')?.value;
   const commentId = formData.get('id');
   const comment = formData.get('comment');
+  const prevComment = formData.get('prevcomment');
 
   const actionState: ActionState = { ...initialActionState };
 
   if (comment?.toString().trim() === '') {
     actionState.status = 'failure';
     actionState.message = 'Comment field is required!';
+    return actionState;
+  }
+
+  if (comment?.toString() === prevComment?.toString()) {
+    actionState.status = 'failure';
+    actionState.message =
+      'New comment text cannot be the same as previous comment!';
     return actionState;
   }
   try {

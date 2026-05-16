@@ -26,8 +26,6 @@ const CartFormComponent = ({ product }: Props) => {
     (item) => item.product.id === product.id
   );
 
-  // const [mounted, setMounted] = useState<boolean>(false);
-
   const [quantity, setQuantity] = useState<string>(
     () => productInCart?.quantity.toString() || '1'
   );

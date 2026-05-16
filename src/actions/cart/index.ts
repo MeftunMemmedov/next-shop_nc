@@ -1,17 +1,15 @@
 'use server';
 import { deleteData, patchData, postData } from '@/api/fetch/helpers/mutate';
 import { initialActionState } from '@/constants/actionstatus';
-import { ActionState } from '@/types';
+import { ActionState, ToggleCartActionParams } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-export const toggleCartAction = async (formData: FormData) => {
-  const user_id = formData.get('user_id');
-  const product = formData.get('product');
-  const quantity = formData.get('quantity');
-  const intent = formData.get('intent');
+export const toggleCartAction = async (params: ToggleCartActionParams) => {
   const cookieStore = await cookies();
   const access = cookieStore.get('access')?.value;
+
+  const { user_id, product, quantity, intent } = params;
 
   const actionState: ActionState = { ...initialActionState };
 

@@ -8,3 +8,5 @@ export type SigninActionState = {
   cartSync: ActionState;
   wishlistSync: ActionState;
 };
+
+export type ToggleIntent = 'add' | 'remove';

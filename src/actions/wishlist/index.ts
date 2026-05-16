@@ -1,17 +1,17 @@
 'use server';
 import { deleteData, postData } from '@/api/fetch/helpers/mutate';
 import { initialActionState } from '@/constants/actionstatus';
-import { ActionState } from '@/types';
+import { ActionState, ToggleWishlistActionParams } from '@/types';
 import { cookies } from 'next/headers';
 
-export const toggleWishlistAction = async (formData: FormData) => {
-  const user_id = formData.get('user_id');
-  const product = formData.get('product');
-  const intent = formData.get('intent');
-
+export const toggleWishlistAction = async (
+  params: ToggleWishlistActionParams
+) => {
   const access = (await cookies()).get('access')?.value;
 
   const actionState: ActionState = { ...initialActionState };
+
+  const { intent, product, user_id } = params;
 
   try {
     if (intent === 'remove') {

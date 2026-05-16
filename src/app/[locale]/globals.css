@@ -1897,6 +1897,10 @@ a.disabled-link {
   width: 100%;
 }
 
+.customer-review h6 {
+  font-size: 12px;
+}
+
 .text-left .swiper-button-next img {
   position: absolute;
   height: 14px;
@@ -1907,11 +1911,11 @@ a.disabled-link {
   height: 14px;
 }
 
-@media (max-width: 575.98px) {
+/* @media (max-width: 575.98px) {
   .product-single__reviews-item:last-child {
     flex-direction: column;
   }
-}
+} */
 
 .select-star-rating label {
   margin-right: 15px;

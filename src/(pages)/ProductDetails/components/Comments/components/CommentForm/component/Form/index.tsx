@@ -3,7 +3,8 @@ import { addCommentAction } from '@/actions/comment';
 import { initialActionState } from '@/constants/actionstatus';
 import { Link } from '@/i18n/routing';
 import { useAppSelector } from '@/store/hooks';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const Form = ({ slug }: { slug: string }) => {
   const { info: userInfo, isAuth } = useAppSelector(
@@ -15,6 +16,15 @@ const Form = ({ slug }: { slug: string }) => {
     initialActionState
   );
 
+  useEffect(() => {
+    const { status, message } = state;
+    if (status === 'success') {
+      toast.success(message);
+    }
+    if (status === 'failure') {
+      toast.error(message);
+    }
+  }, [state]);
   if (!isAuth)
     return (
       <div className="py-3 text-center">
@@ -41,16 +51,6 @@ const Form = ({ slug }: { slug: string }) => {
           cols={30}
           rows={8}
         />
-        {state?.status === 'success' && (
-          <div className="rounded bg-success px-3 text-center py-1 mt-2">
-            <p>{state.message}</p>
-          </div>
-        )}
-        {state?.status === 'failure' && (
-          <div className="rounded bg-danger text-light text-center px-3 py-1 mt-2">
-            <p>{state.message}</p>
-          </div>
-        )}
       </div>
 
       <div className="form-action">

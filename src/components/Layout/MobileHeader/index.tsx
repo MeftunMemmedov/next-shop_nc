@@ -79,21 +79,27 @@ const MobileHeader = ({ categories }: Props) => {
     <div
       className="header-mobile header_sticky position-absolute"
       style={{ paddingRight: menu ? '0px' : '' }}>
-      <div className="container d-flex align-items-center h-100">
-        <button
-          className="mobile-nav-activator d-block position-relative btn p-0"
-          onClick={() => setMenu((prevState) => !prevState)}>
-          <MenuIcon className="nav-icon" />
-          <span className="btn-close-lg position-absolute top-0 start-0 w-100"></span>
-        </button>
-
-        <Logo />
-
-        <CartModal />
+      <div className="container h-100">
+        <div className="row h-100">
+          <div className="col-5 d-flex align-items-center">
+            <button
+              className="mobile-nav-activator d-block position-relative btn p-0"
+              onClick={() => setMenu((prevState) => !prevState)}>
+              <MenuIcon className="nav-icon" />
+              <span className="btn-close-lg position-absolute top-0 start-0 w-100"></span>
+            </button>
+          </div>
+          <div className="col-2 d-flex jsutify-content-center align-items-center">
+            <Logo />
+          </div>
+          <div className="col-5 d-flex align-items-center justify-content-end">
+            <CartModal />
+          </div>
+        </div>
       </div>
 
       <nav className="header-mobile__navigation navigation d-flex flex-column w-100 position-absolute top-100 bg-body overflow-auto">
-        <div className="container">
+        <div className="container pb-5">
           <form
             className="search-field position-relative mt-4 mb-3"
             onSubmit={handleSearchFormSubmit}>
@@ -234,7 +240,7 @@ const MobileHeader = ({ categories }: Props) => {
             </span>
           </Link>
 
-          <div className="container d-flex align-items-center">
+          <div className="container d-flex align-items-center justify-content-end">
             <LangSelect />
           </div>
 

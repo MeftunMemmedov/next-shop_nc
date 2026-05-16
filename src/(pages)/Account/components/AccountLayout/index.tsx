@@ -2,7 +2,7 @@
 import { LogoutIcon } from '@/assets/images/icons';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { accountRoutes } from '@/constants';
-import { ReactNode, useTransition } from 'react';
+import { ReactNode, startTransition, useState } from 'react';
 import { logoutAction } from '@/actions/auth/logout';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearUser, clearUserCart } from '@/store/inventory';
@@ -23,23 +23,28 @@ const AccountLayout = ({ children }: Props) => {
   const pageTitle =
     accountRoutes.find((route) => pathname === route.path)?.title || '';
 
-  const [isLogoutPending, startLogoutTransition] = useTransition();
+  const [isLogoutLoading, setIsLogoutLoading] = useState<boolean>(false);
 
   const handleLogout = () => {
-    startLogoutTransition(async () => {
-      const res = await logoutAction();
+    setIsLogoutLoading(true);
+    startTransition(async () => {
+      try {
+        const res = await logoutAction();
 
-      const { status, message } = res;
-      if (status === 'success') {
-        dispatch(clearUserCart());
-        dispatch(clearUser());
-        toast.success(message);
-        route.replace('/');
-      }
+        const { status, message } = res;
+        if (status === 'success') {
+          dispatch(clearUserCart());
+          dispatch(clearUser());
+          toast.success(message);
+          route.replace('/');
+        }
 
-      if (status === 'failure') {
-        toast.error(message);
-        return;
+        if (status === 'failure') {
+          toast.error(message);
+          return;
+        }
+      } finally {
+        setIsLogoutLoading(false);
       }
     });
   };
@@ -52,12 +57,12 @@ const AccountLayout = ({ children }: Props) => {
       <section className="my-account container">
         <div className="d-flex align-items-center">
           <h2 className="page-title me-4 mt-3">{pageTitle}</h2>
-          {!pathname.endsWith('/account/details/') && (
-            <div className="d-flex align-items-center gap-3 fw-bold">
+          {/* {!pathname.endsWith('/account/details/') && (
+            <div className="d-flex flex-lg-row flex-column align-items-center gap-lg-3 fw-bold mt-lg-0 mt-2">
               <span>{info?.user_name}</span>
               <span>{info?.email}</span>
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="row">
@@ -80,7 +85,7 @@ const AccountLayout = ({ children }: Props) => {
                   onClick={handleLogout}
                   className="btn btn-transparent menu-link menu-link_us-s d-flex align-items-center gap-2 text-danger">
                   <LogoutIcon />
-                  <span>{isLogoutPending ? 'Logging out' : 'Logout'}</span>
+                  <span>{isLogoutLoading ? 'Logging out' : 'Logout'}</span>
                 </button>
               </li>
             </ul>
@@ -94,9 +99,7 @@ const AccountLayout = ({ children }: Props) => {
                 <p className="fs-4">
                   Please login to your account to see your data
                 </p>
-                <Link
-                  href="/auth/signin"
-                  className={`btn btn-dark ${false ? 'disabled-link' : ''}`}>
+                <Link href="/auth/signin" className="btn btn-dark">
                   Sign in
                 </Link>
               </div>

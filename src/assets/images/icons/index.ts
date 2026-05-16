@@ -31,3 +31,5 @@ export { default as GooglePlayDownloadIcon } from './googleplaydownload.svg';
 export { default as AppStoreDownloadIcon } from './appstoredownload.svg';
 export { default as Guitar } from './guitar.svg';
 export { default as ErrorIcon } from './error.svg';
+export { default as EditIcon } from './edit.svg';
+export { default as CloseIcon } from './close.svg';

@@ -18,7 +18,7 @@ const About = () => {
           alt="about"
         />
         <section className="mw-930" aria-labelledby="our-story">
-          <h2 id="our-story" className="mb-4">
+          <h2 id="our-story" className="my-4">
             Our Story
           </h2>
           <p className="fs-6 fw-medium mb-4">

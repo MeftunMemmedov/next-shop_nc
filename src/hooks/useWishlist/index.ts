@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-import { Product, WishlistHookType } from '@/types';
+import { Product, ToggleWishlistActionParams, WishlistHookType } from '@/types';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -9,7 +9,7 @@ import {
   removeFromLocalWishlist,
   removeFromUserWishlist,
 } from '@/store/inventory';
-import { useState } from 'react';
+import { useTransition } from 'react';
 import { toggleWishlistAction } from '@/actions/wishlist';
 
 const useWishlist = (): WishlistHookType => {
@@ -46,64 +46,55 @@ const useWishlist = (): WishlistHookType => {
     },
   } = user;
 
-  const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
-
-  const setLoadingProduct = (id: string, value: boolean) => {
-    setLoadingIds((prev) => {
-      const next = new Set(prev);
-
-      if (value) {
-        next.add(id);
-      } else {
-        next.delete(id);
-      }
-
-      return next;
-    });
-  };
-
   const inUserWishlist = (product: Product) =>
     userWishlistItems?.some((item) => item.product.slug === product.slug);
+
+  const [isTogglePending, startToggleTransition] = useTransition();
 
   const toggleUserWishlist = async (product: Product) => {
     const currentlyInWishlist = !!inUserWishlist(product);
 
-    setLoadingProduct(product.id, true);
-
     if (currentlyInWishlist) {
       dispatch(removeFromUserWishlist(product));
+      toast.success(`${product.title} removed from wishlist successfully!`);
     } else {
       dispatch(addToUserWishlist(product));
+      toast.success(`${product.title} added to wishlist successfully!`);
     }
 
     if (!info) return;
 
-    try {
-      const formData = new FormData();
-      formData.append('product', product.id);
-      formData.append('user_id', info?.user_id);
-      formData.append('intent', currentlyInWishlist ? 'remove' : 'add');
+    startToggleTransition(async () => {
+      const rollback = () => {
+        if (currentlyInWishlist) {
+          dispatch(addToUserWishlist(product));
+        } else {
+          dispatch(removeFromUserWishlist(product));
+        }
+      };
 
-      const res = await toggleWishlistAction(formData);
+      try {
+        const toggleWIshlistParams: ToggleWishlistActionParams = {
+          product: product.id,
+          user_id: info.user_id,
+          intent: currentlyInWishlist ? 'remove' : 'add',
+        };
 
-      const { status, message } = res;
-      if (status === 'success') {
-        toast.success(`${product.title} | ${message}`);
-      }
-      if (status === 'failure') {
-        toast.error(message);
-      }
-    } catch {
-      toast.error('Something went wrong');
+        const res = await toggleWishlistAction(toggleWIshlistParams);
 
-      if (currentlyInWishlist) {
-        dispatch(addToUserWishlist(product));
-      } else {
-        dispatch(removeFromUserWishlist(product));
+        const { status, message } = res;
+
+        if (status === 'failure') {
+          toast.error(message);
+          rollback();
+        }
+      } catch {
+        toast.error(
+          'Something went wrong. Please check your connection and try again!'
+        );
+        rollback();
       }
-    } finally {
-      setLoadingProduct(product.id, false);
-    }
+    });
   };
 
   if (isAuth)
@@ -112,7 +103,7 @@ const useWishlist = (): WishlistHookType => {
       count: userWishlistCount,
       inWishlist: inUserWishlist,
       toggleWishlist: toggleUserWishlist,
-      loadingIds,
+      isPending: isTogglePending,
     };
   else
     return {
@@ -120,7 +111,7 @@ const useWishlist = (): WishlistHookType => {
       count: localWishlistCount,
       inWishlist: inLocalWishlist,
       toggleWishlist: toggleLocalWishlist,
-      loadingIds: new Set(),
+      isPending: false,
     };
 };
 export default useWishlist;

@@ -33,7 +33,7 @@ const Comments = async ({ comments, slug, locale }: Props) => {
                   key={comment.id}>
                   <div className="customer-avatar">
                     <Image
-                      src={createFakeImage(10, 10)}
+                      src={createFakeImage(50, 50)}
                       loading="lazy"
                       width={30}
                       height={30}
@@ -41,9 +41,9 @@ const Comments = async ({ comments, slug, locale }: Props) => {
                     />
                   </div>
                   <div className="customer-review">
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="d-flex flex-lg-row flex-column align-items-lg-center gap-lg-2">
                       <h6 className="m-0">{comment.user.user_name}</h6>
-                      <span>|</span>
+                      <span className="d-lg-inline d-none">|</span>
                       <span className="text-secondary">
                         {comment.user.email}
                       </span>

@@ -20,14 +20,14 @@ const MyReviews = async ({ locale }: { locale: string }) => {
   );
 
   return (
-    <div>
+    <div className="pt-5">
       {userReviews.length > 0 ? (
-        <ul>
+        <ul className="list-unstyled">
           {userReviews.map((review, index) => (
             <SingleComment
+              key={`comment-${review.id}-${index}`}
               review={review}
               user_id={user_id}
-              key={`comment-${review.id}-${index}`}
               locale={locale}
             />
           ))}

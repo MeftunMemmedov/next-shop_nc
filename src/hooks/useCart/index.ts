@@ -2,7 +2,12 @@ import { Dispatch, SetStateAction, useRef, useState } from 'react';
 
 import { toast } from 'react-toastify';
 
-import { CartHookType, CartItem, Product } from '@/types';
+import {
+  CartHookType,
+  CartItem,
+  Product,
+  ToggleCartActionParams,
+} from '@/types';
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -109,25 +114,24 @@ const useCart = (): CartHookType => {
 
     if (currentlyInCart) {
       dispatch(removeFromUserCart(product));
+      toast.success(`${product.title} removed from cart successfully!`);
     } else {
       dispatch(addToUserCart({ product: product, quantity: quantity }));
+      toast.success(`${product.title} add to cart successfully!`);
     }
 
     try {
       if (isAuth && userInfo) {
-        const formData = new FormData();
-        formData.append('product', product.id);
-        formData.append('quantity', quantity.toString());
-        formData.append('slug', product.slug);
-        formData.append('user_id', userInfo.user_id);
-        formData.append('intent', inUserCart(product) ? 'remove' : 'add');
+        const toggleCartParams: ToggleCartActionParams = {
+          product: product.id,
+          quantity,
+          user_id: userInfo.user_id,
+          intent: currentlyInCart ? 'remove' : 'add',
+        };
 
-        const res = await toggleCartAction(formData);
+        const res = await toggleCartAction(toggleCartParams);
 
         const { status, message } = res;
-
-        if (status === 'success')
-          toast.success(`${product.title} | ${message}`);
 
         if (status === 'failure') {
           dispatch(changeUserCartItemQuantity({ product, quantity: 1 }));
@@ -136,19 +140,22 @@ const useCart = (): CartHookType => {
       }
     } catch {
       if (currentlyInCart) {
-        toast.error('Something went wrong');
+        dispatch(changeUserCartItemQuantity({ product, quantity: 1 }));
+        toast.error(
+          'Something went wrong. Please check your connection and try again!'
+        );
       }
     } finally {
       setLoadingProduct(product.id, false);
     }
   };
 
-  const debouncedUpdateMapRef = useRef(
+  const debouncedQuantityUpdateMapRef = useRef(
     new Map<string, (quantity: number) => void>()
   );
 
   const getDebouncedUpdater = (productId: string) => {
-    if (!debouncedUpdateMapRef.current.has(productId)) {
+    if (!debouncedQuantityUpdateMapRef.current.has(productId)) {
       const debonceFn = debounce(async (quantity: number) => {
         setLoadingProduct(productId, true);
         try {
@@ -162,10 +169,10 @@ const useCart = (): CartHookType => {
         }
       }, 500);
 
-      debouncedUpdateMapRef.current.set(productId, debonceFn);
+      debouncedQuantityUpdateMapRef.current.set(productId, debonceFn);
     }
 
-    return debouncedUpdateMapRef.current.get(productId)!;
+    return debouncedQuantityUpdateMapRef.current.get(productId)!;
   };
 
   const handleClickUserQuantity = (
