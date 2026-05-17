@@ -14903,7 +14903,7 @@ textarea.form-control-lg {
   position: relative;
 }
 
-.form-floating > .form-control,
+.form-floating > .form-control:not(textarea),
 .form-floating > .form-select {
   height: calc(3.625rem + 2px);
   padding: 1.125rem 1.3125rem 0.9rem;

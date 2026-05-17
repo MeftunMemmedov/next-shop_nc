@@ -87,15 +87,15 @@ const ContactForm = () => {
           )}
         </div>
 
-        <div className="my-4">
+        <div className="form-floating my-4">
           <textarea
             {...register('note')}
-            placeholder="Your message"
+            id="note"
             disabled={disabled}
-            className={`form-control ${false ? 'border-danger' : ''}`}
+            rows={8}
             cols={30}
-            name="message"
-            rows={8}></textarea>
+            className={`form-control ${errors.note ? 'border-danger' : ''}`}></textarea>
+          <label htmlFor="note">Note</label>
           {errors.note && <p className="text-danger">{errors.note.message}</p>}
         </div>
 

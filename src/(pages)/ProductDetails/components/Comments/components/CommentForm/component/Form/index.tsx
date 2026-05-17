@@ -44,12 +44,12 @@ const Form = ({ slug }: { slug: string }) => {
       <input name="product" readOnly hidden value={slug} />
       <div className="mb-4">
         <textarea
-          disabled={isPending}
           name="comment"
           className={`form-control form-control_gray ${state?.status === 'failure' ? 'border border-danger' : ''}`}
           placeholder="Your Comment"
           cols={30}
           rows={8}
+          disabled={isPending}
         />
       </div>
 

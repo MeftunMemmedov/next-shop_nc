@@ -24,7 +24,7 @@ export const proxy = async (req: NextRequest) => {
 
   const expired = accessToken ? isTokenExpired(accessToken) : true;
 
-  if (expired && refreshToken && remember_me === 'true') {
+  if (expired && refreshToken) {
     try {
       const refreshRes = await refreshAccess(refreshToken);
       const { access_token, refresh_token, expires_in } = refreshRes;
@@ -41,13 +41,14 @@ export const proxy = async (req: NextRequest) => {
       });
       response.cookies.set('refresh', refresh_token, {
         ...cookieOptions,
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: remember_me === 'true' ? 60 * 60 * 24 * 7 : undefined,
       });
       accessToken = access_token;
     } catch {
       const redirect = NextResponse.redirect(new URL('/', req.url));
       redirect.cookies.delete('access');
       redirect.cookies.delete('refresh');
+
       return redirect;
     }
   }

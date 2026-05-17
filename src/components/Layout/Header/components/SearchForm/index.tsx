@@ -106,7 +106,7 @@ const SearchForm = () => {
             <input
               id="search-input"
               type="text"
-              placeholder={'SEARCH....'}
+              placeholder="SEARCH...."
               className="search-field__input search-popup__input w-100 fw-medium"
               autoComplete="off"
               onChange={(e) => {
@@ -143,7 +143,7 @@ const SearchForm = () => {
                               sizes="80px"
                               loading="lazy"
                               alt={result.title}
-                              className="h-100 w-100"
+                              className="h-100 w-100 object-fit-contain"
                             />
                           </div>
                           <div className="col-8 d-flex flex-column">

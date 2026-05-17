@@ -9,15 +9,14 @@ import { syncUserCart } from '@/api/fetch/helpers/cart';
 import { initialActionState } from '@/constants/actionstatus';
 import { syncUserWishlist } from '@/api/fetch/helpers/wishlist';
 
+type LocalItemsType<T> = {
+  count: number;
+  items: T[];
+};
+
 export const loginAction = async (
-  localCart: {
-    count: number;
-    items: CartItem[];
-  },
-  localWishlist: {
-    count: number;
-    items: WishlistItem[];
-  },
+  localCart: LocalItemsType<CartItem>,
+  localWishlist: LocalItemsType<WishlistItem>,
   data: LoginInput
 ): Promise<SigninActionState> => {
   const actionState: SigninActionState = {

@@ -38,13 +38,13 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
 
   const finalLocale = isValidLocale ? locale : routing.defaultLocale;
 
+  const config = await getData<Config>('shop_config', { select: '*' });
   const categories = await getCategoryListwChildren();
 
   const userSession = await getUser();
   const userCart = userSession && (await getUserCart());
   const userWishlist = userSession && (await getUserWishlist());
   setRequestLocale(locale);
-  const config = await getData<Config>('shop_config', { select: '*' });
 
   // if (!isValidLocale) {
   //   notFound();
@@ -53,7 +53,6 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
     <html lang={finalLocale}>
       <head>
         <link rel="stylesheet" href="/assets/css/template.css" />
-        <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
       </head>
       <body>
         <ReduxProvider

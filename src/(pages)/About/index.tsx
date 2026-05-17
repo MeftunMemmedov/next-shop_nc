@@ -52,7 +52,7 @@ const About = () => {
             height={500}
             alt="about"
           />
-          <div className="content-wrapper col-lg-6 px-lg-4">
+          <div className="col-lg-6 px-lg-4">
             <h2 className="my-3" id="company">
               {PROJECT_NAME}
             </h2>
