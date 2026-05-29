@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import RangeSlider, {
   ReactRangeSliderInputProps,
@@ -7,32 +7,34 @@ import RangeSlider, {
 import 'react-range-slider-input/dist/style.css';
 
 import { ArrowDownIcon } from '@/assets/images/icons';
-import { parseAsInteger, useQueryStates } from 'nuqs';
+import { FilterParams } from '@/types';
 
-const PriceFilter = () => {
+const PriceFilter = ({
+  setFilters,
+  filters,
+}: {
+  filters: FilterParams;
+  setFilters: Dispatch<SetStateAction<FilterParams>>;
+}) => {
   const [isVisible, setisVisible] = useState<boolean>(true);
 
   const minPrice = 0;
   const maxPrice = 2000;
+  const { price_gte, price_lte } = filters;
 
-  const [priceQuery, setPriceQuery] = useQueryStates(
-    {
-      price_gte: parseAsInteger.withDefault(0),
-      price_lte: parseAsInteger.withDefault(2000),
-    },
-    { shallow: false, scroll: true, history: 'push' }
-  );
-
-  const [values, setValues] = useState<number[]>([
-    priceQuery.price_gte,
-    priceQuery.price_lte,
+  const [inputs, setInputs] = useState<string[]>([
+    String(price_gte),
+    String(price_lte),
   ]);
 
+  const [values, setValues] = useState<number[]>([price_gte!, price_lte!]);
+
   const updateUrl = (v: number[]) => {
-    setPriceQuery({
+    setFilters((prevFilters) => ({
+      ...prevFilters,
       price_gte: v[0],
       price_lte: v[1],
-    });
+    }));
   };
 
   const rangeSliderOptions: ReactRangeSliderInputProps = {
@@ -51,18 +53,18 @@ const PriceFilter = () => {
     (index: 0 | 1) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       if (newValue === '' || /^\d+$/.test(newValue)) {
-        const newValues = [...values] as [number, number];
-        newValues[index] = +newValue;
-        setValues(newValues);
+        const newValues = [...inputs];
+        newValues[index] = newValue;
+        setInputs(newValues);
       }
     };
 
   const handleInputBlur = (index: 0 | 1) => () => {
-    let numValue = Number(values[index]);
+    let numValue = Number(inputs[index]);
     numValue = Math.max(minPrice, Math.min(maxPrice, numValue));
 
     const newValues = [...values] as [number, number];
-    newValues[index] = +numValue;
+    newValues[index] = numValue;
 
     if (index === 0 && numValue > Number(newValues[1])) {
       newValues[0] = newValues[1];
@@ -71,12 +73,17 @@ const PriceFilter = () => {
     }
 
     setValues(newValues);
-
-    // setPriceQuery({
-    //   price__gte: Number(newValues[0]),
-    //   price__lte: Number(newValues[1]),
-    // });
+    setInputs([String(newValues[0]), String(newValues[1])]);
+    updateUrl(newValues);
   };
+
+  useEffect(() => {
+    const currentMin = price_gte ?? minPrice;
+    const currentMax = price_lte ?? maxPrice;
+
+    setValues([currentMin, currentMax]);
+    setInputs([String(currentMin), String(currentMax)]);
+  }, [price_gte, price_lte]);
 
   return (
     <div className="accordion">
@@ -105,7 +112,7 @@ const PriceFilter = () => {
                         id="min-price"
                         name="gte"
                         className="price-input border px-2 py-1"
-                        value={values[0]}
+                        value={inputs[0]}
                         onChange={handleInputChange(0)}
                         onBlur={handleInputBlur(0)}
                       />
@@ -117,7 +124,7 @@ const PriceFilter = () => {
                         id="max-price"
                         name="lte"
                         className="price-input border px-2 py-1 rounded"
-                        value={values[1]}
+                        value={inputs[1]}
                         onChange={handleInputChange(1)}
                         onBlur={handleInputBlur(1)}
                       />

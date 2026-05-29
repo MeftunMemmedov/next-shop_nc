@@ -22,10 +22,15 @@ export type Product = {
 };
 
 export type FilterParams = {
-  category: string;
-  brand: string;
-  price_gte: number;
-  price_lte: number;
-  order: string;
-  search: string;
+  category: string | null;
+  brand: string | null;
+  price_gte?: number;
+  price_lte?: number;
+  order?: string;
+  search?: string | null;
+};
+
+type FilterType = {
+  category: string | null;
+  brand: string | null;
 };

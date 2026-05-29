@@ -1,40 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { ArrowDownIcon } from '@/assets/images/icons';
 
-import { useQueryState } from 'nuqs';
-import { Brand } from '@/types';
-import { useSearchParams } from 'next/navigation';
+import { Brand, FilterType } from '@/types';
 
-const BrandFilter = ({ brands }: { brands: Brand[] }) => {
+interface Props {
+  brands: Brand[];
+  brandFilter: string | null;
+  toggleFilter: (slug: string, queryName: keyof FilterType) => void;
+}
+
+const BrandFilter = ({ brands, brandFilter, toggleFilter }: Props) => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const searchParams = useSearchParams();
-  const [brandQuery, setBrandQuery] = useQueryState('brand', {
-    shallow: false,
-    history: 'replace',
-  });
 
-  const brandSearchparam = searchParams.get('brand');
-  const isBrandFilterActive = (brand: Brand) =>
-    brandQuery === brand.slug && searchParams.get('brand') === brand.slug;
+  const isBrandFilterActive = (brand: Brand) => brandFilter === brand.slug;
 
-  const toggleBrandFilter = (brand: Brand) => {
-    if (brandQuery === brand.slug) {
-      setBrandQuery(null);
-    } else {
-      setBrandQuery(brand.slug);
-    }
-  };
-
-  useEffect(() => {
-    if (brandSearchparam) {
-      setBrandQuery(brandSearchparam);
-    } else {
-      setBrandQuery(null);
-    }
-  }, []);
   if (!brands || brands.length === 0) return null;
   return (
     <div className="accordion">
@@ -57,7 +39,7 @@ const BrandFilter = ({ brands }: { brands: Brand[] }) => {
                 <li className="list-item" key={`category-${brand.slug}-filter`}>
                   <button
                     className={`menu-link py-1 d-flex gap-2 btn p-0 ${isBrandFilterActive(brand) ? 'fw-bold' : ''}`}
-                    onClick={() => toggleBrandFilter(brand)}>
+                    onClick={() => toggleFilter(brand.slug, 'brand')}>
                     {brand.title}
                   </button>
                 </li>

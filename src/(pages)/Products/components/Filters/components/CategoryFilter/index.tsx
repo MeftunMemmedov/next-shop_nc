@@ -1,47 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { ArrowDownIcon, CategoryIcon } from '@/assets/images/icons';
 
-import { useQueryState } from 'nuqs';
-import { useSearchParams } from 'next/navigation';
-import { Category } from '@/types';
+import { Category, FilterType } from '@/types';
 import Image from 'next/image';
 
 interface Props {
   categories: Category[];
+  categoryFilter: string | null;
+  toggleFilter: (slug: string, queryName: keyof FilterType) => void;
 }
 
-const CategoryFilter = ({ categories }: Props) => {
-  const searchParams = useSearchParams();
-
+const CategoryFilter = ({
+  categories,
+  categoryFilter,
+  toggleFilter,
+}: Props) => {
   const [isVisible, setIsVisible] = useState<boolean>(true);
 
-  const [categoryQuery, setCategoryQuery] = useQueryState('category', {
-    shallow: false,
-    history: 'replace',
-  });
-
-  const categorySearchParam = searchParams.get('category');
   const isCategoryFiterActive = (category: Category) =>
-    categoryQuery === category.slug && categorySearchParam === category.slug;
+    categoryFilter === category.slug;
 
-  const toggleCategoryFilter = (category: Category) => {
-    if (categoryQuery === category.slug) {
-      setCategoryQuery(null);
-    } else {
-      setCategoryQuery(category.slug);
-    }
-  };
-
-  useEffect(() => {
-    if (categorySearchParam) {
-      setCategoryQuery(categorySearchParam);
-    } else {
-      setCategoryQuery(null);
-    }
-  }, []);
   if (!categories || categories.length === 0) return null;
   return (
     <div className="accordion">
@@ -64,7 +45,7 @@ const CategoryFilter = ({ categories }: Props) => {
                   className="list-item"
                   key={`category-${category.slug}-filter`}>
                   <button
-                    onClick={() => toggleCategoryFilter(category)}
+                    onClick={() => toggleFilter(category.slug, 'category')}
                     className={`menu-link py-1 d-flex gap-2 btn p-0 ${isCategoryFiterActive(category) ? 'fw-bold' : ''}`}
                     aria-expanded={isVisible}>
                     {category.image ? (
@@ -87,7 +68,10 @@ const CategoryFilter = ({ categories }: Props) => {
                           className="list-item"
                           key={`category-child-${childCat.slug}-filter`}>
                           <button
-                            onClick={() => toggleCategoryFilter(childCat)}
+                            onClick={() =>
+                              toggleFilter(childCat.slug, 'category')
+                            }
+                            // onClick={() => toggleCategoryFilter(childCat)}
                             className={`menu-link py-1 d-flex gap-2 btn p-0 ${isCategoryFiterActive(childCat) ? 'fw-bold' : ''}`}
                             aria-expanded={isVisible}>
                             {childCat.image ? (
