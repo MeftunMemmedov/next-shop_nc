@@ -6,6 +6,7 @@ import { RegisterInput } from '@/schemas/register.schema';
 import { getData } from '../get';
 import { EditUserInput } from '@/schemas/edituser.schema';
 import { patchData } from '../mutate';
+import { cookies } from 'next/headers';
 
 export const authAction = async (action: string, options: RequestInit = {}) => {
   const url = `${baseAuthURL}${action}`;
@@ -54,6 +55,9 @@ export const signUp = async (data: RegisterInput): Promise<void> => {
 };
 
 export const getUser = async (): Promise<UserAuthState | null> => {
+  const access_token = (await cookies()).get('access')?.value;
+  if (!access_token) return null;
+
   const authRes = await authAction('user', {
     method: 'GET',
   });
