@@ -1,5 +1,5 @@
 import ProductDetails from '@/(pages)/ProductDetails';
-import { getDatalist } from '@/api/fetch/helpers/get';
+import { apikey, baseURL } from '@/api';
 import { getProduct } from '@/api/fetch/helpers/product';
 import { getPageTitle } from '@/helpers';
 import { createMetadata } from '@/helpers/metadata';
@@ -30,7 +30,12 @@ export const generateMetadata = async ({ params }: PageProps) => {
 };
 
 export const generateStaticParams = async () => {
-  const products = await getDatalist<Product>('shop_products');
+  const products = (await fetch(`${baseURL}shop_products`, {
+    headers: {
+      apikey: apikey!,
+      Authorization: `Bearer ${apikey}`,
+    },
+  }).then((res) => res.json())) as Product[];
 
   return products.map((product) => ({ slug: product.slug }));
 };
