@@ -3,44 +3,24 @@ import { deleteData, patchData, postData } from '@/api/fetch/helpers/mutate';
 import { initialActionState } from '@/constants/actionstatus';
 import { ActionState, ToggleCartActionParams } from '@/types';
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
 
 export const toggleCartAction = async (params: ToggleCartActionParams) => {
-  const cookieStore = await cookies();
-  const access = cookieStore.get('access')?.value;
-
   const { user_id, product, quantity, intent } = params;
 
   const actionState: ActionState = { ...initialActionState };
 
   try {
     if (intent === 'remove') {
-      await deleteData(
-        'shop_cart',
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        },
-        { product: `eq.${product}` }
-      );
+      await deleteData('shop_cart', undefined, { product: `eq.${product}` });
       actionState.message = 'Product removed from cart successfully!';
     }
 
     if (intent === 'add') {
-      await postData(
-        'shop_cart',
-        {
-          user_id,
-          product,
-          quantity,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        }
-      );
+      await postData('shop_cart', {
+        user_id,
+        product,
+        quantity,
+      });
       actionState.message = 'Product added to cart successfully!';
     }
 
@@ -58,20 +38,13 @@ export const updateCartitemQuantity = async (formData: FormData) => {
   const product = formData.get('product');
   const quantity = parseInt(formData.get('quantity') as string);
 
-  const cookieStore = await cookies();
-  const access = cookieStore.get('access')?.value;
-
   const actionState: ActionState = { ...initialActionState };
 
   try {
     await patchData<{ quantity: number }>(
       'shop_cart',
       { quantity: quantity },
-      {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      },
+      undefined,
       { product: `eq.${product}` }
     );
 
@@ -87,24 +60,13 @@ export const updateCartitemQuantity = async (formData: FormData) => {
 };
 
 export const clearUserCartAction = async (cartItems: { product: string }[]) => {
-  const cookieStore = await cookies();
-  const access = cookieStore.get('access')?.value;
-
   const actionState: ActionState = { ...initialActionState };
   try {
     const deleteCartItemPromises = cartItems.map((cartItem) => {
       const { product } = cartItem;
-      deleteData(
-        'shop_cart',
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        },
-        {
-          product: `eq.${product}`,
-        }
-      );
+      deleteData('shop_cart', undefined, {
+        product: `eq.${product}`,
+      });
     });
 
     await Promise.all(deleteCartItemPromises);

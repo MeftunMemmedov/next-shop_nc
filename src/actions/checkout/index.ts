@@ -4,14 +4,12 @@ import { postData } from '@/api/fetch/helpers/mutate';
 import { initialActionState } from '@/constants/actionstatus';
 import { CheckoutInput } from '@/schemas/checkout.schema';
 import { ActionState } from '@/types';
-import { cookies } from 'next/headers';
 
 export const checkoutProductsAction = async (
   data: CheckoutInput,
   orderItems: { product: string; quantity: number }[]
 ): Promise<ActionState> => {
   const { id, user_id, address, phone, note, user_name, email } = data;
-  const access = (await cookies()).get('access')?.value;
 
   const actionState: ActionState & { orderItems: ActionState } = {
     ...initialActionState,
@@ -23,41 +21,25 @@ export const checkoutProductsAction = async (
     return actionState;
   }
   try {
-    await postData(
-      'shop_orders',
-      {
-        id,
-        user_id,
-        user_name,
-        email,
-        address,
-        phone,
-        note,
-        status: 'pending',
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      }
-    );
+    await postData('shop_orders', {
+      id,
+      user_id,
+      user_name,
+      email,
+      address,
+      phone,
+      note,
+      status: 'pending',
+    });
 
     const ordersPromises = orderItems.map((orderItem) => {
       const { product, quantity } = orderItem;
-      return postData(
-        'shop_orderedproducts',
-        {
-          user_id,
-          order: id,
-          product,
-          quantity,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        }
-      );
+      return postData('shop_orderedproducts', {
+        user_id,
+        order: id,
+        product,
+        quantity,
+      });
     });
 
     await Promise.all(ordersPromises);

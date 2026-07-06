@@ -3,7 +3,6 @@ import { deleteData, patchData, postData } from '@/api/fetch/helpers/mutate';
 import { initialActionState } from '@/constants/actionstatus';
 import { ActionState } from '@/types';
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 
 export const addCommentAction = async (
   _prevState: ActionState | null,
@@ -21,17 +20,8 @@ export const addCommentAction = async (
     return actionState;
   }
 
-  const access_token = (await cookies()).get('access')?.value;
   try {
-    await postData(
-      'shop_comments',
-      { user_id, product, comment },
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
+    await postData('shop_comments', { user_id, product, comment });
     revalidateTag(`comments-${product}`, '');
     actionState.status = 'success';
     actionState.message = 'Comment added successfully!';
@@ -47,24 +37,15 @@ export const addCommentAction = async (
 export const deleteCommentAction = async (
   formData: FormData
 ): Promise<ActionState> => {
-  const access = (await cookies()).get('access')?.value;
   const user_id = formData.get('user_id');
   const comment = formData.get('id');
 
   const actionState: ActionState = { ...initialActionState };
   try {
-    await deleteData(
-      'shop_comments',
-      {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      },
-      {
-        id: `eq.${comment}`,
-        user_id: `eq.${user_id}`,
-      }
-    );
+    await deleteData('shop_comments', undefined, {
+      id: `eq.${comment}`,
+      user_id: `eq.${user_id}`,
+    });
     actionState.status = 'success';
     actionState.message = 'Comment deleted successfully';
     revalidateTag('my-comments', '');
@@ -82,7 +63,6 @@ export const editCommentAction = async (
   _prevState: ActionState | null,
   formData: FormData
 ): Promise<ActionState> => {
-  const access = (await cookies()).get('access')?.value;
   const commentId = formData.get('id');
   const comment = formData.get('comment');
   const prevComment = formData.get('prevcomment');
@@ -102,16 +82,9 @@ export const editCommentAction = async (
     return actionState;
   }
   try {
-    await patchData(
-      'shop_comments',
-      { comment },
-      {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      },
-      { id: `eq.${commentId}` }
-    );
+    await patchData('shop_comments', { comment }, undefined, {
+      id: `eq.${commentId}`,
+    });
     actionState.status = 'success';
     actionState.message = 'Your comment has been updated, SUCCESFULLY!';
     revalidateTag('my-comments', '');

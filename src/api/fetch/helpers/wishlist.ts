@@ -1,20 +1,14 @@
 import { WishlistItem } from '@/types';
-import { cookies } from 'next/headers';
 import { getDatalist } from './get';
 import { postData } from './mutate';
 
 export const getUserWishlist = async (): Promise<WishlistItem[] | null> => {
-  const access = (await cookies()).get('access')?.value;
-  if (!access) return null;
   const res = await getDatalist<WishlistItem>(
     'shop_wishlist',
     {
       select: 'product(*)',
     },
     {
-      headers: {
-        Authorization: `Bearer ${access}`,
-      },
       // next: {
       //   tags: ['wishlist'],
       // },

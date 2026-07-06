@@ -12,8 +12,8 @@ export const contactSchema = z.object({
     .transform((val) => val.trim()),
   note: z
     .string()
-    .transform((val) => val.trim())
-    .optional(),
+    .min(1, 'Note cannot be blank')
+    .transform((val) => val.trim()),
 });
 
 export type ContactMessageInput = z.infer<typeof contactSchema>;

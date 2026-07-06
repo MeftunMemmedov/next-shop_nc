@@ -1,21 +1,14 @@
 import { CartItem } from '@/types';
 import { getDatalist } from './get';
-import { cookies } from 'next/headers';
 import { postData } from './mutate';
 
 export const getUserCart = async (): Promise<CartItem[] | null> => {
-  const cookieStore = await cookies();
-  const access = cookieStore.get('access')?.value;
-  if (!access) return null;
   const res = await getDatalist<CartItem>(
     'shop_cart',
     {
       select: '*,product(*)',
     },
     {
-      headers: {
-        Authorization: `Bearer ${access}`,
-      },
       next: {
         tags: ['cart'],
       },

@@ -4,7 +4,6 @@ import { LoginInput } from '@/schemas/login.schema';
 import { AuthTokens, SignInResponse, User, UserAuthState } from '@/types';
 import { RegisterInput } from '@/schemas/register.schema';
 import { getData } from '../get';
-import { cookies } from 'next/headers';
 import { EditUserInput } from '@/schemas/edituser.schema';
 import { patchData } from '../mutate';
 
@@ -55,15 +54,8 @@ export const signUp = async (data: RegisterInput): Promise<void> => {
 };
 
 export const getUser = async (): Promise<UserAuthState | null> => {
-  const cookieStore = await cookies();
-  const access_token = cookieStore.get('access')?.value;
-
-  if (!access_token) return null;
   const authRes = await authAction('user', {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
   });
 
   const userJson = await authRes.json();
@@ -74,15 +66,10 @@ export const getUser = async (): Promise<UserAuthState | null> => {
     );
   }
 
-  const user = await getData<User>(
-    'shop_profiles',
-    { select: '*', user_id: `eq.${userJson.id}` },
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    }
-  );
+  const user = await getData<User>('shop_profiles', {
+    select: '*',
+    user_id: `eq.${userJson.id}`,
+  });
 
   return {
     isAuth: !!authRes,
@@ -91,16 +78,9 @@ export const getUser = async (): Promise<UserAuthState | null> => {
 };
 
 export const editUser = async (data: EditUserInput) => {
-  const cookieStore = await cookies();
-  const access_token = cookieStore.get('access')?.value;
-
-  if (!access_token) return null;
   try {
     const authFetch = authAction('user', {
       method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
       body: JSON.stringify({
         email: data.email,
         data: {
@@ -115,11 +95,7 @@ export const editUser = async (data: EditUserInput) => {
         user_name: data.data.user_name,
         email: data.email,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      },
+      undefined,
       {
         user_id: `eq.${data.user_id}`,
       }

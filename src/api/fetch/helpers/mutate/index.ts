@@ -14,6 +14,7 @@ const mutate = async (
   });
 
   if (!response.ok) {
+    console.error(response);
     throw new Error('An error occured while mutate data');
   }
 };
