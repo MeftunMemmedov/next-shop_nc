@@ -93,8 +93,8 @@ const Filters = ({ brands, categories }: Props) => {
     setQueryStates({
       category: null,
       brand: null,
-      price_gte: undefined,
-      price_lte: undefined,
+      price_gte: null,
+      price_lte: null,
       search: null,
     });
   };
@@ -104,12 +104,16 @@ const Filters = ({ brands, categories }: Props) => {
       setQueryStates({
         category: null,
         brand: null,
-        price_gte: undefined,
-        price_lte: undefined,
+        price_gte: null,
+        price_lte: null,
         search: undefined,
       });
     };
   }, []);
+
+  useEffect(() => {
+    console.log(queryStates);
+  }, [queryStates]);
 
   if (!globalContext) return null;
   const { setSidebarVisible } = globalContext;
@@ -149,6 +153,7 @@ const Filters = ({ brands, categories }: Props) => {
           filters.brand ||
           filters.search ||
           filters.price_gte! > 0 ||
+          filters.price_lte! < 2000 ||
           (filters.price_gte! > 0 && filters.price_lte! <= 2000)) && (
           <button className="btn btn-danger" onClick={resetFilters}>
             Reset

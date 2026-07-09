@@ -89,7 +89,7 @@ const ImageGallery = ({ product }: Props) => {
                   sizes="(max-width: 991px) 100vw, 50vw"
                   priority={index === 0}
                   loading={index === 0 ? 'eager' : 'lazy'}
-                  alt={`${product.title} ${product.description}`}
+                  alt={`${product.title} ${product.description.slice(0, 50)}`}
                   itemProp="image"
                   className="product-image object-fit-contain"
                   onClick={() => openLightbox(index)}
@@ -123,7 +123,7 @@ const ImageGallery = ({ product }: Props) => {
                     fill
                     sizes="(max-width: 425px) 25vw, (max-width: 991px) 20vw, 10vw)"
                     loading="lazy"
-                    alt={`thumbnail - ${product.title} ${product.description}`}
+                    alt={`thumbnail - ${product.title} ${product.description.slice(0, 50)}`}
                     itemProp="image"
                     className="object-fit-contain"
                   />

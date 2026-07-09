@@ -40,11 +40,11 @@ const ProductCard = ({ product, onRemove }: Props) => {
             <Image
               src={images[0]}
               fill
-              sizes="(max-width: 992px) 33vw, (max-width: 768px) 50vw, 100vw"
+              sizes="(max-width: 768px) 50vw, (max-width: 992px) 33vw, 100vw"
               loading="lazy"
-              alt={`${title}-${description}`}
+              alt={`${title}-${description.slice(0, 50)}`}
               itemProp="image"
-              className="object-cover"
+              className="object-fit-contain"
             />
           </Link>
 
