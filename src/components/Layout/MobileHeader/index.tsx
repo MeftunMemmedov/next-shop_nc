@@ -2,27 +2,27 @@
 import {
   LoginIcon,
   MenuIcon,
-  NextIcon,
+  // NextIcon,
   PrevIcon,
   SearchIcon,
   UserIcon,
 } from '@/assets/images/icons';
 import { routes } from '@/constants';
-import { Fragment, SubmitEvent, useEffect, useState } from 'react';
+import { SubmitEvent, useEffect, useState } from 'react';
 import CartModal from '../CartModal';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
-import { Category, Config, UserAuthState } from '@/types';
+// import { Category, Config, UserAuthState } from '@/types';
 import { useAppSelector } from '@/store/hooks';
 import Logo from '../Logo';
 
-interface Props {
-  categories: Category[];
-  user: UserAuthState | null;
-  config: Config;
-}
+// interface Props {
+//   categories: Category[];
+//   user: UserAuthState | null;
+//   config: Config;
+// }
 
-const MobileHeader = ({ categories }: Props) => {
+const MobileHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -150,13 +150,13 @@ const MobileHeader = ({ categories }: Props) => {
                     <Link href={route.path} className="navigation__link">
                       {route.title}
                     </Link>
-                    {route.path === '/products' &&
+                    {/* {route.path === '/products' &&
                       !pathname.endsWith('/products') && (
                         <NextIcon
                           className="ms-auto"
                           onClick={() => toggleMenu(2)}
                         />
-                      )}
+                      )} */}
                   </div>
                   {route.path === '/products' &&
                     !pathname.endsWith('/products') && (
@@ -169,7 +169,7 @@ const MobileHeader = ({ categories }: Props) => {
                           {route.title}
                         </button>
 
-                        <div className="sub-menu__wrapper">
+                        {/* <div className="sub-menu__wrapper">
                           {categories?.map((category, index1) => (
                             <Fragment key={index1}>
                               <div className="navigation__link d-flex align-items-center">
@@ -216,7 +216,7 @@ const MobileHeader = ({ categories }: Props) => {
                               )}
                             </Fragment>
                           ))}
-                        </div>
+                        </div> */}
                       </div>
                     )}
                 </li>

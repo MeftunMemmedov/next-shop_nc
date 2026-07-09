@@ -1,14 +1,13 @@
 import { routes } from '@/constants';
 import { Link } from '@/i18n/routing';
-import { Category, Config } from '@/types';
 import Logo from '../Logo';
+import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
+import { getConfig } from '@/api/fetch/helpers/config';
 
-interface Props {
-  categories: Category[];
-  config: Config;
-}
+const Footer = async () => {
+  const config = await getConfig();
+  const categories = await getCategoryListwChildren();
 
-const Footer = ({ categories, config }: Props) => {
   const noFeaturedCategories = categories.filter(
     (category) => !category.is_featured
   );

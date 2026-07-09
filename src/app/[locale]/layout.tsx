@@ -3,20 +3,15 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { routing } from '@/i18n/routing';
 import ReduxProvider from '@/store/provider';
 import { ToastContainer } from 'react-toastify';
-import Header from '@/components/Layout/Header';
-import Footer from '@/components/Layout/Footer';
 import { GlobalContextProvider } from '@/context/GlobalContext';
 import { NuqsAdapter } from 'nuqs/adapters/next';
 import { setRequestLocale } from 'next-intl/server';
-import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
 import { getUser } from '@/api/fetch/helpers/auth/index';
 import { getUserCart } from '@/api/fetch/helpers/cart';
 import { getUserWishlist } from '@/api/fetch/helpers/wishlist';
-import MobileHeader from '@/components/Layout/MobileHeader';
-import { getData } from '@/api/fetch/helpers/get';
-import { Config } from '@/types';
 import { PROJECT_NAME } from '@/constants';
 import './globals.css';
+import Layout from '@/components/Layout';
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -38,12 +33,14 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
 
   const finalLocale = isValidLocale ? locale : routing.defaultLocale;
 
-  const config = await getData<Config>('shop_config', { select: '*' });
-  const categories = await getCategoryListwChildren();
-
   const userSession = await getUser();
-  const userCart = userSession && (await getUserCart());
-  const userWishlist = userSession && (await getUserWishlist());
+  const userCartPromise = getUserCart();
+  const userWishlistPromise = getUserWishlist();
+
+  const [userCart, userWishlist] = userSession
+    ? await Promise.all([userCartPromise, userWishlistPromise])
+    : [null, null];
+
   setRequestLocale(locale);
 
   // if (!isValidLocale) {
@@ -59,18 +56,13 @@ const RootLayout = async ({ children, params }: Readonly<RootLayoutParams>) => {
           user={userSession}
           cart={userCart}
           wishlist={userWishlist}>
-          <NextIntlClientProvider>
+          <NextIntlClientProvider locale={finalLocale} messages={null}>
             <ToastContainer />
-            <Header categories={categories} user={userSession} />
-            <MobileHeader
-              categories={categories}
-              user={userSession}
-              config={config}
-            />
-            <GlobalContextProvider>
-              <NuqsAdapter>{children}</NuqsAdapter>
-            </GlobalContextProvider>
-            <Footer categories={categories} config={config} />
+            <Layout userSession={userSession}>
+              <GlobalContextProvider>
+                <NuqsAdapter>{children}</NuqsAdapter>
+              </GlobalContextProvider>
+            </Layout>
           </NextIntlClientProvider>
         </ReduxProvider>
       </body>

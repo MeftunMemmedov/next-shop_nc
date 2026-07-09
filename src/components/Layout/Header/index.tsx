@@ -3,9 +3,10 @@ import { routes } from '@/constants';
 import SearchForm from './components/SearchForm';
 import { Link } from '@/i18n/routing';
 import LangSelect from '../LangSelect';
-import { Category, UserAuthState } from '@/types';
+import { UserAuthState } from '@/types';
 import CartModal from '../CartModal';
 import Logo from '../Logo';
+import { getCategoryListwChildren } from '@/api/fetch/helpers/category';
 
 const header_top_texts = [
   'DISCOVER GUITARS THAT INSPIRE EVERY NOTE',
@@ -26,11 +27,12 @@ const header_top_texts = [
 ];
 
 interface Props {
-  categories: Category[];
   user: UserAuthState | null;
 }
 
-const Header = async ({ categories, user }: Props) => {
+const Header = async ({ user }: Props) => {
+  const categories = await getCategoryListwChildren();
+
   return (
     <header className="header header_sticky container">
       <aside

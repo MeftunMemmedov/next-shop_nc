@@ -1,7 +1,7 @@
 'use client';
 import { Provider } from 'react-redux';
 
-import { AppStore, makeStore } from './';
+import { makeStore } from './';
 import { CartItem, UserAuthState, WishlistItem } from '@/types';
 import {
   initLocalCart,
@@ -10,7 +10,7 @@ import {
   initUserCart,
   initUserWishlist,
 } from './inventory';
-import { useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -20,26 +20,19 @@ interface Props {
 }
 
 const ReduxProvider = ({ children, user, cart, wishlist }: Props) => {
-  const storeRef = useRef<AppStore | null>(null);
+  const [store] = useState(() => {
+    const storeInstance = makeStore();
 
-  // eslint-disable-next-line react-hooks/refs
-  if (!storeRef.current) {
-    storeRef.current = makeStore();
-  }
-  // eslint-disable-next-line react-hooks/refs
-  const store = storeRef.current;
-
-  useEffect(() => {
     if (user) {
-      store.dispatch(initUser(user));
-      if (cart) store.dispatch(initUserCart(cart));
-      if (wishlist) store.dispatch(initUserWishlist(wishlist));
-      return;
+      storeInstance.dispatch(initUser(user));
+      if (cart) storeInstance.dispatch(initUserCart(cart));
+      if (wishlist) storeInstance.dispatch(initUserWishlist(wishlist));
     } else {
-      store.dispatch(initLocalWishlist());
-      store.dispatch(initLocalCart());
+      storeInstance.dispatch(initLocalWishlist());
+      storeInstance.dispatch(initLocalCart());
     }
-  }, [user]);
+    return storeInstance;
+  });
 
   return <Provider store={store}>{children}</Provider>;
 };
